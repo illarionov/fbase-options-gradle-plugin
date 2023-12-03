@@ -1,11 +1,11 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     `java-gradle-plugin`
     alias(libs.plugins.jvm)
-    id("com.gradle.plugin-publish")
-    id("maven-publish")
+    alias(libs.plugins.gradle.plugin.publish)
 }
 
 repositories {
@@ -13,11 +13,14 @@ repositories {
     mavenCentral()
 }
 
+group = "ru.pixnews.gradle"
+version = "0.1"
+
 @Suppress("UnstableApiUsage")
 testing {
     suites {
         val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
+            useJUnitJupiter(libs.versions.junit5)
             targets {
                 all {
                     testTask.configure {
@@ -37,7 +40,7 @@ testing {
         }
 
         val functionalTest by registering(JvmTestSuite::class) {
-            useJUnitJupiter()
+            useJUnitJupiter(libs.versions.junit5)
 
             dependencies {
                 implementation(project())
@@ -94,6 +97,10 @@ tasks.withType<KotlinJvmCompile>().configureEach {
         // https://docs.gradle.org/current/userguide/compatibility.html#kotlin
         apiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_6
         languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_6
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xjvm-default=all"
+        )
     }
 }
 

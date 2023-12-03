@@ -38,7 +38,7 @@ abstract class GenerateFirebaseOptionsTask : DefaultTask() {
             ifNotPresent = LocalFirebaseOptions.Companion::empty,
         )
 
-        FirebaseConfigGenerator(
+        FirebaseOptionsGenerator(
             options = config,
             codeGenDir = codegenDir,
         ).generate()

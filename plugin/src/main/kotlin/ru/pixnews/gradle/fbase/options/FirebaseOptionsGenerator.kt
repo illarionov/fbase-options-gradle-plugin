@@ -14,7 +14,7 @@ import com.squareup.kotlinpoet.buildCodeBlock
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
 import java.io.File
 
-internal class FirebaseConfigGenerator(
+internal class FirebaseOptionsGenerator(
     private val options: LocalFirebaseOptions,
     private val codeGenDir: File,
     private val outputObjectClassName: ClassName = ClassName("ru.pixnews.firebase", "GeneratedFirebaseOptions"),
