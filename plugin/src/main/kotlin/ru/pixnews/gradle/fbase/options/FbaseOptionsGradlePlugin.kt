@@ -10,7 +10,9 @@ import com.android.build.api.variant.Variant
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import org.gradle.api.Transformer
+import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.provider.Provider
+import ru.pixnews.gradle.fbase.options.FirebaseOptionsExtension.Companion.createFirebaseOptionsExtension
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptionsValueSource
 import ru.pixnews.gradle.fbase.options.util.withAnyOfAndroidPlugins
@@ -27,24 +29,17 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
     private fun AndroidComponentsExtension<*, *, *>.registerFirebaseOptionsTask(
         project: Project,
     ) {
-        val providers = project.providers
-        val pixnewsConfigFile = project.rootProject.layout.projectDirectory.file(
-            "todo",
-        )
+        val globalExtension = project.extensions.createFirebaseOptionsExtension()
 
         onVariants { variant ->
             val applicationIdProvider = if (variant is ApplicationVariant) {
                 variant.applicationId
             } else {
-                providers.provider { "" }
+                project.providers.provider { "" }
             }
-
-            val firebaseOptionsProvider = providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->
-                valueSource.parameters {
-                    it.applicationId.set(applicationIdProvider)
-                    it.configFilePath.set(pixnewsConfigFile)
-                }
-            }
+            val firebaseOptionsProvider = globalExtension.source.orElse(
+                globalExtension.providers.propertiesFile(applicationIdProvider = applicationIdProvider)
+            )
 
             @Suppress("GENERIC_VARIABLE_WRONG_DECLARATION")
             val firebaseOptionsTaskProvider = project.tasks.register(
