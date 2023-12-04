@@ -1,10 +1,16 @@
+/*
+ * Copyright (c) 2023, the fbase-options-gradle-plugin project authors and contributors.
+ * Please see the AUTHORS file for details.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+ */
+
 package ru.pixnews.gradle.fbase.options.reader
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
-import java.util.*
+import java.util.Properties
 
 class FirebaseConfigReaderTest {
     @ParameterizedTest
@@ -114,4 +120,3 @@ class FirebaseConfigReaderTest {
         )
     }
 }
-

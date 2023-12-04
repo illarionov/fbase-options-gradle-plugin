@@ -3,12 +3,13 @@
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
-
-package ru.pixnews.gradle.fbase.options.util
-
-import java.io.File
-import java.util.Properties
-
-internal fun File.toProperties(): Properties = Properties().apply {
-    this@toProperties.bufferedReader().use { load(it) }
+dependencyResolutionManagement {
+    repositories.gradlePluginPortal()
+    versionCatalogs {
+        create("libs") {
+            from(files("../../libs.versions.toml"))
+        }
+    }
 }
+
+rootProject.name = "gradle-settings-plugins"

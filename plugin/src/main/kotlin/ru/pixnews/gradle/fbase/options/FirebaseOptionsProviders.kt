@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023, the fbase-options-gradle-plugin project authors and contributors.
+ * Please see the AUTHORS file for details.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+ */
+
 package ru.pixnews.gradle.fbase.options
 
 import org.gradle.api.Project
@@ -18,7 +24,7 @@ class FirebaseOptionsProviders @Inject private constructor(
 
     fun propertiesFile(
         configFilePath: RegularFile = defaultConfigFile,
-        applicationIdProvider: Provider<String> = defaultApplicationIdProvider
+        applicationIdProvider: Provider<String> = defaultApplicationIdProvider,
     ): Provider<LocalFirebaseOptions> = providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->
         valueSource.parameters {
             it.applicationId.set(applicationIdProvider)

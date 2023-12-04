@@ -1,7 +1,14 @@
+/*
+ * Copyright (c) 2023, the fbase-options-gradle-plugin project authors and contributors.
+ * Please see the AUTHORS file for details.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+ */
+
 package ru.pixnews.gradle.fbase.options.data
 
 import java.io.Serializable
 
+@Suppress("LongParameterList")
 class LocalFirebaseOptions(
     val projectId: String?,
     val apiKey: String?,
@@ -11,21 +18,7 @@ class LocalFirebaseOptions(
     val gcmSenderId: String?,
     val storageBucket: String?,
 ) : Serializable {
-
-    companion object {
-        @Suppress("CONSTANT_UPPERCASE")
-        private const val serialVersionUID: Long = -1
-        internal val empty = LocalFirebaseOptions(
-            projectId = null,
-            apiKey = null,
-            applicationId = null,
-            databaseUrl = null,
-            gaTrackingId = null,
-            gcmSenderId = null,
-            storageBucket = null,
-        )
-    }
-
+    @Suppress("NO_BRACES_IN_CONDITIONALS_AND_LOOPS")
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -65,6 +58,16 @@ class LocalFirebaseOptions(
                 "storageBucket=$storageBucket" +
                 ")"
     }
-
-
+    companion object {
+        private const val serialVersionUID: Long = -1
+        internal val empty = LocalFirebaseOptions(
+            projectId = null,
+            apiKey = null,
+            applicationId = null,
+            databaseUrl = null,
+            gaTrackingId = null,
+            gcmSenderId = null,
+            storageBucket = null,
+        )
+    }
 }

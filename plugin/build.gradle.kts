@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
@@ -14,7 +13,7 @@ repositories {
 }
 
 group = "ru.pixnews.gradle"
-version = "0.1"
+version = "0.1-SNAPSHOT"
 
 @Suppress("UnstableApiUsage")
 testing {
@@ -39,7 +38,7 @@ testing {
             }
         }
 
-        val functionalTest by registering(JvmTestSuite::class) {
+        register<JvmTestSuite>("functionalTest") {
             useJUnitJupiter(libs.versions.junit5)
 
             dependencies {
@@ -65,7 +64,7 @@ private fun Test.configureTestTaskDefaults() {
     }
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = providers.environmentVariable("TEST_JDK_VERSION")
-            .map { JavaLanguageVersion.of(it.toInt())  }
+            .map { JavaLanguageVersion.of(it.toInt()) }
             .orElse(JavaLanguageVersion.of(17))
     }
 }
@@ -80,7 +79,7 @@ dependencies {
 gradlePlugin {
     website.set("https://github.com/illarionov/fbase-options-gradle-plugin")
     vcsUrl.set("https://github.com/illarionov/fbase-options-gradle-plugin")
-    val fbaseConfig by plugins.creating {
+    plugins.create("fbaseConfig") {
         id = "ru.pixnews.gradle.fbase.options"
         implementationClass = "ru.pixnews.gradle.fbase.options.FbaseOptionsGradlePlugin"
         displayName = "Fbase Options Gradle Plugin"
@@ -99,7 +98,7 @@ tasks.withType<KotlinJvmCompile>().configureEach {
         languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_6
         freeCompilerArgs.addAll(
             "-opt-in=kotlin.RequiresOptIn",
-            "-Xjvm-default=all"
+            "-Xjvm-default=all",
         )
     }
 }
