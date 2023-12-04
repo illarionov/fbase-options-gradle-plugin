@@ -4,19 +4,26 @@
 package ru.pixnews.gradle.fbase.options
 
 import com.android.build.api.variant.AndroidComponentsExtension
-import com.android.build.api.variant.ApplicationVariant
+import com.android.build.api.variant.DslExtension
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
+import com.android.build.api.variant.VariantExtension
+import com.android.build.api.variant.VariantExtensionConfig
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import org.gradle.api.Transformer
-import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
-import ru.pixnews.gradle.fbase.options.FirebaseOptionsExtension.Companion.createFirebaseOptionsExtension
+import org.gradle.api.provider.ProviderFactory
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptionsValueSource
+import ru.pixnews.gradle.fbase.options.util.VariantDefaults
+import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_PROPERTY_NAME
+import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_TARGET_OBJECT_NAME
+import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_VISIBILITY
+import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.EXTENSION_NAME
 import ru.pixnews.gradle.fbase.options.util.withAnyOfAndroidPlugins
 
+@Suppress("UnstableApiUsage")
 class FbaseOptionsGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.withAnyOfAndroidPlugins { _, androidComponentsExtension ->
@@ -29,17 +36,16 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
     private fun AndroidComponentsExtension<*, *, *>.registerFirebaseOptionsTask(
         project: Project,
     ) {
-        val globalExtension = project.extensions.createFirebaseOptionsExtension()
+        val globalExtension = project.extensions.create(EXTENSION_NAME, FirebaseOptionsExtension::class.java)
+        registerExtension(
+            DslExtension.Builder(EXTENSION_NAME).build(),
+            ExtensionMerger(project.providers, project.objects, globalExtension)
+        )
 
         onVariants { variant ->
-            val applicationIdProvider = if (variant is ApplicationVariant) {
-                variant.applicationId
-            } else {
-                project.providers.provider { "" }
+            val variantExtension = checkNotNull(variant.getExtension(FirebaseOptionsExtension::class.java)) {
+                "Extension not registered"
             }
-            val firebaseOptionsProvider = globalExtension.source.orElse(
-                globalExtension.providers.propertiesFile(applicationIdProvider = applicationIdProvider)
-            )
 
             @Suppress("GENERIC_VARIABLE_WRONG_DECLARATION")
             val firebaseOptionsTaskProvider = project.tasks.register(
@@ -47,7 +53,10 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
                 GenerateFirebaseOptionsTask::class.java,
             ) {
                 it.group = "Build"
-                it.firebaseConfig.set(firebaseOptionsProvider)
+                it.firebaseConfig.set(variantExtension.source)
+                it.outputObjectPackage.set(variantExtension.targetPackage)
+                it.outputObjectName.set(variantExtension.targetObjectName)
+                it.outputPropertyName.set(variantExtension.propertyName)
                 it.sourceOutputDir.set(project.layout.buildDirectory.dir("firebase-options"))
             }
 
@@ -56,7 +65,7 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
                 wiredWith = GenerateFirebaseOptionsTask::sourceOutputDir,
             )
 
-            addGoogleAppIdResource(variant, firebaseOptionsProvider)
+            addGoogleAppIdResource(variant, variantExtension.source)
         }
     }
 
@@ -65,7 +74,6 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
         firebaseOptionsProvider: Provider<LocalFirebaseOptions>,
     ) {
         // Manually add google_app_id for Firebase Analytics
-        // Cannot use put() here: https://github.com/gradle/gradle/issues/13364
         val googleAppIdKey = variant.makeResValueKey("string", "google_app_id")
         variant.resValues.putAll(
             firebaseOptionsProvider
@@ -74,13 +82,42 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
         )
     }
 
-    internal class ApplicationIdToMapOfValuesTransformer(
+    private class ApplicationIdToMapOfValuesTransformer(
         private val googleApiKey: ResValue.Key,
     ) : Transformer<Map<ResValue.Key, ResValue>, LocalFirebaseOptions> {
         override fun transform(options: LocalFirebaseOptions): Map<ResValue.Key, ResValue> {
             return options.applicationId?.let {
                 mapOf(googleApiKey to ResValue(it))
             } ?: emptyMap()
+        }
+    }
+
+    private class ExtensionMerger(
+        val providers: ProviderFactory,
+        val objects: ObjectFactory,
+        val globalExtension: FirebaseOptionsExtension,
+    ) : (VariantExtensionConfig<out Variant>) -> VariantExtension {
+        override fun invoke(
+            variantExtensionConfig: VariantExtensionConfig<out Variant>
+        ): FirebaseOptionsExtension {
+            val variantDefaults = VariantDefaults(providers, variantExtensionConfig.variant)
+            return objects.newInstance(FirebaseOptionsExtension::class.java, variantExtensionConfig).apply {
+                source.set(
+                    globalExtension.source.orElse(this.providers.propertiesFile())
+                )
+                targetPackage.set(
+                    globalExtension.targetPackage.orElse(variantDefaults.targetPackage)
+                )
+                targetObjectName.set(
+                    globalExtension.targetObjectName.orElse(DEFAULT_TARGET_OBJECT_NAME)
+                )
+                propertyName.set(
+                    globalExtension.propertyName.orElse(DEFAULT_PROPERTY_NAME)
+                )
+                visibility.set(
+                    globalExtension.visibility.orElse(DEFAULT_VISIBILITY)
+                )
+            }
         }
     }
 }

@@ -5,6 +5,7 @@
 
 package ru.pixnews.gradle.fbase.options
 
+import com.squareup.kotlinpoet.ClassName
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
@@ -24,6 +25,15 @@ abstract class GenerateFirebaseOptionsTask : DefaultTask() {
     @get:Optional
     abstract val firebaseConfig: Property<LocalFirebaseOptions>
 
+    @get:Input
+    abstract val outputObjectPackage: Property<String>
+
+    @get:Input
+    abstract val outputObjectName: Property<String>
+
+    @get:Input
+    abstract val outputPropertyName: Property<String>
+
     @get:OutputDirectory
     abstract val sourceOutputDir: DirectoryProperty
 
@@ -41,6 +51,11 @@ abstract class GenerateFirebaseOptionsTask : DefaultTask() {
         FirebaseOptionsGenerator(
             options = config,
             codeGenDir = codegenDir,
+            outputObjectClassName = ClassName(
+                outputObjectPackage.get(),
+                outputObjectName.get(),
+            ),
+            propertyName = outputPropertyName.get()
         ).generate()
     }
 }

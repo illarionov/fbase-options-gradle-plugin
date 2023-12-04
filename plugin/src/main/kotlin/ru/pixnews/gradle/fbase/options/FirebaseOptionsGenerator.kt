@@ -17,8 +17,8 @@ import java.io.File
 internal class FirebaseOptionsGenerator(
     private val options: LocalFirebaseOptions,
     private val codeGenDir: File,
-    private val outputObjectClassName: ClassName = ClassName("ru.pixnews.firebase", "GeneratedFirebaseOptions"),
-    private val propertyName: String = "firebaseOptions",
+    private val outputObjectClassName: ClassName,
+    private val propertyName: String,
 ) {
     fun generate() {
         val outputFileName = outputObjectClassName.simpleName

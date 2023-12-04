@@ -1,8 +1,18 @@
 package ru.pixnews.gradle.fbase.options.reader
 
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
-import java.util.*
+import java.util.Properties
 
+/**
+ * Read [LocalFirebaseOptions] values from [Properties].
+ *
+ * @param properties Properties from which [LocalFirebaseOptions] values will be read
+ * @param applicationId If specified, keys with the Application Id suffix
+ * will also be taken into account.
+ * For example, when [applicationId] is "com.example",
+ * then the value for the *Google api key* will be read first from the *"firebase_com_example_project_id"*
+ * property and then, if not specified, from the *"firebase_google_api_key"* property in [properties].
+ */
 internal class FirebaseConfigReader(
     private val properties: Properties,
     applicationId: String?,

@@ -6,23 +6,23 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptionsValueSource
+import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_CONFIG_FILE_PATH
 import javax.inject.Inject
 
-public class FirebaseOptionsProviders @Inject private constructor(
-    private val project: Project,
-    private val providers: ProviderFactory,
+class FirebaseOptionsProviders @Inject private constructor(
+    project: Project,
+    private val defaultApplicationIdProvider: Provider<String>,
 ) {
+    private val providers: ProviderFactory = project.providers
+    private val defaultConfigFile = project.rootProject.layout.projectDirectory.file(DEFAULT_CONFIG_FILE_PATH)
+
     fun propertiesFile(
-        configFilePath: RegularFile = project.defaultConfigFile(),
-        applicationIdProvider: Provider<String> = providers.provider { "" },
+        configFilePath: RegularFile = defaultConfigFile,
+        applicationIdProvider: Provider<String> = defaultApplicationIdProvider
     ): Provider<LocalFirebaseOptions> = providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->
         valueSource.parameters {
             it.applicationId.set(applicationIdProvider)
             it.configFilePath.set(configFilePath)
         }
-    }
-
-    internal companion object {
-        private fun Project.defaultConfigFile() = rootProject.layout.projectDirectory.file("config/firebase.properties")
     }
 }

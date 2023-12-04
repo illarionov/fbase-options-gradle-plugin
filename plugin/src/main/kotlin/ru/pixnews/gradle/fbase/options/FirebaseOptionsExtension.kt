@@ -1,10 +1,18 @@
 package ru.pixnews.gradle.fbase.options
 
-import org.gradle.api.plugins.ExtensionContainer
+import com.android.build.api.variant.VariantExtension
+import com.android.build.api.variant.VariantExtensionConfig
+import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.options.util.VariantDefaults
+import java.io.Serializable
+import javax.inject.Inject
 
-abstract class FirebaseOptionsExtension {
+abstract class FirebaseOptionsExtension @Inject constructor(
+    project: Project,
+    extensionConfig: VariantExtensionConfig<*>?,
+) : VariantExtension, Serializable {
     /**
      * Firebase configuration parameters used to build [FirebaseOptions].
      */
@@ -30,13 +38,22 @@ abstract class FirebaseOptionsExtension {
      */
     abstract val visibility: Property<TargetVisibility>
 
-    abstract val providers: FirebaseOptionsProviders
+    @Transient
+    val providers: FirebaseOptionsProviders
 
-    internal companion object {
-        internal fun ExtensionContainer.createFirebaseOptionsExtension(
-            name: String = "firebaseOptions",
-        ): FirebaseOptionsExtension = create(name, FirebaseOptionsExtension::class.java).apply {
+    init {
+        val variantDefaults = extensionConfig?.variant?.let { VariantDefaults(project.providers, it) }
+        val defaultApplicationIdProvider = if (variantDefaults != null) {
+            variantDefaults.applicationId
+        } else {
+            project.providers.provider { "" }
         }
+
+        providers = project.objects.newInstance(
+            FirebaseOptionsProviders::class.java,
+            project,
+            defaultApplicationIdProvider,
+        )
     }
 }
 
