@@ -14,7 +14,7 @@ import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptionsValueSource.Para
 import ru.pixnews.gradle.fbase.options.reader.FirebaseConfigReader
 import ru.pixnews.gradle.fbase.options.util.toProperties
 
-abstract class LocalFirebaseOptionsValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
+internal abstract class LocalFirebaseOptionsValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
     override fun obtain(): LocalFirebaseOptions? {
         val configProperties = parameters.configFilePath.get().asFile.toProperties()
         return FirebaseConfigReader(

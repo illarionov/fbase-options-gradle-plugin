@@ -1,0 +1,60 @@
+public final class ru/pixnews/gradle/fbase/options/FbaseOptionsGradlePlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class ru/pixnews/gradle/fbase/options/FirebaseOptionsExtension : com/android/build/api/variant/VariantExtension, java/io/Serializable {
+	public static final field Companion Lru/pixnews/gradle/fbase/options/FirebaseOptionsExtension$Companion;
+	public fun <init> (Lorg/gradle/api/Project;Lcom/android/build/api/variant/VariantExtensionConfig;)V
+	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
+	public final fun getProviders ()Lru/pixnews/gradle/fbase/options/FirebaseOptionsProviders;
+	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetObjectName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
+	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
+}
+
+public final class ru/pixnews/gradle/fbase/options/FirebaseOptionsExtension$Companion {
+}
+
+public final class ru/pixnews/gradle/fbase/options/FirebaseOptionsProviders {
+	public final fun propertiesFile (Lorg/gradle/api/file/RegularFile;Lorg/gradle/api/provider/Provider;)Lorg/gradle/api/provider/Provider;
+	public static synthetic fun propertiesFile$default (Lru/pixnews/gradle/fbase/options/FirebaseOptionsProviders;Lorg/gradle/api/file/RegularFile;Lorg/gradle/api/provider/Provider;ILjava/lang/Object;)Lorg/gradle/api/provider/Provider;
+}
+
+public abstract class ru/pixnews/gradle/fbase/options/GenerateFirebaseOptionsTask : org/gradle/api/DefaultTask {
+	public fun <init> ()V
+	public final fun doTaskAction ()V
+	public abstract fun getFirebaseConfig ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOutputObjectName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOutputObjectPackage ()Lorg/gradle/api/provider/Property;
+	public abstract fun getOutputPropertyName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSourceOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
+}
+
+public final class ru/pixnews/gradle/fbase/options/data/LocalFirebaseOptions : java/io/Serializable {
+	public static final field Companion Lru/pixnews/gradle/fbase/options/data/LocalFirebaseOptions$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getApiKey ()Ljava/lang/String;
+	public final fun getApplicationId ()Ljava/lang/String;
+	public final fun getDatabaseUrl ()Ljava/lang/String;
+	public final fun getGaTrackingId ()Ljava/lang/String;
+	public final fun getGcmSenderId ()Ljava/lang/String;
+	public final fun getProjectId ()Ljava/lang/String;
+	public final fun getStorageBucket ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/pixnews/gradle/fbase/options/data/LocalFirebaseOptions$Companion {
+}
+
+public final class ru/pixnews/gradle/fbase/options/data/TargetVisibility : java/lang/Enum {
+	public static final field INTERNAL Lru/pixnews/gradle/fbase/options/data/TargetVisibility;
+	public static final field PUBLIC Lru/pixnews/gradle/fbase/options/data/TargetVisibility;
+	public static fun valueOf (Ljava/lang/String;)Lru/pixnews/gradle/fbase/options/data/TargetVisibility;
+	public static fun values ()[Lru/pixnews/gradle/fbase/options/data/TargetVisibility;
+}
+

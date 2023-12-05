@@ -5,6 +5,7 @@ plugins {
     `java-gradle-plugin`
     alias(libs.plugins.jvm)
     alias(libs.plugins.gradle.plugin.publish)
+    alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
 repositories {

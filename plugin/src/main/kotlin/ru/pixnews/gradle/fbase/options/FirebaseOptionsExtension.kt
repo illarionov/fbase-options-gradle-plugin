@@ -11,6 +11,7 @@ import com.android.build.api.variant.VariantExtensionConfig
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.options.data.TargetVisibility
 import ru.pixnews.gradle.fbase.options.util.VariantDefaults
 import java.io.Serializable
 import javax.inject.Inject

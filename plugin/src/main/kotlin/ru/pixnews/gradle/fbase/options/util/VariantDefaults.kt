@@ -10,7 +10,7 @@ import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.Variant
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
-import ru.pixnews.gradle.fbase.options.TargetVisibility
+import ru.pixnews.gradle.fbase.options.data.TargetVisibility
 
 internal class VariantDefaults(
     val providers: ProviderFactory,
