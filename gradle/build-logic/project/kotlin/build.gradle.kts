@@ -13,6 +13,5 @@ dependencies {
     implementation(project(":lint"))
     implementation(libs.agp.plugin.api)
     implementation(libs.kotlin.plugin)
-    implementation(libs.gradle.maven.publish.plugin)
     runtimeOnly(libs.agp.plugin)
 }

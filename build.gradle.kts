@@ -1,5 +1,4 @@
 plugins {
-    // alias(libs.plugins.gradle.maven.publish.plugin.base) apply false
     id("ru.pixnews.gradle.fbase.build-logic.project.lint.detekt")
     id("ru.pixnews.gradle.fbase.build-logic.project.lint.diktat")
     id("ru.pixnews.gradle.fbase.build-logic.project.lint.spotless")

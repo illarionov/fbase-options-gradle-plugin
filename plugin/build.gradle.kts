@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     `java-gradle-plugin`
+    signing
     alias(libs.plugins.jvm)
     alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
@@ -13,7 +14,7 @@ repositories {
     mavenCentral()
 }
 
-group = "ru.pixnews.gradle"
+group = "ru.pixnews.gradle.fbase.options"
 version = "0.1-SNAPSHOT"
 
 @Suppress("UnstableApiUsage")
@@ -84,12 +85,30 @@ gradlePlugin {
         id = "ru.pixnews.gradle.fbase.options"
         implementationClass = "ru.pixnews.gradle.fbase.options.FbaseOptionsGradlePlugin"
         displayName = "Fbase Options Gradle Plugin"
-        description = "Gradle plugin that generates FirebaseOptions with values from configuration file."
+        description = "Gradle plugin that generates FirebaseOptions using values from configuration file."
         tags = listOf("android", "firebase")
     }
 }
 
 gradlePlugin.testSourceSets.add(sourceSets["functionalTest"])
+
+publishing {
+    repositories {
+        // Local repository for testing publications
+        maven {
+            name = "test"
+            url = uri("../build/local-plugin-repository")
+        }
+        maven {
+            name = "PixnewsS3"
+            setUrl("s3://maven.pixnews.ru/")
+            credentials(AwsCredentials::class) {
+                accessKey = providers.environmentVariable("YANDEX_S3_ACCESS_KEY_ID").getOrElse("")
+                secretKey = providers.environmentVariable("YANDEX_S3_SECRET_ACCESS_KEY").getOrElse("")
+            }
+        }
+    }
+}
 
 tasks.withType<KotlinJvmCompile>().configureEach {
     compilerOptions {
@@ -103,6 +122,12 @@ tasks.withType<KotlinJvmCompile>().configureEach {
         )
     }
 }
+
+tasks.withType<AbstractArchiveTask>().configureEach {
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
+}
+
 
 tasks.withType<JavaCompile>().configureEach {
     sourceCompatibility = JavaVersion.VERSION_11.toString()

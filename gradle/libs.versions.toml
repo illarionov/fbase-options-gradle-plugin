@@ -33,7 +33,6 @@ kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotli
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 diktat-plugin = { group = "org.cqfn.diktat", name = "diktat-gradle-plugin", version.ref = "diktat" }
-gradle-maven-publish-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "gradle-maven-publish-plugin" }
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 spotless-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
