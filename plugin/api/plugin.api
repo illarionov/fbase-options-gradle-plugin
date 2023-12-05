@@ -31,6 +31,7 @@ public abstract class ru/pixnews/gradle/fbase/options/GenerateFirebaseOptionsTas
 	public abstract fun getOutputObjectPackage ()Lorg/gradle/api/provider/Property;
 	public abstract fun getOutputPropertyName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSourceOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
+	public abstract fun getTargetVisibility ()Lorg/gradle/api/provider/Property;
 }
 
 public final class ru/pixnews/gradle/fbase/options/data/LocalFirebaseOptions : java/io/Serializable {

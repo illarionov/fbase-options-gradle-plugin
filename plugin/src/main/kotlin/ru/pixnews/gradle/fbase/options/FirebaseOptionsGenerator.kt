@@ -8,11 +8,14 @@ package ru.pixnews.gradle.fbase.options
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.buildCodeBlock
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.options.data.TargetVisibility
+import ru.pixnews.gradle.fbase.options.data.TargetVisibility.PUBLIC
 import java.io.File
 
 internal class FirebaseOptionsGenerator(
@@ -20,6 +23,7 @@ internal class FirebaseOptionsGenerator(
     private val codeGenDir: File,
     private val outputObjectClassName: ClassName,
     private val propertyName: String,
+    private val visibility: TargetVisibility,
 ) {
     fun generate() {
         val outputFileName = outputObjectClassName.simpleName
@@ -28,7 +32,7 @@ internal class FirebaseOptionsGenerator(
         val firebaseOptionsProperty = PropertySpec.builder(
             name = propertyName,
             type = firebaseOptionsClassName,
-            INTERNAL,
+            visibility.toModifier(),
         )
             .initializer(
                 buildCodeBlock {
@@ -44,7 +48,7 @@ internal class FirebaseOptionsGenerator(
             .build()
 
         val objectSpec = TypeSpec.objectBuilder(outputObjectClassName)
-            .addModifiers(INTERNAL)
+            .addModifiers(visibility.toModifier())
             .addProperty(firebaseOptionsProperty)
             .build()
 
@@ -76,5 +80,10 @@ internal class FirebaseOptionsGenerator(
             "setGcmSenderId" to LocalFirebaseOptions::gcmSenderId,
             "setStorageBucket" to LocalFirebaseOptions::storageBucket,
         )
+
+        fun TargetVisibility.toModifier(): KModifier = when (this) {
+            TargetVisibility.INTERNAL -> INTERNAL
+            PUBLIC -> KModifier.PUBLIC
+        }
     }
 }

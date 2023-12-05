@@ -15,6 +15,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.options.data.TargetVisibility
 import ru.pixnews.gradle.fbase.options.util.getWarnIfNotPresent
 
 /**
@@ -34,6 +35,10 @@ abstract class GenerateFirebaseOptionsTask : DefaultTask() {
 
     @get:Input
     abstract val outputPropertyName: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val targetVisibility: Property<TargetVisibility>
 
     @get:OutputDirectory
     abstract val sourceOutputDir: DirectoryProperty
@@ -57,6 +62,7 @@ abstract class GenerateFirebaseOptionsTask : DefaultTask() {
                 outputObjectName.get(),
             ),
             propertyName = outputPropertyName.get(),
+            visibility = targetVisibility.getOrElse(TargetVisibility.INTERNAL),
         ).generate()
     }
 }

@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.options.data.TargetVisibility.INTERNAL
 import java.io.File
 
 @OptIn(ExperimentalCompilerApi::class)
@@ -50,6 +51,7 @@ class FirebaseOptionsGeneratorTest {
             codeGenDir = codeGenDir,
             outputObjectClassName = ClassName("com.test", "GeneratedFirebaseOptions"),
             propertyName = "firebaseOptions",
+            visibility = INTERNAL,
         ).generate()
 
         val firebaseOptionsStub = SourceFile.fromPath(

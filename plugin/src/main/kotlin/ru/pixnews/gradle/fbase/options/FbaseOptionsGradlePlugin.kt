@@ -59,6 +59,7 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
                 it.outputObjectPackage.set(variantExtension.targetPackage)
                 it.outputObjectName.set(variantExtension.targetObjectName)
                 it.outputPropertyName.set(variantExtension.propertyName)
+                it.targetVisibility.set(variantExtension.visibility)
                 it.sourceOutputDir.set(project.layout.buildDirectory.dir("firebase-options"))
             }
 
