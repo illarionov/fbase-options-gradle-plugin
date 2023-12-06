@@ -38,7 +38,12 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
     private fun AndroidComponentsExtension<*, *, *>.registerFirebaseOptionsTask(
         project: Project,
     ) {
-        val globalExtension = project.extensions.create(EXTENSION_NAME, FirebaseOptionsExtension::class.java)
+        val globalExtension = project.extensions.create(
+            EXTENSION_NAME,
+            FirebaseOptionsExtension::class.java,
+            project,
+            null,
+        )
         registerExtension(
             DslExtension.Builder(EXTENSION_NAME).build(),
             ExtensionMerger(project.providers, project.objects, globalExtension),

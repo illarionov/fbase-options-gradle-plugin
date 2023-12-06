@@ -56,11 +56,7 @@ abstract class FirebaseOptionsExtension @Inject constructor(
             project.providers.provider { "" }
         }
 
-        providers = project.objects.newInstance(
-            FirebaseOptionsProviders::class.java,
-            project,
-            defaultApplicationIdProvider,
-        )
+        providers = FirebaseOptionsProviders(project, defaultApplicationIdProvider)
     }
 
     companion object {
