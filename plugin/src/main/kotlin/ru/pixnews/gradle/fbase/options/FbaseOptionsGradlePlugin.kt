@@ -113,7 +113,7 @@ class FbaseOptionsGradlePlugin : Plugin<Project> {
             val variantDefaults = VariantDefaults(providers, variantExtensionConfig.variant)
             return objects.newInstance(FirebaseOptionsExtension::class.java, variantExtensionConfig).apply {
                 source.set(
-                    globalExtension.source.orElse(this.providers.propertiesFile()),
+                    globalExtension.source.orElse(this.providers.propertiesFileProvider()),
                 )
                 targetPackage.set(
                     globalExtension.targetPackage.orElse(variantDefaults.targetPackage),

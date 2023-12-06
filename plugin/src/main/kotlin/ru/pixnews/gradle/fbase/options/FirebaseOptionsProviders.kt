@@ -24,10 +24,18 @@ class FirebaseOptionsProviders internal constructor(
     fun propertiesFile(
         configFilePath: RegularFile = defaultConfigFile,
         applicationIdProvider: Provider<String> = defaultApplicationIdProvider,
+    ): Provider<LocalFirebaseOptions> = propertiesFileProvider(
+        configFilePathProvider = providers.provider { configFilePath },
+        applicationIdProvider = applicationIdProvider
+    )
+
+    fun propertiesFileProvider(
+        configFilePathProvider: Provider<RegularFile> = providers.provider { defaultConfigFile },
+        applicationIdProvider: Provider<String> = defaultApplicationIdProvider,
     ): Provider<LocalFirebaseOptions> = providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->
         valueSource.parameters {
             it.applicationId.set(applicationIdProvider)
-            it.configFilePath.set(configFilePath)
+            it.configFilePath.set(configFilePathProvider)
         }
     }
 }
