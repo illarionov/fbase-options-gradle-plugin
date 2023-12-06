@@ -13,9 +13,8 @@ import org.gradle.api.provider.ProviderFactory
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptionsValueSource
 import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_CONFIG_FILE_PATH
-import javax.inject.Inject
 
-class FirebaseOptionsProviders @Inject private constructor(
+class FirebaseOptionsProviders internal constructor(
     project: Project,
     private val defaultApplicationIdProvider: Provider<String>,
 ) {
