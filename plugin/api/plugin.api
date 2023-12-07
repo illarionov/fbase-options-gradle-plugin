@@ -21,6 +21,8 @@ public final class ru/pixnews/gradle/fbase/options/FirebaseOptionsExtension$Comp
 public final class ru/pixnews/gradle/fbase/options/FirebaseOptionsProviders {
 	public final fun propertiesFile (Lorg/gradle/api/file/RegularFile;Lorg/gradle/api/provider/Provider;)Lorg/gradle/api/provider/Provider;
 	public static synthetic fun propertiesFile$default (Lru/pixnews/gradle/fbase/options/FirebaseOptionsProviders;Lorg/gradle/api/file/RegularFile;Lorg/gradle/api/provider/Provider;ILjava/lang/Object;)Lorg/gradle/api/provider/Provider;
+	public final fun propertiesFileProvider (Lorg/gradle/api/provider/Provider;Lorg/gradle/api/provider/Provider;)Lorg/gradle/api/provider/Provider;
+	public static synthetic fun propertiesFileProvider$default (Lru/pixnews/gradle/fbase/options/FirebaseOptionsProviders;Lorg/gradle/api/provider/Provider;Lorg/gradle/api/provider/Provider;ILjava/lang/Object;)Lorg/gradle/api/provider/Provider;
 }
 
 public abstract class ru/pixnews/gradle/fbase/options/GenerateFirebaseOptionsTask : org/gradle/api/DefaultTask {

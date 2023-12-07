@@ -26,7 +26,7 @@ class FirebaseOptionsProviders internal constructor(
         applicationIdProvider: Provider<String> = defaultApplicationIdProvider,
     ): Provider<LocalFirebaseOptions> = propertiesFileProvider(
         configFilePathProvider = providers.provider { configFilePath },
-        applicationIdProvider = applicationIdProvider
+        applicationIdProvider = applicationIdProvider,
     )
 
     fun propertiesFileProvider(

@@ -6,6 +6,8 @@
 
 package ru.pixnews.gradle.fbase.options
 
+import org.gradle.testkit.runner.GradleRunner
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -20,7 +22,6 @@ class FbaseConfigGradlePluginPluginFunctionalTest {
     @field:TempDir
     lateinit var projectDir: File
 
-    @Suppress("COMMENTED_OUT_CODE")
     @Test
     fun `can run task`() {
         // Set up the test build
@@ -34,14 +35,20 @@ class FbaseConfigGradlePluginPluginFunctionalTest {
         )
 
         // Run the build
-// val runner = GradleRunner.create()
-// runner.forwardOutput()
-// runner.withPluginClasspath()
-// runner.withArguments("greeting")
-// runner.withProjectDir(projectDir)
-// val result = runner.build()
+        val runner = GradleRunner.create().apply {
+            forwardOutput()
+            withPluginClasspath()
+            withArguments(
+                "--stacktrace",
+                "--info",
+                "greeting",
+            )
+            withProjectDir(projectDir)
+        }
+
+        val result = runner.build()
 
         // TODO Verify the result
-        // assertTrue(result.output.contains("Hello from plugin 'ru.pixnews.gradle.fbase.config.greeting'"))
+        assertTrue(result.output.contains("OK"))
     }
 }
