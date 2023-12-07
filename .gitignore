@@ -1,5 +1,40 @@
-# Ignore Gradle project-specific cache directory
-.gradle
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
 
-# Ignore Gradle build output directory
-build
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+keystore.properties
+local.properties
+
+# Log Files
+*.log
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+
+# Keystore files
+*.keystore
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+.cxx/
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+vcs.xml
+
+# lint
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/

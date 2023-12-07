@@ -8,14 +8,6 @@ pluginManagement {
     includeBuild("../")
 }
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs") {
-            from(files("../gradle/libs.versions.toml"))
-        }
-    }
-}
-
 plugins {
     id("ru.pixnews.gradle.fbase.build-logic.settings.root")
 }
