@@ -32,11 +32,13 @@ testing {
             dependencies {
                 implementation(platform(libs.junit.bom))
                 implementation(platform(libs.kotest.bom))
+
+                implementation(libs.agp.plugin)
                 implementation(libs.junit.jupiter.api)
                 implementation(libs.junit.jupiter.params)
-                runtimeOnly(libs.junit.jupiter.engine)
                 implementation(libs.kotest.assertions.core)
                 implementation(libs.kotlin.compile.testing)
+                runtimeOnly(libs.junit.jupiter.engine)
             }
         }
 

@@ -6,12 +6,14 @@
 
 package ru.pixnews.gradle.fbase.options
 
+import com.android.build.api.AndroidPluginVersion
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.DslExtension
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
 import com.android.build.api.variant.VariantExtension
 import com.android.build.api.variant.VariantExtensionConfig
+import com.android.build.gradle.api.AndroidBasePlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Transformer
@@ -24,18 +26,32 @@ import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAU
 import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_TARGET_OBJECT_NAME
 import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_VISIBILITY
 import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.EXTENSION_NAME
-import ru.pixnews.gradle.fbase.options.util.withAnyOfAndroidPlugins
 
 class FbaseOptionsGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.withAnyOfAndroidPlugins { _, androidComponentsExtension ->
-            with(androidComponentsExtension) {
-                registerFirebaseOptionsTask(project)
+        var configured = false
+        project.plugins.withType(AndroidBasePlugin::class.java) { plugin ->
+            configured = true
+            val componentsExtension = project.extensions.findByType(AndroidComponentsExtension::class.java)
+            checkNotNull(componentsExtension) {
+                "Could not find the Android Gradle Plugin (AGP) extension, the Fbase Options Gradle plugin " +
+                        "should be only applied to an Android projects."
+            }
+            @Suppress("MagicNumber")
+            check(componentsExtension.pluginVersion >= AndroidPluginVersion(7, 3)) {
+                "Fbase Options Gradle plugin is only compatible with Android Gradle plugin (AGP) " +
+                        "version 7.3.0 or higher (found ${componentsExtension.pluginVersion})."
+            }
+            componentsExtension.configurePlugin(project)
+        }
+        project.afterEvaluate {
+            check(configured) {
+                "Fbase Options Gradle plugin can only be applied to an Android project."
             }
         }
     }
 
-    private fun AndroidComponentsExtension<*, *, *>.registerFirebaseOptionsTask(
+    private fun AndroidComponentsExtension<*, *, *>.configurePlugin(
         project: Project,
     ) {
         val globalExtension = project.extensions.create(
