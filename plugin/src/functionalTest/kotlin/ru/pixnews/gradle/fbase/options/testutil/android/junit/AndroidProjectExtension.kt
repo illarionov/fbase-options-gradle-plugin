@@ -32,7 +32,7 @@ class AndroidProjectExtension : BeforeEachCallback, AfterEachCallback {
     }
 
     override fun afterEach(context: ExtensionContext?) {
-        // rootDir.deleteRecursively()
+        rootDir.deleteRecursively()
     }
 
     fun setupTestProject(name: String) = setupTestProject(testProjectsRoot.resolve(name))

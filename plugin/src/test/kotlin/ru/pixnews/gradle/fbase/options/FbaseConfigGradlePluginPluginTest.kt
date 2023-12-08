@@ -6,19 +6,21 @@
 
 package ru.pixnews.gradle.fbase.options
 
+import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.matchers.string.shouldContain
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Test
 
-/**
- * A simple unit test for the 'ru.pixnews.gradle.fbase.config.greeting' plugin.
- */
 class FbaseConfigGradlePluginPluginTest {
     @Test
-    fun `plugin registers task`() {
+    fun `plugin should fail if Android plugin is not applied`() {
         val project = ProjectBuilder.builder().build()
         project.plugins.apply("ru.pixnews.gradle.fbase.options")
+        val exception = shouldThrowAny {
+            (project as? ProjectInternal)?.evaluate()
+        }.cause!!
 
-        // TODO Verify the result
-        // assertNotNull(project.tasks.findByName("greeting"))
+        exception.message shouldContain "can only be applied to an Android project."
     }
 }
