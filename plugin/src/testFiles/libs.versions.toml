@@ -1,0 +1,21 @@
+[versions]
+agp = "8.2.0"
+kotlin = "1.9.21"
+
+androidx-core-ktx = "1.12.0"
+fbase-options-gradle-plugin = "0.1-SNAPSHOT"
+firebase = "32.6.0"
+
+[libraries]
+agp-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase"}
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
+firebase-crashlitycs = { group = "com.google.firebase", name = "firebase-crashlytics"}
+firebase-config = { group = "com.google.firebase", name = "firebase-config"}
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+fbase-options-gradle-plugin = { id = "ru.pixnews.gradle.fbase.options", version.ref = "fbase-options-gradle-plugin" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

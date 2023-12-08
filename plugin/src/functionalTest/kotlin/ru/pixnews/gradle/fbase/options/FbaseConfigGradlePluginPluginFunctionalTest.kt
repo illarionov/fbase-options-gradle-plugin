@@ -6,49 +6,25 @@
 
 package ru.pixnews.gradle.fbase.options
 
-import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
-import java.io.File
+import org.junit.jupiter.api.extension.RegisterExtension
+import ru.pixnews.gradle.fbase.options.testutil.android.junit.AndroidProjectExtension
 
 /**
  * A simple functional test for the 'ru.pixnews.gradle.fbase.config.greeting' plugin.
  */
 class FbaseConfigGradlePluginPluginFunctionalTest {
-    private val buildFile by lazy { projectDir.resolve("build.gradle") }
-    private val settingsFile by lazy { projectDir.resolve("settings.gradle") }
-
-    @field:TempDir
-    lateinit var projectDir: File
+    @JvmField
+    @RegisterExtension
+    var project = AndroidProjectExtension()
 
     @Test
-    fun `can run task`() {
-        // Set up the test build
-        settingsFile.writeText("")
-        buildFile.writeText(
-            """
-            plugins {
-                id('ru.pixnews.gradle.fbase.options')
-            }
-        """.trimIndent(),
-        )
+    fun `can build project`() {
+        project.setupTestProject("android-app-simple")
 
-        // Run the build
-        val runner = GradleRunner.create().apply {
-            forwardOutput()
-            withPluginClasspath()
-            withArguments(
-                "--stacktrace",
-                "--info",
-                "greeting",
-            )
-            withProjectDir(projectDir)
-        }
+        val result = project.build("build")
 
-        val result = runner.build()
-
-        // TODO Verify the result
-        assertTrue(result.output.contains("OK"))
+        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
 }

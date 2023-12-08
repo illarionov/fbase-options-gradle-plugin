@@ -52,6 +52,15 @@ testing {
                     testTask.configure {
                         configureTestTaskDefaults()
                         shouldRunAfter(test)
+                        testLogging {
+                            if (providers.gradleProperty("verboseTest").map(String::toBoolean).getOrElse(false)) {
+                                events = setOf(
+                                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                                    org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR,
+                                    org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
+                                )
+                            }
+                        }
                     }
                 }
             }
