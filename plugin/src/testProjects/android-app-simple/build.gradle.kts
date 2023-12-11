@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.fbase.options.gradle.plugin)
+    alias(libs.plugins.fbase.config.generator.gradle.plugin)
 }
 
 android {

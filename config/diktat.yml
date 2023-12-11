@@ -63,7 +63,7 @@
   enabled: true
   configuration:
     isCopyrightMandatory: true
-    copyrightText: 'Copyright (c) ;@currYear;, the fbase-options-gradle-plugin project authors and contributors.'
+    copyrightText: 'Copyright (c) ;@currYear;, the fbase-config-generator-gradle-plugin project authors and contributors.'
 
 - name: HEADER_WRONG_FORMAT
   enabled: false

@@ -14,7 +14,7 @@ repositories {
     mavenCentral()
 }
 
-group = "ru.pixnews.gradle.fbase.options"
+group = "ru.pixnews.gradle.fbase"
 version = "0.1-SNAPSHOT"
 
 @Suppress("UnstableApiUsage")
@@ -90,12 +90,12 @@ dependencies {
 }
 
 gradlePlugin {
-    website.set("https://github.com/illarionov/fbase-options-gradle-plugin")
-    vcsUrl.set("https://github.com/illarionov/fbase-options-gradle-plugin")
+    website.set("https://github.com/illarionov/fbase-config-generator-gradle-plugin")
+    vcsUrl.set("https://github.com/illarionov/fbase-config-generator-gradle-plugin")
     plugins.create("fbaseConfig") {
-        id = "ru.pixnews.gradle.fbase.options"
-        implementationClass = "ru.pixnews.gradle.fbase.options.FbaseOptionsGradlePlugin"
-        displayName = "Fbase Options Gradle Plugin"
+        id = "ru.pixnews.gradle.fbase"
+        implementationClass = "ru.pixnews.gradle.fbase.FbaseConfigGeneratorGradlePlugin"
+        displayName = "Firebase Config Generator Gradle Plugin"
         description = "Gradle plugin that generates FirebaseOptions using values from configuration file."
         tags = listOf("android", "firebase")
     }
