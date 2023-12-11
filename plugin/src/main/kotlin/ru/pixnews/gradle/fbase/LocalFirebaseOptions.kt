@@ -4,19 +4,19 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.data
+package ru.pixnews.gradle.fbase
 
 import java.io.Serializable
 
 @Suppress("LongParameterList")
-class LocalFirebaseOptions(
-    val projectId: String?,
-    val apiKey: String?,
-    val applicationId: String?,
-    val databaseUrl: String?,
-    val gaTrackingId: String?,
-    val gcmSenderId: String?,
-    val storageBucket: String?,
+public class LocalFirebaseOptions(
+    public val projectId: String?,
+    public val apiKey: String?,
+    public val applicationId: String?,
+    public val databaseUrl: String?,
+    public val gaTrackingId: String?,
+    public val gcmSenderId: String?,
+    public val storageBucket: String?,
 ) : Serializable {
     @Suppress("NO_BRACES_IN_CONDITIONALS_AND_LOOPS")
     override fun equals(other: Any?): Boolean {
@@ -58,7 +58,7 @@ class LocalFirebaseOptions(
                 "storageBucket=$storageBucket" +
                 ")"
     }
-    companion object {
+    public companion object {
         private const val serialVersionUID: Long = -1
         internal val empty = LocalFirebaseOptions(
             projectId = null,

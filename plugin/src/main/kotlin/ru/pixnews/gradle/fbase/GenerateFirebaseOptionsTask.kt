@@ -13,24 +13,24 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.data.TargetVisibility.INTERNAL
-import ru.pixnews.gradle.fbase.util.getWarnIfNotPresent
+import ru.pixnews.gradle.fbase.TargetVisibility.INTERNAL
+import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator
+import ru.pixnews.gradle.fbase.internal.util.getWarnIfNotPresent
 import java.io.File
 
 /**
  * Generates GeneratedFirebaseOptions.firebaseOptions using values from
  * configuration file
  */
-abstract class GenerateFirebaseOptionsTask : DefaultTask() {
+public abstract class GenerateFirebaseOptionsTask : DefaultTask() {
     @get:OutputDirectory
-    abstract val sourceOutputDir: DirectoryProperty
+    public abstract val sourceOutputDir: DirectoryProperty
 
     @get:Nested
-    abstract val configs: ListProperty<GenerateOptionsTaskParams>
+    public abstract val configs: ListProperty<GenerateOptionsTaskParams>
 
     @TaskAction
-    fun doTaskAction() {
+    public fun doTaskAction() {
         val codegenDir = sourceOutputDir.asFile.get()
         codegenDir.listFiles()?.forEach { it.deleteRecursively() }
 

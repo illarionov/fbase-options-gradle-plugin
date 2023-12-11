@@ -4,9 +4,9 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.reader
+package ru.pixnews.gradle.fbase.internal
 
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.LocalFirebaseOptions
 import java.util.Properties
 
 /**

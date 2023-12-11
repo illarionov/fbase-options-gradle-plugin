@@ -8,42 +8,40 @@ package ru.pixnews.gradle.fbase
 
 import org.gradle.api.Named
 import org.gradle.api.provider.Property
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.data.TargetVisibility
 import java.io.Serializable
 import javax.inject.Inject
 
-abstract class FirebaseOptionsExtension @Inject constructor(
+public abstract class FirebaseConfigInstanceExtension @Inject constructor(
     private val name: String,
 ) : Named, Serializable {
     /**
      * Firebase configuration parameters used to build [FirebaseOptions].
      */
-    abstract val source: Property<LocalFirebaseOptions>
+    public abstract val source: Property<LocalFirebaseOptions>
 
     /**
      * Target package of the generated [FirebaseOptions] instance
      */
-    abstract val targetPackage: Property<String>
+    public abstract val targetPackage: Property<String>
 
     /**
-     * Generated оbject class with property
+     * Generated object class with property
      */
-    abstract val targetObjectName: Property<String>
+    public abstract val targetObjectName: Property<String>
 
     /** *
      * Name of the generated property
      */
-    abstract val propertyName: Property<String>
+    public abstract val propertyName: Property<String>
 
     /**
      * Visibility of the generated [targetProperty]
      */
-    abstract val visibility: Property<TargetVisibility>
+    public abstract val visibility: Property<TargetVisibility>
 
     override fun getName(): String = name
 
-    companion object {
+    public companion object {
         private const val serialVersionUID: Long = -1
     }
 }

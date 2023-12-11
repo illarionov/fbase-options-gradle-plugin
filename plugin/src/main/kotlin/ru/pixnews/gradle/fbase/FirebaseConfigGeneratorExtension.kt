@@ -11,11 +11,11 @@ import com.android.build.api.variant.VariantExtensionConfig
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
-import ru.pixnews.gradle.fbase.util.VariantDefaults
+import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import java.io.Serializable
 import javax.inject.Inject
 
-abstract class FirebaseConfigGeneratorExtension @Inject internal constructor(
+public abstract class FirebaseConfigGeneratorExtension @Inject internal constructor(
     project: Project,
     extensionConfig: VariantExtensionConfig<*>?,
 ) : Serializable, VariantExtension {
@@ -24,11 +24,11 @@ abstract class FirebaseConfigGeneratorExtension @Inject internal constructor(
      * Enabled by default.
      * Android string resource "google_app_id" will be initialized with the value from the first configuration defined.
      */
-    abstract val addGoogleAppIdResource: Property<Boolean>
-    abstract val configurations: NamedDomainObjectContainer<FirebaseOptionsExtension>
+    public abstract val addGoogleAppIdResource: Property<Boolean>
+    public abstract val configurations: NamedDomainObjectContainer<FirebaseConfigInstanceExtension>
 
     @Transient
-    val providers: FirebaseOptionsProviders
+    public val providers: FirebaseOptionsProviders
 
     init {
         val variantDefaults = extensionConfig?.variant?.let { VariantDefaults(project.providers, it) }
@@ -41,7 +41,7 @@ abstract class FirebaseConfigGeneratorExtension @Inject internal constructor(
         providers = FirebaseOptionsProviders(project, defaultApplicationIdProvider)
     }
 
-    companion object {
+    public companion object {
         private const val serialVersionUID: Long = -1
     }
 }

@@ -15,8 +15,8 @@ import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.data.TargetVisibility.INTERNAL
+import ru.pixnews.gradle.fbase.TargetVisibility.INTERNAL
+import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator
 import java.io.File
 
 @OptIn(ExperimentalCompilerApi::class)

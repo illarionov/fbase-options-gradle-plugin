@@ -4,13 +4,13 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.util
+package ru.pixnews.gradle.fbase.internal
 
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.Variant
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
-import ru.pixnews.gradle.fbase.data.TargetVisibility
+import ru.pixnews.gradle.fbase.TargetVisibility
 
 internal class VariantDefaults(
     val providers: ProviderFactory,
@@ -31,5 +31,5 @@ internal class VariantDefaults(
         internal const val DEFAULT_TARGET_OBJECT_NAME = "GeneratedFirebaseOptions"
         internal const val DEFAULT_CONFIG_FILE_PATH = "config/firebase.properties"
         internal val DEFAULT_VISIBILITY = TargetVisibility.INTERNAL
-}
+    }
 }

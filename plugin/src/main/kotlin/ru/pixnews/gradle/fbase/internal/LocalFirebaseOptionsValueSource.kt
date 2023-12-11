@@ -4,15 +4,15 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.data
+package ru.pixnews.gradle.fbase.internal
 
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ValueSource
 import org.gradle.api.provider.ValueSourceParameters
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptionsValueSource.Parameters
-import ru.pixnews.gradle.fbase.reader.FirebaseConfigReader
-import ru.pixnews.gradle.fbase.util.toProperties
+import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource.Parameters
+import ru.pixnews.gradle.fbase.internal.util.toProperties
 
 internal abstract class LocalFirebaseOptionsValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
     override fun obtain(): LocalFirebaseOptions? {

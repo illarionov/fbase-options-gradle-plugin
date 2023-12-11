@@ -20,12 +20,12 @@ import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
-import ru.pixnews.gradle.fbase.util.VariantDefaults
-import ru.pixnews.gradle.fbase.util.VariantDefaults.PluginDefaults.EXTENSION_NAME
+import ru.pixnews.gradle.fbase.internal.VariantDefaults
+import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.EXTENSION_NAME
 import java.util.SortedMap
 import java.util.TreeMap
 
-class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
+public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         var configured = false
         project.plugins.withType(AndroidBasePlugin::class.java) { _ ->
@@ -100,7 +100,7 @@ class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         }
 
         private fun createTaskParams(
-            options: FirebaseOptionsExtension,
+            options: FirebaseConfigInstanceExtension,
         ): GenerateOptionsTaskParams = objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
             source.set(options.source)
             targetPackage.set(options.targetPackage)
@@ -114,7 +114,7 @@ class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
          */
         private fun addGoogleAppIdResource(
             variant: Variant,
-            configurations: NamedDomainObjectContainer<FirebaseOptionsExtension>,
+            configurations: NamedDomainObjectContainer<FirebaseConfigInstanceExtension>,
             addGoogleAppIdResource: Provider<Boolean>,
         ) {
             val googleAppIdKey = variant.makeResValueKey("string", "google_app_id")
@@ -144,7 +144,7 @@ class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         override fun invoke(
             variantExtensionConfig: VariantExtensionConfig<out Variant>,
         ): FirebaseConfigGeneratorExtension {
-            val mergedConfigs: SortedMap<String, FirebaseOptionsExtension> = TreeMap()
+            val mergedConfigs: SortedMap<String, FirebaseConfigInstanceExtension> = TreeMap()
 
             globalExtension.configurations.forEach { item ->
                 val defaults = firebaseOptionsExtensionDefaults(item.name, variantExtensionConfig)
@@ -162,10 +162,10 @@ class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         }
 
         private fun mergeExtensions(
-            high: FirebaseOptionsExtension,
-            low: FirebaseOptionsExtension,
-        ): FirebaseOptionsExtension = objects.newInstance(
-            FirebaseOptionsExtension::class.java,
+            high: FirebaseConfigInstanceExtension,
+            low: FirebaseConfigInstanceExtension,
+        ): FirebaseConfigInstanceExtension = objects.newInstance(
+            FirebaseConfigInstanceExtension::class.java,
             high.name,
         ).apply {
             source.set(high.source.orElse(low.source))
@@ -178,9 +178,9 @@ class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         private fun firebaseOptionsExtensionDefaults(
             defaultPropertyName: String,
             variantExtensionConfig: VariantExtensionConfig<out Variant>,
-        ): FirebaseOptionsExtension {
+        ): FirebaseConfigInstanceExtension {
             val variantDefaults = VariantDefaults(providers, variantExtensionConfig.variant)
-            return objects.newInstance(FirebaseOptionsExtension::class.java, defaultPropertyName).apply {
+            return objects.newInstance(FirebaseConfigInstanceExtension::class.java, defaultPropertyName).apply {
                 targetPackage.set(variantDefaults.targetPackage)
                 targetObjectName.set(VariantDefaults.DEFAULT_TARGET_OBJECT_NAME)
                 propertyName.set(defaultPropertyName)
