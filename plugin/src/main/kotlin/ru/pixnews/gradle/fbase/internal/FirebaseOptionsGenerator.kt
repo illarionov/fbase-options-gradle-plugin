@@ -4,18 +4,16 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase
+package ru.pixnews.gradle.fbase.internal
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.buildCodeBlock
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.data.TargetVisibility
-import ru.pixnews.gradle.fbase.data.TargetVisibility.PUBLIC
+import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.TargetVisibility
 import java.io.File
 
 internal class FirebaseOptionsGenerator(
@@ -52,8 +50,7 @@ internal class FirebaseOptionsGenerator(
             .addProperty(firebaseOptionsProperty)
             .build()
 
-        val fileContent = FileSpec
-            .builder(packageName, outputFileName)
+        val fileContent = FileSpec.builder(packageName, outputFileName)
             .addType(objectSpec)
             .build()
         fileContent.writeTo(codeGenDir)
@@ -82,8 +79,8 @@ internal class FirebaseOptionsGenerator(
         )
 
         fun TargetVisibility.toModifier(): KModifier = when (this) {
-            TargetVisibility.INTERNAL -> INTERNAL
-            PUBLIC -> KModifier.PUBLIC
+            TargetVisibility.INTERNAL -> KModifier.INTERNAL
+            TargetVisibility.PUBLIC -> KModifier.PUBLIC
         }
     }
 }

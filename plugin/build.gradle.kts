@@ -143,6 +143,9 @@ tasks.withType<KotlinJvmCompile>().configureEach {
             "-opt-in=kotlin.RequiresOptIn",
             "-Xjvm-default=all",
         )
+        if (!this@configureEach.name.endsWith("TestKotlin")) {
+            freeCompilerArgs.addAll("-Xexplicit-api=warning")
+        }
     }
 }
 

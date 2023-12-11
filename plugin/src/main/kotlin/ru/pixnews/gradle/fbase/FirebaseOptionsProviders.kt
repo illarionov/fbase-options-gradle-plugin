@@ -10,18 +10,17 @@ import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptionsValueSource
-import ru.pixnews.gradle.fbase.util.VariantDefaults.PluginDefaults.DEFAULT_CONFIG_FILE_PATH
+import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource
+import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.DEFAULT_CONFIG_FILE_PATH
 
-class FirebaseOptionsProviders internal constructor(
+public class FirebaseOptionsProviders internal constructor(
     project: Project,
     private val defaultApplicationIdProvider: Provider<String>,
 ) {
     private val providers: ProviderFactory = project.providers
     private val defaultConfigFile = project.rootProject.layout.projectDirectory.file(DEFAULT_CONFIG_FILE_PATH)
 
-    fun propertiesFile(
+    public fun propertiesFile(
         configFilePath: RegularFile = defaultConfigFile,
         applicationIdProvider: Provider<String> = defaultApplicationIdProvider,
     ): Provider<LocalFirebaseOptions> = propertiesFileProvider(
@@ -29,7 +28,7 @@ class FirebaseOptionsProviders internal constructor(
         applicationIdProvider = applicationIdProvider,
     )
 
-    fun propertiesFileProvider(
+    public fun propertiesFileProvider(
         configFilePathProvider: Provider<RegularFile> = providers.provider { defaultConfigFile },
         applicationIdProvider: Provider<String> = defaultApplicationIdProvider,
     ): Provider<LocalFirebaseOptions> = providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->

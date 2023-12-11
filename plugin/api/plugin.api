@@ -14,8 +14,8 @@ public abstract class ru/pixnews/gradle/fbase/FirebaseConfigGeneratorExtension :
 public final class ru/pixnews/gradle/fbase/FirebaseConfigGeneratorExtension$Companion {
 }
 
-public abstract class ru/pixnews/gradle/fbase/FirebaseOptionsExtension : java/io/Serializable, org/gradle/api/Named {
-	public static final field Companion Lru/pixnews/gradle/fbase/FirebaseOptionsExtension$Companion;
+public abstract class ru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension : java/io/Serializable, org/gradle/api/Named {
+	public static final field Companion Lru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension$Companion;
 	public fun <init> (Ljava/lang/String;)V
 	public fun getName ()Ljava/lang/String;
 	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
@@ -25,7 +25,7 @@ public abstract class ru/pixnews/gradle/fbase/FirebaseOptionsExtension : java/io
 	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
 }
 
-public final class ru/pixnews/gradle/fbase/FirebaseOptionsExtension$Companion {
+public final class ru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension$Companion {
 }
 
 public final class ru/pixnews/gradle/fbase/FirebaseOptionsProviders {
@@ -50,8 +50,8 @@ public abstract interface class ru/pixnews/gradle/fbase/GenerateOptionsTaskParam
 	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
 }
 
-public final class ru/pixnews/gradle/fbase/data/LocalFirebaseOptions : java/io/Serializable {
-	public static final field Companion Lru/pixnews/gradle/fbase/data/LocalFirebaseOptions$Companion;
+public final class ru/pixnews/gradle/fbase/LocalFirebaseOptions : java/io/Serializable {
+	public static final field Companion Lru/pixnews/gradle/fbase/LocalFirebaseOptions$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getApiKey ()Ljava/lang/String;
@@ -65,13 +65,13 @@ public final class ru/pixnews/gradle/fbase/data/LocalFirebaseOptions : java/io/S
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class ru/pixnews/gradle/fbase/data/LocalFirebaseOptions$Companion {
+public final class ru/pixnews/gradle/fbase/LocalFirebaseOptions$Companion {
 }
 
-public final class ru/pixnews/gradle/fbase/data/TargetVisibility : java/lang/Enum {
-	public static final field INTERNAL Lru/pixnews/gradle/fbase/data/TargetVisibility;
-	public static final field PUBLIC Lru/pixnews/gradle/fbase/data/TargetVisibility;
-	public static fun valueOf (Ljava/lang/String;)Lru/pixnews/gradle/fbase/data/TargetVisibility;
-	public static fun values ()[Lru/pixnews/gradle/fbase/data/TargetVisibility;
+public final class ru/pixnews/gradle/fbase/TargetVisibility : java/lang/Enum {
+	public static final field INTERNAL Lru/pixnews/gradle/fbase/TargetVisibility;
+	public static final field PUBLIC Lru/pixnews/gradle/fbase/TargetVisibility;
+	public static fun valueOf (Ljava/lang/String;)Lru/pixnews/gradle/fbase/TargetVisibility;
+	public static fun values ()[Lru/pixnews/gradle/fbase/TargetVisibility;
 }
 

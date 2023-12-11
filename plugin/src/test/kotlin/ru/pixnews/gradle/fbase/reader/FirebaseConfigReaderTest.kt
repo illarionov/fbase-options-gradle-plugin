@@ -9,7 +9,8 @@ package ru.pixnews.gradle.fbase.reader
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.internal.FirebaseConfigReader
 import java.util.Properties
 
 class FirebaseConfigReaderTest {
