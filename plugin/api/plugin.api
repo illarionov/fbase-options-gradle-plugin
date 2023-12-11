@@ -4,11 +4,21 @@ public final class ru/pixnews/gradle/fbase/options/FbaseOptionsGradlePlugin : or
 	public fun apply (Lorg/gradle/api/Project;)V
 }
 
-public abstract class ru/pixnews/gradle/fbase/options/FirebaseOptionsExtension : com/android/build/api/variant/VariantExtension, java/io/Serializable {
-	public static final field Companion Lru/pixnews/gradle/fbase/options/FirebaseOptionsExtension$Companion;
-	public fun <init> (Lorg/gradle/api/Project;Lcom/android/build/api/variant/VariantExtensionConfig;)V
-	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
+public abstract class ru/pixnews/gradle/fbase/options/FirebaseConfigGeneratorExtension : com/android/build/api/variant/VariantExtension, java/io/Serializable {
+	public static final field Companion Lru/pixnews/gradle/fbase/options/FirebaseConfigGeneratorExtension$Companion;
+	public abstract fun getAddGoogleAppIdResource ()Lorg/gradle/api/provider/Property;
+	public abstract fun getConfigurations ()Lorg/gradle/api/NamedDomainObjectContainer;
 	public final fun getProviders ()Lru/pixnews/gradle/fbase/options/FirebaseOptionsProviders;
+}
+
+public final class ru/pixnews/gradle/fbase/options/FirebaseConfigGeneratorExtension$Companion {
+}
+
+public abstract class ru/pixnews/gradle/fbase/options/FirebaseOptionsExtension : java/io/Serializable, org/gradle/api/Named {
+	public static final field Companion Lru/pixnews/gradle/fbase/options/FirebaseOptionsExtension$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public fun getName ()Ljava/lang/String;
+	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTargetObjectName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
@@ -28,12 +38,16 @@ public final class ru/pixnews/gradle/fbase/options/FirebaseOptionsProviders {
 public abstract class ru/pixnews/gradle/fbase/options/GenerateFirebaseOptionsTask : org/gradle/api/DefaultTask {
 	public fun <init> ()V
 	public final fun doTaskAction ()V
-	public abstract fun getFirebaseConfig ()Lorg/gradle/api/provider/Property;
-	public abstract fun getOutputObjectName ()Lorg/gradle/api/provider/Property;
-	public abstract fun getOutputObjectPackage ()Lorg/gradle/api/provider/Property;
-	public abstract fun getOutputPropertyName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getConfigs ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getSourceOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
-	public abstract fun getTargetVisibility ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract interface class ru/pixnews/gradle/fbase/options/GenerateOptionsTaskParams {
+	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetObjectName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
+	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
 }
 
 public final class ru/pixnews/gradle/fbase/options/data/LocalFirebaseOptions : java/io/Serializable {

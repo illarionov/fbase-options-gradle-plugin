@@ -35,9 +35,13 @@ android {
     }
 }
 
-firebaseOptions {
-    source = providers.propertiesFile(layout.projectDirectory.file("firebase.properties"))
-    targetPackage = "com.example.samplefbase.config"
+firebaseConfig {
+    configurations {
+        create("firebaseOptions") {
+            source = providers.propertiesFile(layout.projectDirectory.file("firebase.properties"))
+            targetPackage = "com.example.samplefbase.config"
+        }
+    }
 }
 
 dependencies {

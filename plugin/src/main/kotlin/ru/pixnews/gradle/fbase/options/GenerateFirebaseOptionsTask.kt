@@ -9,60 +9,57 @@ package ru.pixnews.gradle.fbase.options
 import com.squareup.kotlinpoet.ClassName
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
 import ru.pixnews.gradle.fbase.options.data.TargetVisibility
 import ru.pixnews.gradle.fbase.options.util.getWarnIfNotPresent
+import java.io.File
 
 /**
  * Generates GeneratedFirebaseOptions.firebaseOptions using values from
  * configuration file
  */
 abstract class GenerateFirebaseOptionsTask : DefaultTask() {
-    @get:Input
-    @get:Optional
-    abstract val firebaseConfig: Property<LocalFirebaseOptions>
-
-    @get:Input
-    abstract val outputObjectPackage: Property<String>
-
-    @get:Input
-    abstract val outputObjectName: Property<String>
-
-    @get:Input
-    abstract val outputPropertyName: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val targetVisibility: Property<TargetVisibility>
-
     @get:OutputDirectory
     abstract val sourceOutputDir: DirectoryProperty
+
+    @get:Nested
+    abstract val configs: ListProperty<GenerateOptionsTaskParams>
 
     @TaskAction
     fun doTaskAction() {
         val codegenDir = sourceOutputDir.asFile.get()
         codegenDir.listFiles()?.forEach { it.deleteRecursively() }
 
-        val config = firebaseConfig.getWarnIfNotPresent(
+        configs.get().map {
+            createGenerator(it, codegenDir)
+        }.forEach {
+            it.generate()
+        }
+    }
+
+    private fun createGenerator(
+        params: GenerateOptionsTaskParams,
+        codegenDir: File,
+    ): FirebaseOptionsGenerator {
+        val config = params.source.getWarnIfNotPresent(
             logger = logger,
             name = "Firebase",
             ifNotPresent = LocalFirebaseOptions.Companion::empty,
         )
 
-        FirebaseOptionsGenerator(
+        return FirebaseOptionsGenerator(
             options = config,
             codeGenDir = codegenDir,
             outputObjectClassName = ClassName(
-                outputObjectPackage.get(),
-                outputObjectName.get(),
+                params.targetPackage.get(),
+                params.targetObjectName.get(),
             ),
-            propertyName = outputPropertyName.get(),
-            visibility = targetVisibility.getOrElse(TargetVisibility.INTERNAL),
-        ).generate()
+            propertyName = params.propertyName.get(),
+            visibility = params.visibility.getOrElse(TargetVisibility.INTERNAL),
+        )
     }
 }
