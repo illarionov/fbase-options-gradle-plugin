@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2023, the fbase-options-gradle-plugin project authors and contributors.
+ * Copyright (c) 2023, the fbase-config-generator-gradle-plugin project authors and contributors.
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.options
+package ru.pixnews.gradle.fbase
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.matchers.string.shouldContain
@@ -16,7 +16,7 @@ class FbaseConfigGradlePluginPluginTest {
     @Test
     fun `plugin should fail if Android plugin is not applied`() {
         val project = ProjectBuilder.builder().build()
-        project.plugins.apply("ru.pixnews.gradle.fbase.options")
+        project.plugins.apply("ru.pixnews.gradle.fbase")
         val exception = shouldThrowAny {
             (project as? ProjectInternal)?.evaluate()
         }.cause!!

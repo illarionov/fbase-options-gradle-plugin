@@ -1,6 +1,6 @@
 # Third-Party Software
 
-This document contains a list of third-party libraries that Fbase Options Gradle Plugin uses.
+This document contains a list of third-party libraries that Fbase Config Generator Gradle Plugin uses.
 
 - [Android Gradle plugin](https://developer.android.com/build). Apache 2.0 License.
 - [Assertk](https://github.com/willowtreeapps/assertk). MIT License

@@ -3,7 +3,7 @@ agp = "8.2.0"
 kotlin = "1.9.21"
 
 androidx-core-ktx = "1.12.0"
-fbase-options-gradle-plugin = "0.1-SNAPSHOT"
+fbase-config-generator-gradle-plugin = "0.1-SNAPSHOT"
 firebase = "32.6.0"
 
 [libraries]
@@ -16,6 +16,6 @@ firebase-config = { group = "com.google.firebase", name = "firebase-config"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-fbase-options-gradle-plugin = { id = "ru.pixnews.gradle.fbase.options", version.ref = "fbase-options-gradle-plugin" }
+fbase-config-generator-gradle-plugin = { id = "ru.pixnews.gradle.fbase", version.ref = "fbase-config-generator-gradle-plugin" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

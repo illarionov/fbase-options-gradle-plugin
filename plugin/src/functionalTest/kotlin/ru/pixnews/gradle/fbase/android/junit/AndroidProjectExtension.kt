@@ -1,17 +1,17 @@
 /*
- * Copyright (c) 2023, the fbase-options-gradle-plugin project authors and contributors.
+ * Copyright (c) 2023, the fbase-config-generator-gradle-plugin project authors and contributors.
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.options.testutil.android.junit
+package ru.pixnews.gradle.fbase.android.junit
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
-import ru.pixnews.gradle.fbase.options.testutil.android.util.androidHome
+import ru.pixnews.gradle.fbase.android.util.androidHome
 import java.io.File
 import java.nio.file.Files
 

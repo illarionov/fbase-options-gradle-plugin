@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2023, the fbase-options-gradle-plugin project authors and contributors.
+ * Copyright (c) 2023, the fbase-config-generator-gradle-plugin project authors and contributors.
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.options
+package ru.pixnews.gradle.fbase
 
 import com.squareup.kotlinpoet.ClassName
 import com.tschuchort.compiletesting.JvmCompilationResult
@@ -15,8 +15,8 @@ import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.options.data.TargetVisibility.INTERNAL
+import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.data.TargetVisibility.INTERNAL
 import java.io.File
 
 @OptIn(ExperimentalCompilerApi::class)

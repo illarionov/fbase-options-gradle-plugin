@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2023, the fbase-options-gradle-plugin project authors and contributors.
+ * Copyright (c) 2023, the fbase-config-generator-gradle-plugin project authors and contributors.
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.options
+package ru.pixnews.gradle.fbase
 
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
-import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.options.data.LocalFirebaseOptionsValueSource
-import ru.pixnews.gradle.fbase.options.util.VariantDefaults.PluginDefaults.DEFAULT_CONFIG_FILE_PATH
+import ru.pixnews.gradle.fbase.data.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.data.LocalFirebaseOptionsValueSource
+import ru.pixnews.gradle.fbase.util.VariantDefaults.PluginDefaults.DEFAULT_CONFIG_FILE_PATH
 
 class FirebaseOptionsProviders internal constructor(
     project: Project,
