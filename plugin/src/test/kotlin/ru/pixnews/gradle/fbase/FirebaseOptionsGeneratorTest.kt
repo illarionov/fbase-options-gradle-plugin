@@ -15,7 +15,9 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import ru.pixnews.gradle.fbase.TargetVisibility.INTERNAL
+import ru.pixnews.gradle.fbase.TargetVisibility.PUBLIC
 import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator
+import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator.PropertyValues
 import java.io.File
 
 @OptIn(ExperimentalCompilerApi::class)
@@ -25,7 +27,7 @@ class FirebaseOptionsGeneratorTest {
 
     @Test
     fun `Generated config should compile`() {
-        val localFirebaseOptions = LocalFirebaseOptions(
+        val localFirebaseOptions1 = LocalFirebaseOptions(
             projectId = "PROJECT_ID",
             apiKey = "API_KEY",
             applicationId = "APPLICATION_ID",
@@ -34,24 +36,44 @@ class FirebaseOptionsGeneratorTest {
             gcmSenderId = "GCM_SENDER_ID",
             storageBucket = "STORAGE_BUCKET",
         )
+        val localFirebaseOptions2 = LocalFirebaseOptions(
+            projectId = "PROJECT_ID2",
+            apiKey = "API_KEY2",
+            applicationId = "APPLICATION_ID2",
+            databaseUrl = "DATABASE_TRACKING_URL2",
+            gaTrackingId = "GA_TRACKING_ID2",
+            gcmSenderId = "GCM_SENDER_ID2",
+            storageBucket = "STORAGE_BUCKET2",
+        )
+        val properties = listOf(
+            PropertyValues(
+                options = localFirebaseOptions1,
+                propertyName = "firebaseOptions",
+                visibility = INTERNAL,
+            ),
+            PropertyValues(
+                options = localFirebaseOptions2,
+                propertyName = "firebaseOptions2",
+                visibility = PUBLIC,
+            ),
+        )
+
         val compilationResult = compileFirebaseOptions(
-            localFirebaseOptions,
+            properties,
             codeGenDir!!,
         )
         compilationResult.exitCode shouldBe OK
     }
 
     private fun compileFirebaseOptions(
-        options: LocalFirebaseOptions,
+        properties: List<PropertyValues>,
         codeGenDir: File,
     ): JvmCompilationResult {
         FirebaseOptionsGenerator(
-            options = options,
             codeGenDir = codeGenDir,
             outputPackageName = "com.test",
             outputFileName = "GeneratedFirebaseOptions",
-            propertyName = "firebaseOptions",
-            visibility = INTERNAL,
+            properties = properties,
         ).generate()
 
         val firebaseOptionsStub = SourceFile.fromPath(

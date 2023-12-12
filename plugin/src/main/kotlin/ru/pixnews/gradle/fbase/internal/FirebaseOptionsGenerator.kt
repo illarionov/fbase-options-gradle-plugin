@@ -16,37 +16,44 @@ import ru.pixnews.gradle.fbase.TargetVisibility
 import java.io.File
 
 internal class FirebaseOptionsGenerator(
-    private val options: LocalFirebaseOptions,
     private val codeGenDir: File,
     private val outputPackageName: String,
     private val outputFileName: String,
-    private val propertyName: String,
-    private val visibility: TargetVisibility,
+    private val properties: List<PropertyValues>,
 ) {
     fun generate() {
-        val firebaseOptionsProperty = PropertySpec.builder(
-            name = propertyName,
-            type = firebaseOptionsClassName,
-            visibility.toModifier(),
-        )
-            .initializer(
-                buildCodeBlock {
-                    addStatement("%T()", firebaseOptionsBuilderClassName)
-                    firebaseBuilderMethods.forEach { (statement, valueFactory) ->
-                        valueFactory(options)?.let {
-                            addStatement(".$statement(%S)", it)
-                        }
-                    }
-                    addStatement(".build()")
-                },
-            )
-            .build()
-
-        val fileContent = FileSpec.builder(outputPackageName, outputFileName)
-            .addProperty(firebaseOptionsProperty)
-            .build()
-        fileContent.writeTo(codeGenDir)
+        val propertiesSpec = properties.map(::generateProperty)
+        val builder = FileSpec.builder(outputPackageName, outputFileName)
+        propertiesSpec.forEach(builder::addProperty)
+        builder.build().writeTo(codeGenDir)
     }
+
+    private fun generateProperty(
+        property: PropertyValues,
+    ): PropertySpec = PropertySpec.builder(
+        name = property.propertyName,
+        type = firebaseOptionsClassName,
+        property.visibility.toModifier(),
+    )
+        .initializer(
+            buildCodeBlock {
+                addStatement("%T()", firebaseOptionsBuilderClassName)
+                val options: LocalFirebaseOptions = property.options
+                firebaseBuilderMethods.forEach { (statement, valueFactory) ->
+                    valueFactory(options)?.let {
+                        addStatement(".$statement(%S)", it)
+                    }
+                }
+                addStatement(".build()")
+            },
+        )
+        .build()
+
+    internal class PropertyValues(
+        val options: LocalFirebaseOptions,
+        val propertyName: String,
+        val visibility: TargetVisibility,
+    )
 
     private companion object {
         const val DUMMY_APPLICATION_ID = "DUMMY_APPLICATION_ID"
