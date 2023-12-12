@@ -26,9 +26,10 @@ internal class VariantDefaults(
     val targetPackage: Provider<String>
         get() = variant.namespace
 
+    fun targetFileName(propertyName: String): String = propertyName.replaceFirstChar(Char::titlecase)
+
     internal companion object PluginDefaults {
         internal const val EXTENSION_NAME = "firebaseConfig"
-        internal const val DEFAULT_TARGET_OBJECT_NAME = "GeneratedFirebaseOptions"
         internal const val DEFAULT_CONFIG_FILE_PATH = "config/firebase.properties"
         internal val DEFAULT_VISIBILITY = TargetVisibility.INTERNAL
     }

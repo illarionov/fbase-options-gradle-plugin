@@ -104,7 +104,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         ): GenerateOptionsTaskParams = objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
             source.set(options.source)
             targetPackage.set(options.targetPackage)
-            targetObjectName.set(options.targetObjectName)
+            targetFileName.set(options.targetFileName)
             propertyName.set(options.propertyName)
             visibility.set(options.visibility)
         }
@@ -170,7 +170,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         ).apply {
             source.set(high.source.orElse(low.source))
             targetPackage.set(high.targetPackage.orElse(low.targetPackage))
-            targetObjectName.set(high.targetObjectName.orElse(low.targetObjectName))
+            targetFileName.set(high.targetFileName.orElse(low.targetFileName))
             propertyName.set(high.propertyName.orElse(low.propertyName))
             visibility.set(high.visibility.orElse(low.visibility))
         }
@@ -182,7 +182,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             val variantDefaults = VariantDefaults(providers, variantExtensionConfig.variant)
             return objects.newInstance(FirebaseConfigInstanceExtension::class.java, defaultPropertyName).apply {
                 targetPackage.set(variantDefaults.targetPackage)
-                targetObjectName.set(VariantDefaults.DEFAULT_TARGET_OBJECT_NAME)
+                targetFileName.set(variantDefaults.targetFileName(defaultPropertyName))
                 propertyName.set(defaultPropertyName)
                 visibility.set(VariantDefaults.DEFAULT_VISIBILITY)
             }

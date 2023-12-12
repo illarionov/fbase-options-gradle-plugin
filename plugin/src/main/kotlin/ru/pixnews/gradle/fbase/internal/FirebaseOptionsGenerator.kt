@@ -10,7 +10,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.buildCodeBlock
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
 import ru.pixnews.gradle.fbase.TargetVisibility
@@ -19,14 +18,12 @@ import java.io.File
 internal class FirebaseOptionsGenerator(
     private val options: LocalFirebaseOptions,
     private val codeGenDir: File,
-    private val outputObjectClassName: ClassName,
+    private val outputPackageName: String,
+    private val outputFileName: String,
     private val propertyName: String,
     private val visibility: TargetVisibility,
 ) {
     fun generate() {
-        val outputFileName = outputObjectClassName.simpleName
-        val packageName = outputObjectClassName.packageName
-
         val firebaseOptionsProperty = PropertySpec.builder(
             name = propertyName,
             type = firebaseOptionsClassName,
@@ -45,13 +42,8 @@ internal class FirebaseOptionsGenerator(
             )
             .build()
 
-        val objectSpec = TypeSpec.objectBuilder(outputObjectClassName)
-            .addModifiers(visibility.toModifier())
+        val fileContent = FileSpec.builder(outputPackageName, outputFileName)
             .addProperty(firebaseOptionsProperty)
-            .build()
-
-        val fileContent = FileSpec.builder(packageName, outputFileName)
-            .addType(objectSpec)
             .build()
         fileContent.writeTo(codeGenDir)
     }

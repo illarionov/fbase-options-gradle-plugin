@@ -6,7 +6,6 @@
 
 package ru.pixnews.gradle.fbase
 
-import com.squareup.kotlinpoet.ClassName
 import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
@@ -49,7 +48,8 @@ class FirebaseOptionsGeneratorTest {
         FirebaseOptionsGenerator(
             options = options,
             codeGenDir = codeGenDir,
-            outputObjectClassName = ClassName("com.test", "GeneratedFirebaseOptions"),
+            outputPackageName = "com.test",
+            outputFileName = "GeneratedFirebaseOptions",
             propertyName = "firebaseOptions",
             visibility = INTERNAL,
         ).generate()

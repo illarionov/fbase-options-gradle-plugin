@@ -25,9 +25,9 @@ public abstract class FirebaseConfigInstanceExtension @Inject constructor(
     public abstract val targetPackage: Property<String>
 
     /**
-     * Generated object class with property
+     * Generated Kotlin file with property
      */
-    public abstract val targetObjectName: Property<String>
+    public abstract val targetFileName: Property<String>
 
     /** *
      * Name of the generated property

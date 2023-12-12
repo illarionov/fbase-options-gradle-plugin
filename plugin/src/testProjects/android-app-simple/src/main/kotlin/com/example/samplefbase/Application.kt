@@ -7,7 +7,7 @@
 package com.example.samplefbase
 
 import android.app.Application
-import com.example.samplefbase.config.GeneratedFirebaseOptions
+import com.example.samplefbase.config.firebaseOptions
 import com.google.firebase.FirebaseApp
 
 class Application : Application() {
@@ -15,6 +15,6 @@ class Application : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        firebaseApp = FirebaseApp.initializeApp(this, GeneratedFirebaseOptions.firebaseOptions)
+        firebaseApp = FirebaseApp.initializeApp(this, firebaseOptions)
     }
 }
