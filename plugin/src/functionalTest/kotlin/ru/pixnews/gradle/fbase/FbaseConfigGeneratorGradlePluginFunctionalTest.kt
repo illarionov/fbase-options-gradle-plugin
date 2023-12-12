@@ -17,8 +17,17 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     var project = AndroidProjectExtension()
 
     @Test
-    fun `can build project`() {
+    fun `can build simple project`() {
         project.setupTestProject("android-app-simple")
+
+        val result = project.build("build")
+
+        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @Test
+    fun `can build project with multiple configurations`() {
+        project.setupTestProject("android-app-multiconfig")
 
         val result = project.build("build")
 

@@ -6,15 +6,14 @@
 
 package ru.pixnews.gradle.fbase
 
-import com.squareup.kotlinpoet.ClassName
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import ru.pixnews.gradle.fbase.TargetVisibility.INTERNAL
 import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator
+import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator.PropertyValues
 import ru.pixnews.gradle.fbase.internal.util.getWarnIfNotPresent
 import java.io.File
 
@@ -34,32 +33,41 @@ public abstract class GenerateFirebaseOptionsTask : DefaultTask() {
         val codegenDir = sourceOutputDir.asFile.get()
         codegenDir.listFiles()?.forEach { it.deleteRecursively() }
 
-        configs.get().map {
-            createGenerator(it, codegenDir)
+        configs.get().groupBy { it.targetPackage.get() to it.targetFileName.get() }.map { (target, properties) ->
+            createGenerator(
+                outputPackageName = target.first,
+                outputFileName = target.second,
+                properties = properties,
+                codegenDir = codegenDir,
+            )
         }.forEach {
             it.generate()
         }
     }
 
     private fun createGenerator(
-        params: GenerateOptionsTaskParams,
+        outputPackageName: String,
+        outputFileName: String,
+        properties: List<GenerateOptionsTaskParams>,
         codegenDir: File,
     ): FirebaseOptionsGenerator {
-        val config = params.source.getWarnIfNotPresent(
-            logger = logger,
-            name = "Firebase",
-            ifNotPresent = LocalFirebaseOptions.Companion::empty,
-        )
-
+        val propertyValues = properties.map { props ->
+            val firebaseOptions = props.source.getWarnIfNotPresent(
+                logger = logger,
+                name = "Firebase",
+                ifNotPresent = LocalFirebaseOptions.Companion::empty,
+            )
+            PropertyValues(
+                options = firebaseOptions,
+                propertyName = props.propertyName.get(),
+                visibility = props.visibility.get(),
+            )
+        }
         return FirebaseOptionsGenerator(
-            options = config,
             codeGenDir = codegenDir,
-            outputObjectClassName = ClassName(
-                params.targetPackage.get(),
-                params.targetObjectName.get(),
-            ),
-            propertyName = params.propertyName.get(),
-            visibility = params.visibility.getOrElse(INTERNAL),
+            outputPackageName = outputPackageName,
+            outputFileName = outputFileName,
+            properties = propertyValues,
         )
     }
 }

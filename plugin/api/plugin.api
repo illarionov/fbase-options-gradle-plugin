@@ -20,7 +20,7 @@ public abstract class ru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension : 
 	public fun getName ()Ljava/lang/String;
 	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
-	public abstract fun getTargetObjectName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetFileName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
 	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
 }
@@ -45,7 +45,7 @@ public abstract class ru/pixnews/gradle/fbase/GenerateFirebaseOptionsTask : org/
 public abstract interface class ru/pixnews/gradle/fbase/GenerateOptionsTaskParams {
 	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
-	public abstract fun getTargetObjectName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetFileName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
 	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
 }

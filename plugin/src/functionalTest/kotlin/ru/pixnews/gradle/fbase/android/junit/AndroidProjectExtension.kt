@@ -8,15 +8,16 @@ package ru.pixnews.gradle.fbase.android.junit
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.TestWatcher
 import ru.pixnews.gradle.fbase.android.util.androidHome
 import java.io.File
 import java.nio.file.Files
+import java.util.Optional
 
 @Suppress("TooManyFunctions")
-class AndroidProjectExtension : BeforeEachCallback, AfterEachCallback {
+class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     val rootBuildFile by lazy { rootDir.resolve("build.gradle.kts") }
     val rootSettingsFile by lazy { rootDir.resolve("settings.gradle.kts") }
     internal val testProjectsRoot
@@ -31,9 +32,19 @@ class AndroidProjectExtension : BeforeEachCallback, AfterEachCallback {
         setupVersionCatalog()
     }
 
-    override fun afterEach(context: ExtensionContext?) {
-        rootDir.deleteRecursively()
+    override fun testSuccessful(context: ExtensionContext?) {
+        cleanup()
     }
+
+    override fun testAborted(context: ExtensionContext?, cause: Throwable?) {
+        cleanup()
+    }
+
+    override fun testFailed(context: ExtensionContext?, cause: Throwable?) {
+        // do not clean up, leave a temporary rootDir directory for future inspection
+    }
+
+    override fun testDisabled(context: ExtensionContext?, reason: Optional<String>?) = Unit
 
     fun setupTestProject(name: String) = setupTestProject(testProjectsRoot.resolve(name))
 
@@ -54,7 +65,6 @@ class AndroidProjectExtension : BeforeEachCallback, AfterEachCallback {
     ): BuildResult {
         val runner = GradleRunner.create().apply {
             forwardOutput()
-            // withPluginClasspath()
             withArguments("--stacktrace", *args)
             withProjectDir(rootDir)
             if (gradleVersion != null) {
@@ -71,6 +81,10 @@ class AndroidProjectExtension : BeforeEachCallback, AfterEachCallback {
     fun build(vararg args: String) = buildWithGradleVersion(null, false, *args)
 
     fun buildAndFail(vararg args: String) = buildWithGradleVersion(null, true, *args)
+
+    private fun cleanup() {
+        rootDir.deleteRecursively()
+    }
 
     private fun setupLocalProperties() {
         val localProperties = rootDir.resolve("local.properties")

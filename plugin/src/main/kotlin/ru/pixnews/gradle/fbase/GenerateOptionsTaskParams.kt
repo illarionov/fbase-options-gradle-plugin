@@ -23,10 +23,10 @@ public interface GenerateOptionsTaskParams {
     public val targetPackage: Property<String>
 
     /**
-     * Generated оbject class with property
+     * Generated Kotlin file with property
      */
     @get:Input
-    public val targetObjectName: Property<String>
+    public val targetFileName: Property<String>
 
     /** *
      * Name of the generated property

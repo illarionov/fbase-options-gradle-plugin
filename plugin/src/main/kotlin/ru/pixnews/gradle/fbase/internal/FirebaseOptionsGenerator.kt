@@ -10,51 +10,50 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.buildCodeBlock
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
 import ru.pixnews.gradle.fbase.TargetVisibility
 import java.io.File
 
 internal class FirebaseOptionsGenerator(
-    private val options: LocalFirebaseOptions,
     private val codeGenDir: File,
-    private val outputObjectClassName: ClassName,
-    private val propertyName: String,
-    private val visibility: TargetVisibility,
+    private val outputPackageName: String,
+    private val outputFileName: String,
+    private val properties: List<PropertyValues>,
 ) {
     fun generate() {
-        val outputFileName = outputObjectClassName.simpleName
-        val packageName = outputObjectClassName.packageName
-
-        val firebaseOptionsProperty = PropertySpec.builder(
-            name = propertyName,
-            type = firebaseOptionsClassName,
-            visibility.toModifier(),
-        )
-            .initializer(
-                buildCodeBlock {
-                    addStatement("%T()", firebaseOptionsBuilderClassName)
-                    firebaseBuilderMethods.forEach { (statement, valueFactory) ->
-                        valueFactory(options)?.let {
-                            addStatement(".$statement(%S)", it)
-                        }
-                    }
-                    addStatement(".build()")
-                },
-            )
-            .build()
-
-        val objectSpec = TypeSpec.objectBuilder(outputObjectClassName)
-            .addModifiers(visibility.toModifier())
-            .addProperty(firebaseOptionsProperty)
-            .build()
-
-        val fileContent = FileSpec.builder(packageName, outputFileName)
-            .addType(objectSpec)
-            .build()
-        fileContent.writeTo(codeGenDir)
+        val propertiesSpec = properties.map(::generateProperty)
+        val builder = FileSpec.builder(outputPackageName, outputFileName)
+        propertiesSpec.forEach(builder::addProperty)
+        builder.build().writeTo(codeGenDir)
     }
+
+    private fun generateProperty(
+        property: PropertyValues,
+    ): PropertySpec = PropertySpec.builder(
+        name = property.propertyName,
+        type = firebaseOptionsClassName,
+        property.visibility.toModifier(),
+    )
+        .initializer(
+            buildCodeBlock {
+                addStatement("%T()", firebaseOptionsBuilderClassName)
+                val options: LocalFirebaseOptions = property.options
+                firebaseBuilderMethods.forEach { (statement, valueFactory) ->
+                    valueFactory(options)?.let {
+                        addStatement(".$statement(%S)", it)
+                    }
+                }
+                addStatement(".build()")
+            },
+        )
+        .build()
+
+    internal class PropertyValues(
+        val options: LocalFirebaseOptions,
+        val propertyName: String,
+        val visibility: TargetVisibility,
+    )
 
     private companion object {
         const val DUMMY_APPLICATION_ID = "DUMMY_APPLICATION_ID"
