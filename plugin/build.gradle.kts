@@ -4,8 +4,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
     `java-gradle-plugin`
     signing
-    alias(libs.plugins.jvm)
+    alias(libs.plugins.gr8)
     alias(libs.plugins.gradle.plugin.publish)
+    alias(libs.plugins.jvm)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
 }
 
@@ -83,7 +84,11 @@ private fun Test.configureTestTaskDefaults() {
     }
 }
 
+// Configuration dependencies that will be shadowed
+val shadeConfiguration = configurations.create("shade")
+
 dependencies {
+    compileOnly("dev.gradleplugins:gradle-api:7.1.1")
     implementation(libs.agp.plugin.api)
     implementation(libs.kotlinpoet) {
         exclude(module = "kotlin-reflect")
@@ -132,6 +137,23 @@ signing {
         val signingDisabled = providers.gradleProperty("disableSigning").map(String::toBoolean).orElse(false)
         !signingDisabled.get()
     }
+}
+
+gr8 {
+    val shadowedJar = create("gr8") {
+        proguardFile("rules.pro")
+        configuration("shade")
+        classPathConfiguration("runtimeClasspath")
+    }
+    replaceOutgoingJar(shadowedJar)
+    removeGradleApiFromApi()
+}
+
+configurations.named("compileOnly").configure {
+    extendsFrom(shadeConfiguration)
+}
+configurations.named("testImplementation").configure {
+    extendsFrom(shadeConfiguration)
 }
 
 tasks.withType<KotlinJvmCompile>().configureEach {

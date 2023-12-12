@@ -7,6 +7,7 @@ detekt = "1.23.4"
 diktat = "1.2.5"
 firebase = "32.6.0"
 fbase-config-generator-gradle-plugin = "0.1-SNAPSHOT"
+gr8 = "0.10"
 gradle-plugin-publish = "1.2.1"
 junit5 = "5.10.1"
 kotest = "5.8.0"
@@ -44,4 +45,5 @@ fbase-config-generator-gradle-plugin = { id = "ru.pixnews.gradle.fbase", version
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "gradle-plugin-publish" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+gr8 = { id = "com.gradleup.gr8", version.ref = "gr8" }
 kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-binary-compatibility-validator" }

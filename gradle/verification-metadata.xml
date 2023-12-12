@@ -147,6 +147,11 @@
             <pgp value="31BAE2E51D95E0F8AD9B7BCC40A3C4432BD7308C"/>
          </artifact>
       </component>
+      <component group="com.gradleup" name="gr8-plugin" version="0.10">
+         <artifact name="gr8-plugin-0.10.jar">
+            <pgp value="4857D1CE04E78FAB2A172E8F39B48E1BADDB933F"/>
+         </artifact>
+      </component>
       <component group="com.squareup" name="javapoet" version="1.10.0">
          <artifact name="javapoet-1.10.0.jar">
             <pgp value="A6D6C97108B8585F91B158748671A8DF71296252"/>
@@ -170,6 +175,11 @@
       <component group="dev.equo.ide" name="solstice" version="1.7.4">
          <artifact name="solstice-1.7.4.jar">
             <pgp value="1D2C7EF8ADA0F794B58C7C63436902AF59EDF60E"/>
+         </artifact>
+      </component>
+      <component group="dev.gradleplugins" name="gradle-api" version="7.1.1">
+         <artifact name="gradle-api-7.1.1.jar">
+            <pgp value="76664060923FF23D2E597D6184B84E60F8FC6BDA"/>
          </artifact>
       </component>
       <component group="io.github.classgraph" name="classgraph" version="4.8.162">
@@ -220,6 +230,11 @@
       <component group="org.checkerframework" name="checker-qual" version="3.12.0">
          <artifact name="checker-qual-3.12.0.jar">
             <pgp value="19BEAB2D799C020F17C69126B16698A4ADF4D638"/>
+         </artifact>
+      </component>
+      <component group="org.codehaus.groovy" name="groovy" version="3.0.7">
+         <artifact name="groovy-3.0.7.jar">
+            <pgp value="7FAA0F2206DE228F0DB01AD741321490758AAD6F"/>
          </artifact>
       </component>
       <component group="org.ec4j.core" name="ec4j-core" version="0.3.0">
