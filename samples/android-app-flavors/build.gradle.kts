@@ -27,6 +27,9 @@ android {
             applicationIdSuffix = ".benchmark"
             extensions.configure<FbaseGeneratorExtension> {
                 configurations.create("benchmarkFirebaseOptions") {
+                    fromPropertiesFile {
+                        location = layout.projectDirectory.file("firebase_benchmark.properties")
+                    }
                     targetPackage = "com.example.samplefbase.config"
                 }
             }

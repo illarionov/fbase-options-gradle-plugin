@@ -41,6 +41,7 @@ firebaseConfig {
             fromPropertiesFile {
                 location = layout.projectDirectory.file("firebase.properties")
             }
+            targetPackage = "com.example.samplefbase.config"
         }
     }
 }
