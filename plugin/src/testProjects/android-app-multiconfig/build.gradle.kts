@@ -44,16 +44,22 @@ dependencies {
 firebaseConfig {
     configurations {
         create("firebaseOptions") {
-            source = providers.propertiesFile(layout.projectDirectory.file("firebase.properties"))
+            fromPropertiesFile {
+                location = layout.projectDirectory.file("firebase.properties")
+            }
             targetPackage = "com.example.samplefbase.config"
         }
         create("firebaseOptionsOrg2") {
-            source = providers.propertiesFile(layout.projectDirectory.file("firebase2.properties"))
+            fromPropertiesFile {
+                location = layout.projectDirectory.file("firebase2.properties")
+            }
             targetPackage = "com.example.samplefbase.config"
             targetFileName = "FirebaseOptionsOrg23"
         }
         create("firebaseOptionsOrg3") {
-            source = providers.propertiesFile(layout.projectDirectory.file("firebase3.properties"))
+            fromPropertiesFile {
+                location = layout.projectDirectory.file("firebase3.properties")
+            }
             targetPackage = "com.example.samplefbase.config"
             targetFileName = "FirebaseOptionsOrg23"
         }

@@ -7,18 +7,12 @@
 package ru.pixnews.gradle.fbase
 
 import com.android.build.api.variant.VariantExtension
-import com.android.build.api.variant.VariantExtensionConfig
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.Project
 import org.gradle.api.provider.Property
-import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import java.io.Serializable
 import javax.inject.Inject
 
-public abstract class FbaseGeneratorExtension @Inject internal constructor(
-    project: Project,
-    extensionConfig: VariantExtensionConfig<*>?,
-) : Serializable, VariantExtension {
+public abstract class FbaseGeneratorExtension @Inject internal constructor() : Serializable, VariantExtension {
     /**
      * Should the google_app_id string parameter be added to Android resources.
      * Enabled by default.
@@ -26,20 +20,6 @@ public abstract class FbaseGeneratorExtension @Inject internal constructor(
      */
     public abstract val addGoogleAppIdResource: Property<Boolean>
     public abstract val configurations: NamedDomainObjectContainer<FbaseBuilderExtension>
-
-    @Transient
-    public val providers: FirebaseOptionsProviders
-
-    init {
-        val variantDefaults = extensionConfig?.variant?.let { VariantDefaults(project.providers, it) }
-        val defaultApplicationIdProvider = if (variantDefaults != null) {
-            variantDefaults.applicationId
-        } else {
-            project.providers.provider { "" }
-        }
-
-        providers = FirebaseOptionsProviders(project, defaultApplicationIdProvider)
-    }
 
     public companion object {
         private const val serialVersionUID: Long = -1

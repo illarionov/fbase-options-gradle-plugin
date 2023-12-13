@@ -6,18 +6,22 @@
 
 package ru.pixnews.gradle.fbase
 
+import org.gradle.api.Action
 import org.gradle.api.Named
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
+import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
+import ru.pixnews.gradle.fbase.source.ProvidedGeneratorSource
 import java.io.Serializable
 import javax.inject.Inject
 
 public abstract class FbaseBuilderExtension @Inject constructor(
+    @Transient
+    private val objects: ObjectFactory,
     private val name: String,
 ) : Named, Serializable {
-    /**
-     * Firebase configuration parameters used to build [FirebaseOptions].
-     */
-    public abstract val source: Property<LocalFirebaseOptions>
+    internal val source: Property<FbaseGeneratorSource> = objects.property(FbaseGeneratorSource::class.java)
 
     /**
      * Target package of the generated [FirebaseOptions] instance
@@ -40,6 +44,20 @@ public abstract class FbaseBuilderExtension @Inject constructor(
     public abstract val visibility: Property<TargetVisibility>
 
     override fun getName(): String = name
+
+    public fun fromPropertiesFile(action: Action<PropertiesFileGeneratorSource>) {
+        val propertiesSource = objects.newInstance(PropertiesFileGeneratorSource::class.java)
+        action.execute(propertiesSource)
+        source.set(propertiesSource)
+        source.disallowChanges()
+    }
+
+    public fun fromValues(action: Action<ProvidedGeneratorSource>) {
+        val valuesSource = objects.newInstance(ProvidedGeneratorSource::class.java)
+        action.execute(valuesSource)
+        source.set(valuesSource)
+        source.disallowChanges()
+    }
 
     public companion object {
         private const val serialVersionUID: Long = -1
