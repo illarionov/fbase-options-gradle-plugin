@@ -28,7 +28,7 @@ public interface GenerateOptionsTaskParams {
     @get:Input
     public val targetFileName: Property<String>
 
-    /** *
+    /**
      * Name of the generated property
      */
     @get:Input

@@ -19,7 +19,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
-import org.gradle.api.provider.ProviderFactory
 import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.EXTENSION_NAME
 import java.util.SortedMap
@@ -66,7 +65,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             )
             androidExtension.registerExtension(
                 DslExtension.Builder(EXTENSION_NAME).build(),
-                ExtensionMerger(providers, objects, globalExtension),
+                ExtensionMerger(objects, globalExtension),
             )
 
             androidExtension.onVariants { variant ->
@@ -82,7 +81,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
                     task.group = "Build"
                     task.sourceOutputDir.set(layout.buildDirectory.dir("firebase-options"))
                     task.configs.set(
-                        variantExtension.configurations.map { config -> createTaskParams(config) },
+                        variantExtension.configurations.map { config -> createTaskParams(config, variant) },
                     )
                 }
 
@@ -101,12 +100,25 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
 
         private fun createTaskParams(
             options: FirebaseConfigInstanceExtension,
-        ): GenerateOptionsTaskParams = objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
-            source.set(options.source)
-            targetPackage.set(options.targetPackage)
-            targetFileName.set(options.targetFileName)
-            propertyName.set(options.propertyName)
-            visibility.set(options.visibility)
+            variant: Variant,
+        ): GenerateOptionsTaskParams {
+            val defaultPropertyName = options.name
+            val defaults = VariantDefaults(providers, variant)
+            return objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
+                source.set(options.source)
+                targetPackage.set(
+                    options.targetPackage.orElse(defaults.targetPackage),
+                )
+                targetFileName.set(
+                    options.targetFileName.orElse(defaults.targetFileName(defaultPropertyName)),
+                )
+                propertyName.set(
+                    options.propertyName.orElse(defaultPropertyName),
+                )
+                visibility.set(
+                    options.visibility.orElse(VariantDefaults.DEFAULT_VISIBILITY),
+                )
+            }
         }
 
         /**
@@ -137,7 +149,6 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
     }
 
     private class ExtensionMerger(
-        private val providers: ProviderFactory,
         private val objects: ObjectFactory,
         private val globalExtension: FirebaseConfigGeneratorExtension,
     ) : (VariantExtensionConfig<out Variant>) -> VariantExtension {
@@ -147,8 +158,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             val mergedConfigs: SortedMap<String, FirebaseConfigInstanceExtension> = TreeMap()
 
             globalExtension.configurations.forEach { item ->
-                val defaults = firebaseOptionsExtensionDefaults(item.name, variantExtensionConfig)
-                mergedConfigs[item.name] = mergeExtensions(item, defaults)
+                mergedConfigs[item.name] = item
             }
 
             val mergedExtension = objects.newInstance(
@@ -161,6 +171,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             return mergedExtension
         }
 
+        @Suppress("UnusedPrivateMember")
         private fun mergeExtensions(
             high: FirebaseConfigInstanceExtension,
             low: FirebaseConfigInstanceExtension,
@@ -173,19 +184,6 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             targetFileName.set(high.targetFileName.orElse(low.targetFileName))
             propertyName.set(high.propertyName.orElse(low.propertyName))
             visibility.set(high.visibility.orElse(low.visibility))
-        }
-
-        private fun firebaseOptionsExtensionDefaults(
-            defaultPropertyName: String,
-            variantExtensionConfig: VariantExtensionConfig<out Variant>,
-        ): FirebaseConfigInstanceExtension {
-            val variantDefaults = VariantDefaults(providers, variantExtensionConfig.variant)
-            return objects.newInstance(FirebaseConfigInstanceExtension::class.java, defaultPropertyName).apply {
-                targetPackage.set(variantDefaults.targetPackage)
-                targetFileName.set(variantDefaults.targetFileName(defaultPropertyName))
-                propertyName.set(defaultPropertyName)
-                visibility.set(VariantDefaults.DEFAULT_VISIBILITY)
-            }
         }
     }
 }
