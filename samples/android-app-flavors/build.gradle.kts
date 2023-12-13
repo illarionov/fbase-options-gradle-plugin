@@ -1,6 +1,4 @@
 import ru.pixnews.gradle.fbase.FbaseGeneratorExtension
-import ru.pixnews.gradle.fbase.FbaseGeneratorFlavorExtension
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
 
 plugins {
     alias(libs.plugins.android.application)
@@ -27,18 +25,10 @@ android {
         }
         create("benchmark") {
             applicationIdSuffix = ".benchmark"
-            extensions.configure<FbaseGeneratorFlavorExtension> {
+            extensions.configure<FbaseGeneratorExtension> {
                 configurations.create("benchmarkFirebaseOptions") {
-                    source = provider {
-                        LocalFirebaseOptions(
-                            projectId = null,
-                            apiKey = null,
-                            applicationId = null,
-                            databaseUrl = null,
-                            gaTrackingId = null,
-                            gcmSenderId = null,
-                            storageBucket = null,
-                        )
+                    fromPropertiesFile {
+                        location = layout.projectDirectory.file("firebase_benchmark.properties")
                     }
                     targetPackage = "com.example.samplefbase.config"
                 }
@@ -50,18 +40,10 @@ android {
         create("demo") {
             dimension = "version"
             applicationIdSuffix = ".demo"
-            extensions.configure<FbaseGeneratorFlavorExtension> {
+            extensions.configure<FbaseGeneratorExtension> {
                 configurations.create("demoFirebaseOptions") {
-                    source = provider {
-                        LocalFirebaseOptions(
-                            projectId = null,
-                            apiKey = null,
-                            applicationId = null,
-                            databaseUrl = null,
-                            gaTrackingId = null,
-                            gcmSenderId = null,
-                            storageBucket = null,
-                        )
+                    fromPropertiesFile {
+                        location = layout.projectDirectory.file("firebase_demo.properties")
                     }
                     targetPackage = "com.example.samplefbase.config"
                 }
@@ -78,9 +60,9 @@ android {
         onVariants(releaseSelector) { variant ->
             variant.getExtension(FbaseGeneratorExtension::class.java)?.let { generator ->
                 generator.configurations.create("releaseFirebaseOptions") {
-                    source = generator.providers.propertiesFile(
-                        layout.projectDirectory.file("firebase_release.properties"),
-                    )
+                    fromPropertiesFile {
+                        location = layout.projectDirectory.file("firebase_release.properties")
+                    }
                     targetPackage = "com.example.samplefbase.config"
                 }
             }
@@ -99,7 +81,9 @@ android {
 firebaseConfig {
     configurations {
         create("firebaseOptions") {
-            source = providers.propertiesFile(layout.projectDirectory.file("firebase.properties"))
+            fromPropertiesFile {
+                location = layout.projectDirectory.file("firebase.properties")
+            }
             targetPackage = "com.example.samplefbase.config"
         }
     }

@@ -1,9 +1,10 @@
 public abstract class ru/pixnews/gradle/fbase/FbaseBuilderExtension : java/io/Serializable, org/gradle/api/Named {
 	public static final field Companion Lru/pixnews/gradle/fbase/FbaseBuilderExtension$Companion;
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;Ljava/lang/String;)V
+	public final fun fromPropertiesFile (Lorg/gradle/api/Action;)V
+	public final fun fromValues (Lorg/gradle/api/Action;)V
 	public fun getName ()Ljava/lang/String;
 	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
-	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTargetFileName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
 	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
@@ -22,22 +23,9 @@ public abstract class ru/pixnews/gradle/fbase/FbaseGeneratorExtension : com/andr
 	public static final field Companion Lru/pixnews/gradle/fbase/FbaseGeneratorExtension$Companion;
 	public abstract fun getAddGoogleAppIdResource ()Lorg/gradle/api/provider/Property;
 	public abstract fun getConfigurations ()Lorg/gradle/api/NamedDomainObjectContainer;
-	public final fun getProviders ()Lru/pixnews/gradle/fbase/FirebaseOptionsProviders;
 }
 
 public final class ru/pixnews/gradle/fbase/FbaseGeneratorExtension$Companion {
-}
-
-public abstract class ru/pixnews/gradle/fbase/FbaseGeneratorFlavorExtension {
-	public abstract fun getAddGoogleAppIdResource ()Lorg/gradle/api/provider/Property;
-	public abstract fun getConfigurations ()Lorg/gradle/api/NamedDomainObjectContainer;
-}
-
-public final class ru/pixnews/gradle/fbase/FirebaseOptionsProviders {
-	public final fun propertiesFile (Lorg/gradle/api/file/RegularFile;Lorg/gradle/api/provider/Provider;)Lorg/gradle/api/provider/Provider;
-	public static synthetic fun propertiesFile$default (Lru/pixnews/gradle/fbase/FirebaseOptionsProviders;Lorg/gradle/api/file/RegularFile;Lorg/gradle/api/provider/Provider;ILjava/lang/Object;)Lorg/gradle/api/provider/Provider;
-	public final fun propertiesFileProvider (Lorg/gradle/api/provider/Provider;Lorg/gradle/api/provider/Provider;)Lorg/gradle/api/provider/Provider;
-	public static synthetic fun propertiesFileProvider$default (Lru/pixnews/gradle/fbase/FirebaseOptionsProviders;Lorg/gradle/api/provider/Provider;Lorg/gradle/api/provider/Provider;ILjava/lang/Object;)Lorg/gradle/api/provider/Provider;
 }
 
 public abstract class ru/pixnews/gradle/fbase/GenerateFirebaseOptionsTask : org/gradle/api/DefaultTask {
@@ -78,5 +66,19 @@ public final class ru/pixnews/gradle/fbase/TargetVisibility : java/lang/Enum {
 	public static final field PUBLIC Lru/pixnews/gradle/fbase/TargetVisibility;
 	public static fun valueOf (Ljava/lang/String;)Lru/pixnews/gradle/fbase/TargetVisibility;
 	public static fun values ()[Lru/pixnews/gradle/fbase/TargetVisibility;
+}
+
+public abstract interface class ru/pixnews/gradle/fbase/source/FbaseGeneratorSource {
+}
+
+public abstract class ru/pixnews/gradle/fbase/source/PropertiesFileGeneratorSource : ru/pixnews/gradle/fbase/source/FbaseGeneratorSource {
+	public fun <init> ()V
+	public abstract fun getApplicationId ()Lorg/gradle/api/provider/Property;
+	public abstract fun getLocation ()Lorg/gradle/api/file/RegularFileProperty;
+}
+
+public abstract class ru/pixnews/gradle/fbase/source/ProvidedGeneratorSource : ru/pixnews/gradle/fbase/source/FbaseGeneratorSource {
+	public fun <init> ()V
+	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
 }
 

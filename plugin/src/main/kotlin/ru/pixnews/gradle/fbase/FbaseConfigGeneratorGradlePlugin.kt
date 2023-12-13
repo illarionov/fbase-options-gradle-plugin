@@ -8,6 +8,7 @@ package ru.pixnews.gradle.fbase
 
 import com.android.build.api.AndroidPluginVersion
 import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.DslExtension
 import com.android.build.api.variant.ResValue
 import com.android.build.api.variant.Variant
@@ -17,10 +18,15 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Transformer
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
+import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource
 import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.EXTENSION_NAME
+import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
+import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
+import ru.pixnews.gradle.fbase.source.ProvidedGeneratorSource
 import java.util.SortedMap
 import java.util.TreeMap
 
@@ -60,22 +66,19 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             val globalExtension = project.extensions.create(
                 EXTENSION_NAME,
                 FbaseGeneratorExtension::class.java,
-                project,
-                null,
             )
             androidExtension.registerExtension(
                 DslExtension.Builder(EXTENSION_NAME)
-                    .extendBuildTypeWith(FbaseGeneratorFlavorExtension::class.java)
-                    .extendProductFlavorWith(FbaseGeneratorFlavorExtension::class.java)
+                    .extendBuildTypeWith(FbaseGeneratorExtension::class.java)
+                    .extendProductFlavorWith(FbaseGeneratorExtension::class.java)
                     .build(),
                 ExtensionMerger(objects, globalExtension),
             )
 
             androidExtension.onVariants { variant ->
-                val variantExtension =
-                    checkNotNull(variant.getExtension(FbaseGeneratorExtension::class.java)) {
-                        "Extension not registered"
-                    }
+                val variantExtension = checkNotNull(variant.getExtension(FbaseGeneratorExtension::class.java)) {
+                    "Extension not registered"
+                }
 
                 val firebaseOptionsTaskProvider = project.tasks.register(
                     "${variant.name}GenerateFirebaseOptions",
@@ -84,7 +87,9 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
                     task.group = "Build"
                     task.sourceOutputDir.set(layout.buildDirectory.dir("firebase-options"))
                     task.configs.set(
-                        variantExtension.configurations.map { config -> createTaskParams(config, variant) },
+                        variantExtension.configurations.map { config ->
+                            createTaskParams(config, variant)
+                        },
                     )
                 }
 
@@ -107,8 +112,11 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         ): GenerateOptionsTaskParams {
             val defaultPropertyName = options.name
             val defaults = VariantDefaults(providers, variant)
+            val sourceTransformer = FbaseGeneratorSourceTransformer(project, variant)
             return objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
-                source.set(options.source)
+                source.set(
+                    options.source.flatMap(sourceTransformer),
+                )
                 targetPackage.set(
                     options.targetPackage.orElse(defaults.targetPackage),
                 )
@@ -133,6 +141,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             addGoogleAppIdResource: Provider<Boolean>,
         ) {
             val googleAppIdKey = variant.makeResValueKey("string", "google_app_id")
+            val sourceTransformer = FbaseGeneratorSourceTransformer(project, variant)
             providers.provider {
                 if (addGoogleAppIdResource.get() == false) {
                     emptyMap<ResValue.Key, ResValue>()
@@ -141,12 +150,47 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
                 if (configuration == null) {
                     emptyMap<ResValue.Key, ResValue>()
                 }
-                val applicationId = configuration?.source?.get()?.applicationId
+                val applicationId = configuration?.source?.flatMap(sourceTransformer)?.get()?.applicationId
                 if (applicationId != null) {
                     mapOf(googleAppIdKey to ResValue(applicationId))
                 } else {
                     emptyMap()
                 }
+            }
+        }
+    }
+
+    private class FbaseGeneratorSourceTransformer(
+        project: Project,
+        variant: Variant,
+    ) : Transformer<Provider<LocalFirebaseOptions>, FbaseGeneratorSource> {
+        private val providers = project.providers
+        private val defaultConfigFile = project.rootProject.layout.projectDirectory.file(
+            VariantDefaults.DEFAULT_CONFIG_FILE_PATH,
+        )
+        private val defaultApplicationIdProvider: Provider<String> = if (variant is ApplicationVariant) {
+            variant.applicationId
+        } else {
+            providers.provider { "" }
+        }
+
+        override fun transform(source: FbaseGeneratorSource): Provider<LocalFirebaseOptions> {
+            return when (source) {
+                is ProvidedGeneratorSource -> source.source
+
+                is PropertiesFileGeneratorSource -> {
+                    val configFilePathProvider = source.location.orElse(defaultConfigFile)
+                    val applicationIdProvider = source.applicationId.orElse(defaultApplicationIdProvider)
+
+                    providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->
+                        valueSource.parameters {
+                            it.configFilePath.set(configFilePathProvider)
+                            it.applicationId.set(applicationIdProvider)
+                        }
+                    }
+                }
+
+                else -> error("Unexpected source")
             }
         }
     }
@@ -164,26 +208,23 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             globalExtension.configurations.forEach { item -> mergedConfigs[item.name] = item }
 
             val buildTypeExtension = variantExtensionConfig.buildTypeExtension(
-                FbaseGeneratorFlavorExtension::class.java,
+                FbaseGeneratorExtension::class.java,
             )
             mergedConfigs.addConfigurations(buildTypeExtension.configurations)
             mergedAddGoogleAppId = buildTypeExtension.addGoogleAppIdResource
                 .orElse(mergedAddGoogleAppId)
 
             val flavorExtensions = variantExtensionConfig.productFlavorsExtensions(
-                FbaseGeneratorFlavorExtension::class.java,
+                FbaseGeneratorExtension::class.java,
             )
             flavorExtensions.forEach { extension ->
                 mergedConfigs.addConfigurations(extension.configurations)
                 mergedAddGoogleAppId = extension.addGoogleAppIdResource.orElse(mergedAddGoogleAppId)
             }
 
-            val mergedExtension = objects.newInstance(
-                FbaseGeneratorExtension::class.java,
-                variantExtensionConfig,
-            ).apply {
-                this.addGoogleAppIdResource.set(mergedAddGoogleAppId)
-                this.configurations.addAll(mergedConfigs.values)
+            val mergedExtension = objects.newInstance(FbaseGeneratorExtension::class.java).apply {
+                addGoogleAppIdResource.set(mergedAddGoogleAppId)
+                configurations.addAll(mergedConfigs.values)
             }
 
             return mergedExtension
