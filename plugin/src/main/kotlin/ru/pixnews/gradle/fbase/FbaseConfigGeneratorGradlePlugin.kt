@@ -19,7 +19,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
-import org.gradle.api.provider.ProviderFactory
 import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.EXTENSION_NAME
 import java.util.SortedMap
@@ -60,18 +59,21 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         fun configure() {
             val globalExtension = project.extensions.create(
                 EXTENSION_NAME,
-                FirebaseConfigGeneratorExtension::class.java,
+                FbaseGeneratorExtension::class.java,
                 project,
                 null,
             )
             androidExtension.registerExtension(
-                DslExtension.Builder(EXTENSION_NAME).build(),
-                ExtensionMerger(providers, objects, globalExtension),
+                DslExtension.Builder(EXTENSION_NAME)
+                    .extendBuildTypeWith(FbaseGeneratorFlavorExtension::class.java)
+                    .extendProductFlavorWith(FbaseGeneratorFlavorExtension::class.java)
+                    .build(),
+                ExtensionMerger(objects, globalExtension),
             )
 
             androidExtension.onVariants { variant ->
                 val variantExtension =
-                    checkNotNull(variant.getExtension(FirebaseConfigGeneratorExtension::class.java)) {
+                    checkNotNull(variant.getExtension(FbaseGeneratorExtension::class.java)) {
                         "Extension not registered"
                     }
 
@@ -82,7 +84,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
                     task.group = "Build"
                     task.sourceOutputDir.set(layout.buildDirectory.dir("firebase-options"))
                     task.configs.set(
-                        variantExtension.configurations.map { config -> createTaskParams(config) },
+                        variantExtension.configurations.map { config -> createTaskParams(config, variant) },
                     )
                 }
 
@@ -100,13 +102,26 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         }
 
         private fun createTaskParams(
-            options: FirebaseConfigInstanceExtension,
-        ): GenerateOptionsTaskParams = objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
-            source.set(options.source)
-            targetPackage.set(options.targetPackage)
-            targetFileName.set(options.targetFileName)
-            propertyName.set(options.propertyName)
-            visibility.set(options.visibility)
+            options: FbaseBuilderExtension,
+            variant: Variant,
+        ): GenerateOptionsTaskParams {
+            val defaultPropertyName = options.name
+            val defaults = VariantDefaults(providers, variant)
+            return objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
+                source.set(options.source)
+                targetPackage.set(
+                    options.targetPackage.orElse(defaults.targetPackage),
+                )
+                targetFileName.set(
+                    options.targetFileName.orElse(defaults.targetFileName(defaultPropertyName)),
+                )
+                propertyName.set(
+                    options.propertyName.orElse(defaultPropertyName),
+                )
+                visibility.set(
+                    options.visibility.orElse(VariantDefaults.DEFAULT_VISIBILITY),
+                )
+            }
         }
 
         /**
@@ -114,7 +129,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
          */
         private fun addGoogleAppIdResource(
             variant: Variant,
-            configurations: NamedDomainObjectContainer<FirebaseConfigInstanceExtension>,
+            configurations: NamedDomainObjectContainer<FbaseBuilderExtension>,
             addGoogleAppIdResource: Provider<Boolean>,
         ) {
             val googleAppIdKey = variant.makeResValueKey("string", "google_app_id")
@@ -137,35 +152,61 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
     }
 
     private class ExtensionMerger(
-        private val providers: ProviderFactory,
         private val objects: ObjectFactory,
-        private val globalExtension: FirebaseConfigGeneratorExtension,
+        private val globalExtension: FbaseGeneratorExtension,
     ) : (VariantExtensionConfig<out Variant>) -> VariantExtension {
         override fun invoke(
             variantExtensionConfig: VariantExtensionConfig<out Variant>,
-        ): FirebaseConfigGeneratorExtension {
-            val mergedConfigs: SortedMap<String, FirebaseConfigInstanceExtension> = TreeMap()
+        ): FbaseGeneratorExtension {
+            val mergedConfigs: SortedMap<String, FbaseBuilderExtension> = TreeMap()
+            var mergedAddGoogleAppId: Provider<Boolean> = globalExtension.addGoogleAppIdResource
 
-            globalExtension.configurations.forEach { item ->
-                val defaults = firebaseOptionsExtensionDefaults(item.name, variantExtensionConfig)
-                mergedConfigs[item.name] = mergeExtensions(item, defaults)
+            globalExtension.configurations.forEach { item -> mergedConfigs[item.name] = item }
+
+            val buildTypeExtension = variantExtensionConfig.buildTypeExtension(
+                FbaseGeneratorFlavorExtension::class.java,
+            )
+            mergedConfigs.addConfigurations(buildTypeExtension.configurations)
+            mergedAddGoogleAppId = buildTypeExtension.addGoogleAppIdResource
+                .orElse(mergedAddGoogleAppId)
+
+            val flavorExtensions = variantExtensionConfig.productFlavorsExtensions(
+                FbaseGeneratorFlavorExtension::class.java,
+            )
+            flavorExtensions.forEach { extension ->
+                mergedConfigs.addConfigurations(extension.configurations)
+                mergedAddGoogleAppId = extension.addGoogleAppIdResource.orElse(mergedAddGoogleAppId)
             }
 
             val mergedExtension = objects.newInstance(
-                FirebaseConfigGeneratorExtension::class.java,
+                FbaseGeneratorExtension::class.java,
                 variantExtensionConfig,
             ).apply {
-                configurations.addAll(mergedConfigs.values)
+                this.addGoogleAppIdResource.set(mergedAddGoogleAppId)
+                this.configurations.addAll(mergedConfigs.values)
             }
 
             return mergedExtension
         }
 
+        private fun MutableMap<String, FbaseBuilderExtension>.addConfigurations(
+            configs: NamedDomainObjectContainer<FbaseBuilderExtension>,
+        ) {
+            configs.forEach { item ->
+                val lowPrio = this[item.name]
+                this[item.name] = if (lowPrio != null) {
+                    mergeExtensions(item, lowPrio)
+                } else {
+                    item
+                }
+            }
+        }
+
         private fun mergeExtensions(
-            high: FirebaseConfigInstanceExtension,
-            low: FirebaseConfigInstanceExtension,
-        ): FirebaseConfigInstanceExtension = objects.newInstance(
-            FirebaseConfigInstanceExtension::class.java,
+            high: FbaseBuilderExtension,
+            low: FbaseBuilderExtension,
+        ): FbaseBuilderExtension = objects.newInstance(
+            FbaseBuilderExtension::class.java,
             high.name,
         ).apply {
             source.set(high.source.orElse(low.source))
@@ -173,19 +214,6 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             targetFileName.set(high.targetFileName.orElse(low.targetFileName))
             propertyName.set(high.propertyName.orElse(low.propertyName))
             visibility.set(high.visibility.orElse(low.visibility))
-        }
-
-        private fun firebaseOptionsExtensionDefaults(
-            defaultPropertyName: String,
-            variantExtensionConfig: VariantExtensionConfig<out Variant>,
-        ): FirebaseConfigInstanceExtension {
-            val variantDefaults = VariantDefaults(providers, variantExtensionConfig.variant)
-            return objects.newInstance(FirebaseConfigInstanceExtension::class.java, defaultPropertyName).apply {
-                targetPackage.set(variantDefaults.targetPackage)
-                targetFileName.set(variantDefaults.targetFileName(defaultPropertyName))
-                propertyName.set(defaultPropertyName)
-                visibility.set(VariantDefaults.DEFAULT_VISIBILITY)
-            }
         }
     }
 }

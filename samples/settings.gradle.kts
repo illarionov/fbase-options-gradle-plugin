@@ -14,3 +14,4 @@ plugins {
 
 rootProject.name = "fbase-config-generator-gradle-plugin-samples"
 include("android-app-simple-sample")
+include("android-app-flavors")
