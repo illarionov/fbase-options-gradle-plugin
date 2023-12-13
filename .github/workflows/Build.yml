@@ -56,6 +56,12 @@ jobs:
         run: >
           ./gradlew build publishAllPublicationsToTestRepository --stacktrace
 
+      - name: Build samples
+        env:
+          ORG_GRADLE_PROJECT_disableSigning: true
+        run: >
+          ./gradlew -p samples build --stacktrace
+
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: ${{ !cancelled() && (github.actor != 'dependabot[bot]') }}
