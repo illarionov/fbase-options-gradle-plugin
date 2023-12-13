@@ -15,7 +15,7 @@ import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import java.io.Serializable
 import javax.inject.Inject
 
-public abstract class FirebaseConfigGeneratorExtension @Inject internal constructor(
+public abstract class FbaseGeneratorExtension @Inject internal constructor(
     project: Project,
     extensionConfig: VariantExtensionConfig<*>?,
 ) : Serializable, VariantExtension {
@@ -25,7 +25,7 @@ public abstract class FirebaseConfigGeneratorExtension @Inject internal construc
      * Android string resource "google_app_id" will be initialized with the value from the first configuration defined.
      */
     public abstract val addGoogleAppIdResource: Property<Boolean>
-    public abstract val configurations: NamedDomainObjectContainer<FirebaseConfigInstanceExtension>
+    public abstract val configurations: NamedDomainObjectContainer<FbaseBuilderExtension>
 
     @Transient
     public val providers: FirebaseOptionsProviders

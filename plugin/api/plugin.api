@@ -1,21 +1,5 @@
-public final class ru/pixnews/gradle/fbase/FbaseConfigGeneratorGradlePlugin : org/gradle/api/Plugin {
-	public fun <init> ()V
-	public synthetic fun apply (Ljava/lang/Object;)V
-	public fun apply (Lorg/gradle/api/Project;)V
-}
-
-public abstract class ru/pixnews/gradle/fbase/FirebaseConfigGeneratorExtension : com/android/build/api/variant/VariantExtension, java/io/Serializable {
-	public static final field Companion Lru/pixnews/gradle/fbase/FirebaseConfigGeneratorExtension$Companion;
-	public abstract fun getAddGoogleAppIdResource ()Lorg/gradle/api/provider/Property;
-	public abstract fun getConfigurations ()Lorg/gradle/api/NamedDomainObjectContainer;
-	public final fun getProviders ()Lru/pixnews/gradle/fbase/FirebaseOptionsProviders;
-}
-
-public final class ru/pixnews/gradle/fbase/FirebaseConfigGeneratorExtension$Companion {
-}
-
-public abstract class ru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension : java/io/Serializable, org/gradle/api/Named {
-	public static final field Companion Lru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension$Companion;
+public abstract class ru/pixnews/gradle/fbase/FbaseBuilderExtension : java/io/Serializable, org/gradle/api/Named {
+	public static final field Companion Lru/pixnews/gradle/fbase/FbaseBuilderExtension$Companion;
 	public fun <init> (Ljava/lang/String;)V
 	public fun getName ()Ljava/lang/String;
 	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
@@ -25,7 +9,28 @@ public abstract class ru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension : 
 	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
 }
 
-public final class ru/pixnews/gradle/fbase/FirebaseConfigInstanceExtension$Companion {
+public final class ru/pixnews/gradle/fbase/FbaseBuilderExtension$Companion {
+}
+
+public final class ru/pixnews/gradle/fbase/FbaseConfigGeneratorGradlePlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class ru/pixnews/gradle/fbase/FbaseGeneratorExtension : com/android/build/api/variant/VariantExtension, java/io/Serializable {
+	public static final field Companion Lru/pixnews/gradle/fbase/FbaseGeneratorExtension$Companion;
+	public abstract fun getAddGoogleAppIdResource ()Lorg/gradle/api/provider/Property;
+	public abstract fun getConfigurations ()Lorg/gradle/api/NamedDomainObjectContainer;
+	public final fun getProviders ()Lru/pixnews/gradle/fbase/FirebaseOptionsProviders;
+}
+
+public final class ru/pixnews/gradle/fbase/FbaseGeneratorExtension$Companion {
+}
+
+public abstract class ru/pixnews/gradle/fbase/FbaseGeneratorFlavorExtension {
+	public abstract fun getAddGoogleAppIdResource ()Lorg/gradle/api/provider/Property;
+	public abstract fun getConfigurations ()Lorg/gradle/api/NamedDomainObjectContainer;
 }
 
 public final class ru/pixnews/gradle/fbase/FirebaseOptionsProviders {

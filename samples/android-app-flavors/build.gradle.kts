@@ -1,4 +1,6 @@
-import ru.pixnews.gradle.fbase.FirebaseConfigGeneratorExtension
+import ru.pixnews.gradle.fbase.FbaseGeneratorExtension
+import ru.pixnews.gradle.fbase.FbaseGeneratorFlavorExtension
+import ru.pixnews.gradle.fbase.LocalFirebaseOptions
 
 plugins {
     alias(libs.plugins.android.application)
@@ -25,6 +27,22 @@ android {
         }
         create("benchmark") {
             applicationIdSuffix = ".benchmark"
+            extensions.configure<FbaseGeneratorFlavorExtension> {
+                configurations.create("benchmarkFirebaseOptions") {
+                    source = provider {
+                        LocalFirebaseOptions(
+                            projectId = null,
+                            apiKey = null,
+                            applicationId = null,
+                            databaseUrl = null,
+                            gaTrackingId = null,
+                            gcmSenderId = null,
+                            storageBucket = null,
+                        )
+                    }
+                    targetPackage = "com.example.samplefbase.config"
+                }
+            }
         }
     }
     flavorDimensions += "version"
@@ -32,6 +50,22 @@ android {
         create("demo") {
             dimension = "version"
             applicationIdSuffix = ".demo"
+            extensions.configure<FbaseGeneratorFlavorExtension> {
+                configurations.create("demoFirebaseOptions") {
+                    source = provider {
+                        LocalFirebaseOptions(
+                            projectId = null,
+                            apiKey = null,
+                            applicationId = null,
+                            databaseUrl = null,
+                            gaTrackingId = null,
+                            gcmSenderId = null,
+                            storageBucket = null,
+                        )
+                    }
+                    targetPackage = "com.example.samplefbase.config"
+                }
+            }
         }
         create("full") {
             dimension = "version"
@@ -42,7 +76,7 @@ android {
     androidComponents {
         val releaseSelector = androidComponents.selector().withBuildType("release")
         onVariants(releaseSelector) { variant ->
-            variant.getExtension(FirebaseConfigGeneratorExtension::class.java)?.let { generator ->
+            variant.getExtension(FbaseGeneratorExtension::class.java)?.let { generator ->
                 generator.configurations.create("releaseFirebaseOptions") {
                     source = generator.providers.propertiesFile(
                         layout.projectDirectory.file("firebase_release.properties"),

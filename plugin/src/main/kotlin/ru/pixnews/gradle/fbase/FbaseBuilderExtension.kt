@@ -11,7 +11,7 @@ import org.gradle.api.provider.Property
 import java.io.Serializable
 import javax.inject.Inject
 
-public abstract class FirebaseConfigInstanceExtension @Inject constructor(
+public abstract class FbaseBuilderExtension @Inject constructor(
     private val name: String,
 ) : Named, Serializable {
     /**
