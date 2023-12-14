@@ -20,7 +20,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     fun `can build simple project`() {
         project.setupTestProject("android-app-simple")
 
-        val result = project.build("build")
+        val result = project.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
@@ -29,7 +29,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     fun `can build project with multiple configurations`() {
         project.setupTestProject("android-app-multiconfig")
 
-        val result = project.build("build")
+        val result = project.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }

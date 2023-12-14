@@ -19,11 +19,12 @@ env:
   CI: true
   TERM: dumb
   GRADLE_OPTS: >-
-    -Dorg.gradle.jvmargs="-Xmx2G -XX:MaxMetaspaceSize=1g -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC"
+    -Dorg.gradle.jvmargs="-Xmx1G -XX:MaxMetaspaceSize=768M -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC"
     -Dorg.gradle.workers.max=2
+    -Dorg.gradle.parallel=false
     -Dorg.gradle.dependency.verification.console=verbose
   KOTLIN_DAEMON_JVMARGS: >-
-    -Xmx1512M -XX:MaxMetaspaceSize=320M -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC -XX:NewRatio=1
+    -Xmx512M -XX:MaxMetaspaceSize=320M -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC -XX:NewRatio=1
 
 permissions:
   checks: write
