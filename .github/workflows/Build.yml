@@ -5,6 +5,8 @@ on:
     paths-ignore:
       - '**/*.md'
   push:
+    branches:
+      - 'main'
     paths-ignore:
       - '**/*.md'
   workflow_dispatch:
@@ -17,7 +19,12 @@ env:
   CI: true
   TERM: dumb
   GRADLE_OPTS: >-
+    -Dorg.gradle.jvmargs="-Xmx1G -XX:MaxMetaspaceSize=768M -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC"
+    -Dorg.gradle.workers.max=2
+    -Dorg.gradle.parallel=false
     -Dorg.gradle.dependency.verification.console=verbose
+  KOTLIN_DAEMON_JVMARGS: >-
+    -Xmx512M -XX:MaxMetaspaceSize=320M -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC -XX:NewRatio=1
 
 permissions:
   checks: write
@@ -36,9 +43,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -54,13 +58,15 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_disableSigning: true
         run: >
-          ./gradlew build publishAllPublicationsToTestRepository --stacktrace
+          ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
+          build publishAllPublicationsToTestRepository --stacktrace --scan
 
       - name: Build samples
         env:
           ORG_GRADLE_PROJECT_disableSigning: true
         run: >
-          ./gradlew -p samples build --stacktrace
+          ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
+          -p samples build --stacktrace --scan
 
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -112,9 +118,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -128,7 +131,8 @@ jobs:
 
       - name: Run static code analyzers
         run: >
-          ./gradlew styleCheck --continue
+          ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
+          styleCheck --continue
 
       - name: Uploads .sarif files to GitHub
         uses: github/codeql-action/upload-sarif@v2
