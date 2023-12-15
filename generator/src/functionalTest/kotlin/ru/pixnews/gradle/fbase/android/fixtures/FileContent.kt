@@ -4,13 +4,9 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package com.example.samplefbase
+package ru.pixnews.gradle.fbase.android.fixtures
 
-import android.app.Activity
-import android.os.Bundle
-
-class MainActivity : Activity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-}
+data class FileContent(
+    val dstPath: String,
+    val content: String,
+)

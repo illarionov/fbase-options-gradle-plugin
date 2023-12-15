@@ -11,15 +11,14 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestWatcher
-import ru.pixnews.gradle.fbase.android.util.androidHome
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.SubmoduleFixtures
 import java.io.File
 import java.nio.file.Files
 import java.util.Optional
 
 @Suppress("TooManyFunctions")
 class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
-    val rootBuildFile by lazy { rootDir.resolve("build.gradle.kts") }
-    val rootSettingsFile by lazy { rootDir.resolve("settings.gradle.kts") }
     internal val testProjectsRoot
         get() = File(System.getProperty("user.dir"), "src/testProjects")
     internal val testFilesRoot
@@ -28,8 +27,6 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     override fun beforeEach(context: ExtensionContext?) {
         rootDir = Files.createTempDirectory("fbase-test").toFile()
-        setupLocalProperties()
-        setupVersionCatalog()
     }
 
     override fun testSuccessful(context: ExtensionContext?) {
@@ -50,12 +47,26 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     fun setupTestProject(
         projectDir: File,
+        namespace: String = "com.example.samplefbase",
     ) {
         val submoduleName = projectDir.name
+
+        setupRoot(submoduleName)
+
+        val submoduleRoot = rootDir.resolve(submoduleName)
+        val submoduleFixtures = SubmoduleFixtures(namespace)
+        listOf(
+            submoduleFixtures.androidManifestXml,
+            submoduleFixtures.mainActivity,
+            submoduleFixtures.application,
+            submoduleFixtures.buildGradleKts(),
+        ).forEach {
+            val dst = submoduleRoot.resolve(it.dstPath)
+            dst.parentFile.mkdirs()
+            dst.writeText(it.content)
+        }
+
         projectDir.copyRecursively(this.rootDir.resolve(submoduleName), overwrite = true)
-        setupGradleProperties()
-        setupRootBuildGradle()
-        setupRootModuleSettings(submoduleName)
     }
 
     fun buildWithGradleVersion(
@@ -86,50 +97,19 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         rootDir.deleteRecursively()
     }
 
-    private fun setupLocalProperties() {
-        val localProperties = rootDir.resolve("local.properties")
-        localProperties.writeText("sdk.dir=${androidHome()}".trimIndent())
-    }
-
-    private fun setupVersionCatalog() {
-        val srcVersionCatalog = testFilesRoot.resolve("libs.versions.toml")
-        val dst = rootDir.resolve("gradle/libs.versions.toml")
-        srcVersionCatalog.copyTo(dst, overwrite = false)
-    }
-
-    private fun setupRootModuleSettings(
+    private fun setupRoot(
         vararg includeSubprojects: String,
     ) {
-        val srcSettings = testFilesRoot.resolve("settings.gradle.kts")
-        val dst = rootDir.resolve("settings.gradle.kts")
-        srcSettings.copyTo(dst, overwrite = false)
-        dst.appendText(
-            includeSubprojects.joinToString("\n") { """include("$it")""" },
-        )
-        val pluginSrcPath = File(System.getProperty("user.dir"), "../") // TODO: sanitise?
-        dst.appendText(
-            """
-            pluginManagement {
-                includeBuild("$pluginSrcPath")
-                repositories {
-                    google()
-                    mavenCentral()
-                    gradlePluginPortal()
-                }
-            }
-        """.trimIndent(),
-        )
-    }
-
-    private fun setupRootBuildGradle() {
-        val srcSettings = testFilesRoot.resolve("build.gradle.kts")
-        val dst = rootDir.resolve("build.gradle.kts")
-        srcSettings.copyTo(dst, overwrite = false)
-    }
-
-    private fun setupGradleProperties() {
-        val srcVersionCatalog = testFilesRoot.resolve("gradle.properties")
-        val dst = rootDir.resolve("gradle.properties")
-        srcVersionCatalog.copyTo(dst, overwrite = false)
+        listOf(
+            Root.localProperties,
+            Root.libsVersionToml,
+            Root.gradleProperties,
+            Root.buildGradleKts,
+            Root.settingsGradleKts(*includeSubprojects),
+        ).forEach {
+            val dst = rootDir.resolve(it.dstPath)
+            dst.parentFile.mkdirs()
+            dst.writeText(it.content)
+        }
     }
 }
