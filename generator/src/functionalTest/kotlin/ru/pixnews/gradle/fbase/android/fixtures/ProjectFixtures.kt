@@ -10,6 +10,8 @@ import ru.pixnews.gradle.fbase.android.util.androidHome
 import java.io.File
 
 object ProjectFixtures {
+    const val DEFAULT_NAMESPACE = "com.example.samplefbase"
+
     private val userDir: String
         get() = System.getProperty("user.dir")
     public val testProjectsRoot
@@ -27,6 +29,7 @@ object ProjectFixtures {
                 "sdk.dir=${androidHome()}".trimIndent(),
             )
         }
+        val defaultFirebaseProperties by lazy { testFilesRootFileContent("config/firebase.properties") }
 
         fun settingsGradleKts(
             vararg includeSubprojects: String,
@@ -59,7 +62,7 @@ object ProjectFixtures {
     }
 
     class SubmoduleFixtures(
-        val namespace: String = "com.example.samplefbase",
+        val namespace: String = DEFAULT_NAMESPACE,
     ) {
         val androidManifestXml: FileContent by lazy {
             testFilesSubmoduleFileContent("src/main/AndroidManifest.xml")
