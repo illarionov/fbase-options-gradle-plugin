@@ -12,4 +12,4 @@ plugins {
 }
 
 rootProject.name = "fbase-config-generator-gradle-plugin"
-include("plugin")
+include("generator")
