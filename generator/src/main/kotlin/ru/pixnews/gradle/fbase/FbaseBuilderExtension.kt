@@ -24,22 +24,31 @@ public abstract class FbaseBuilderExtension @Inject constructor(
     internal val source: Property<FbaseGeneratorSource> = objects.property(FbaseGeneratorSource::class.java)
 
     /**
-     * Target package of the generated [FirebaseOptions] instance
+     * Target package of the generated [FirebaseOptions] instance.
+     *
+     * Default value: namespace of the Android Variant.
      */
     public abstract val targetPackage: Property<String>
 
     /**
-     * Generated Kotlin file with property
+     * Generated Kotlin file with property.
+     *
+     * Default value: [propertyName] value in capital case.
      */
     public abstract val targetFileName: Property<String>
 
     /** *
-     * Name of the generated property
+     * Name of the generated property.
+     *
+     * Default value: name specified when creating the object in `firebaseOptions`
+     * [NamedDomainObjectContainer] container
      */
     public abstract val propertyName: Property<String>
 
     /**
      * Visibility of the generated [targetProperty]
+     *
+     * Default value: internal
      */
     public abstract val visibility: Property<TargetVisibility>
 
