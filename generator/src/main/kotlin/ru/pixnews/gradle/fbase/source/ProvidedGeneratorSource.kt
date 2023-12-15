@@ -11,5 +11,8 @@ import ru.pixnews.gradle.fbase.LocalFirebaseOptions
 import javax.inject.Inject
 
 public abstract class ProvidedGeneratorSource @Inject constructor() : FbaseGeneratorSource {
+    /**
+     * Provider with parameters for the generated [FirebaseOptions] instance
+     */
     public abstract val source: Property<LocalFirebaseOptions>
 }
