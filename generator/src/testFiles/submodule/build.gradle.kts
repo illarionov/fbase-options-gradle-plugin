@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.samplefbase"
+    namespace = "<<NAMESPACE>>"
     compileSdk = 34
 
     defaultConfig {
@@ -39,15 +39,4 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.core.ktx)
-}
-
-firebaseConfig {
-    configurations {
-        create("firebaseOptions") {
-            fromPropertiesFile {
-                location = layout.projectDirectory.file("firebase.properties")
-            }
-            targetPackage = "com.example.samplefbase.config"
-        }
-    }
 }
