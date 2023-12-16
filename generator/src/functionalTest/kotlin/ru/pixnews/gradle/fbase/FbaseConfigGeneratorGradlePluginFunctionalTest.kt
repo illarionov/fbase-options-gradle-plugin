@@ -7,6 +7,7 @@
 package ru.pixnews.gradle.fbase
 
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.DEFAULT_NAMESPACE
@@ -18,6 +19,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     @JvmField
     @RegisterExtension
     var project = AndroidProjectExtension()
+
+    val submoduleFixtures = SubmoduleFixtures()
 
     @Test
     fun `can build simple project`() {
@@ -41,7 +44,6 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     fun `can build project if configurations are not defined`() {
         val submoduleName = "android-app-noconf"
         project.setupTestProjectScaffold(submoduleName)
-        val submoduleFixtures = SubmoduleFixtures()
 
         val buildGradleKts = submoduleFixtures.buildGradleKts(
             """
@@ -69,9 +71,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `can build project with default value if source is not set`() {
-        val submoduleName = "android-app-no-def-src"
+        val submoduleName = "android-app-no-source-set"
         project.setupTestProjectScaffold(submoduleName)
-        val submoduleFixtures = SubmoduleFixtures()
 
         val buildGradleKts = submoduleFixtures.buildGradleKts(
             """
@@ -92,5 +93,36 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         val result = project.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @Nested
+    inner class PropertiesFileTests {
+        @Test
+        fun `should tail if proeprties file not found`() {
+            val submoduleName = "android-app-no-properties-file"
+            project.setupTestProjectScaffold(submoduleName)
+
+            val buildGradleKts = submoduleFixtures.buildGradleKts(
+                """
+            firebaseConfig {
+               configurations {
+                   create("firebaseOptions") {
+                       fromPropertiesFile {
+                           location = layout.projectDirectory.file("nonexistent.properties")
+                       }
+                   }
+               }
+            }
+        """.trimIndent(),
+            )
+            project.writeFilesToSubmoduleRoot(
+                submoduleName = submoduleName,
+                buildGradleKts,
+            )
+
+            val result = project.buildAndFail("assemble")
+
+            assertTrue(result.output.contains("java.io.FileNotFoundException"))
+        }
     }
 }
