@@ -82,7 +82,7 @@ object ProjectFixtures {
                 package $namespace
 
                 import android.app.Application
-                import $namespace.config.firebaseOptions
+                import $namespace.firebaseOptions
                 import com.google.firebase.FirebaseApp
 
                 class Application : Application() {

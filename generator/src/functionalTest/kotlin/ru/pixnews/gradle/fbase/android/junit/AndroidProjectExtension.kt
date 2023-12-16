@@ -73,18 +73,6 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         )
     }
 
-    fun writeFilesToSubmoduleRoot(
-        submoduleName: String,
-        vararg files: FileContent,
-    ) {
-        val submoduleRoot = submoduleRootDir(submoduleName)
-        files.forEach {
-            val dst = submoduleRoot.resolve(it.dstPath)
-            dst.parentFile.mkdirs()
-            dst.writeText(it.content)
-        }
-    }
-
     fun buildWithGradleVersion(
         gradleVersion: String?,
         expectFail: Boolean,
@@ -109,6 +97,25 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     fun buildAndFail(vararg args: String) = buildWithGradleVersion(null, true, *args)
 
+    fun writeFilesToSubmoduleRoot(
+        submoduleName: String,
+        vararg files: FileContent,
+    ) = writeFiles(
+        root = submoduleRootDir(submoduleName),
+        files = files,
+    )
+
+    fun writeFiles(
+        root: File,
+        vararg files: FileContent,
+    ) {
+        files.forEach {
+            val dst = root.resolve(it.dstPath)
+            dst.parentFile.mkdirs()
+            dst.writeText(it.content)
+        }
+    }
+
     private fun cleanup() {
         rootDir.deleteRecursively()
     }
@@ -116,16 +123,15 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     private fun setupRoot(
         vararg includeSubprojects: String,
     ) {
-        listOf(
-            Root.localProperties,
-            Root.libsVersionToml,
-            Root.gradleProperties,
-            Root.buildGradleKts,
-            Root.settingsGradleKts(*includeSubprojects),
-        ).forEach {
-            val dst = rootDir.resolve(it.dstPath)
-            dst.parentFile.mkdirs()
-            dst.writeText(it.content)
-        }
+        writeFiles(
+            root = rootDir,
+            files = arrayOf(
+                Root.localProperties,
+                Root.libsVersionToml,
+                Root.gradleProperties,
+                Root.buildGradleKts,
+                Root.settingsGradleKts(*includeSubprojects),
+            ),
+        )
     }
 }

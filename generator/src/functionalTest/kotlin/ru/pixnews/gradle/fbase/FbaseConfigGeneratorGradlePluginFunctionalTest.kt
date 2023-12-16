@@ -57,7 +57,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         )
 
         project.writeFilesToSubmoduleRoot(
-            submoduleName,
+            submoduleName = submoduleName,
             buildGradleKts,
             application,
         )
@@ -86,8 +86,9 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         project.writeFilesToSubmoduleRoot(
             submoduleName = submoduleName,
             buildGradleKts,
-            Root.defaultFirebaseProperties,
         )
+        project.writeFiles(project.rootDir, Root.defaultFirebaseProperties)
+
         val result = project.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
