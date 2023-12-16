@@ -111,11 +111,13 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             variant: Variant,
         ): GenerateOptionsTaskParams {
             val defaultPropertyName = options.name
-            val defaults = VariantDefaults(providers, variant)
+            val defaults = VariantDefaults(objects, providers, variant)
             val sourceTransformer = FbaseGeneratorSourceTransformer(project, variant)
             return objects.newInstance(GenerateOptionsTaskParams::class.java).apply {
                 source.set(
-                    options.source.flatMap(sourceTransformer),
+                    options.source
+                        .orElse(defaults.defaultSource)
+                        .flatMap(sourceTransformer),
                 )
                 targetPackage.set(
                     options.targetPackage.orElse(defaults.targetPackage),

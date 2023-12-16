@@ -8,11 +8,15 @@ package ru.pixnews.gradle.fbase.internal
 
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.api.variant.Variant
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import ru.pixnews.gradle.fbase.TargetVisibility
+import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
+import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
 
 internal class VariantDefaults(
+    val objects: ObjectFactory,
     val providers: ProviderFactory,
     val variant: Variant,
 ) {
@@ -25,6 +29,9 @@ internal class VariantDefaults(
 
     val targetPackage: Provider<String>
         get() = variant.namespace
+
+    val defaultSource: FbaseGeneratorSource
+        get() = objects.newInstance(PropertiesFileGeneratorSource::class.java)
 
     fun targetFileName(propertyName: String): String = propertyName.replaceFirstChar(Char::titlecase)
 

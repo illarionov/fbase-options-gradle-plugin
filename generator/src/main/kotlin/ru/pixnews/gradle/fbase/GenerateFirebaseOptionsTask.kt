@@ -14,7 +14,6 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator
 import ru.pixnews.gradle.fbase.internal.FirebaseOptionsGenerator.PropertyValues
-import ru.pixnews.gradle.fbase.internal.util.getWarnIfNotPresent
 import java.io.File
 
 /**
@@ -52,13 +51,8 @@ public abstract class GenerateFirebaseOptionsTask : DefaultTask() {
         codegenDir: File,
     ): FirebaseOptionsGenerator {
         val propertyValues = properties.map { props ->
-            val firebaseOptions = props.source.getWarnIfNotPresent(
-                logger = logger,
-                name = "Firebase",
-                ifNotPresent = LocalFirebaseOptions.Companion::empty,
-            )
             PropertyValues(
-                options = firebaseOptions,
+                options = props.source.get(),
                 propertyName = props.propertyName.get(),
                 visibility = props.visibility.get(),
             )

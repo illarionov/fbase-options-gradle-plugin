@@ -11,6 +11,7 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestWatcher
+import ru.pixnews.gradle.fbase.android.fixtures.FileContent
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.SubmoduleFixtures
 import java.io.File
@@ -43,6 +44,8 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     override fun testDisabled(context: ExtensionContext?, reason: Optional<String>?) = Unit
 
+    fun submoduleRootDir(submoduleName: String) = rootDir.resolve(submoduleName)
+
     fun setupTestProject(name: String) = setupTestProject(testProjectsRoot.resolve(name))
 
     fun setupTestProject(
@@ -50,23 +53,24 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         namespace: String = "com.example.samplefbase",
     ) {
         val submoduleName = projectDir.name
+        setupTestProjectScaffold(submoduleName, namespace)
 
+        projectDir.copyRecursively(this.rootDir.resolve(submoduleName), overwrite = true)
+    }
+
+    fun setupTestProjectScaffold(
+        submoduleName: String,
+        namespace: String = "com.example.samplefbase",
+    ) {
         setupRoot(submoduleName)
-
-        val submoduleRoot = rootDir.resolve(submoduleName)
         val submoduleFixtures = SubmoduleFixtures(namespace)
-        listOf(
+        writeFilesToSubmoduleRoot(
+            submoduleName,
             submoduleFixtures.androidManifestXml,
             submoduleFixtures.mainActivity,
             submoduleFixtures.application,
             submoduleFixtures.buildGradleKts(),
-        ).forEach {
-            val dst = submoduleRoot.resolve(it.dstPath)
-            dst.parentFile.mkdirs()
-            dst.writeText(it.content)
-        }
-
-        projectDir.copyRecursively(this.rootDir.resolve(submoduleName), overwrite = true)
+        )
     }
 
     fun buildWithGradleVersion(
@@ -93,6 +97,25 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     fun buildAndFail(vararg args: String) = buildWithGradleVersion(null, true, *args)
 
+    fun writeFilesToSubmoduleRoot(
+        submoduleName: String,
+        vararg files: FileContent,
+    ) = writeFiles(
+        root = submoduleRootDir(submoduleName),
+        files = files,
+    )
+
+    fun writeFiles(
+        root: File,
+        vararg files: FileContent,
+    ) {
+        files.forEach {
+            val dst = root.resolve(it.dstPath)
+            dst.parentFile.mkdirs()
+            dst.writeText(it.content)
+        }
+    }
+
     private fun cleanup() {
         rootDir.deleteRecursively()
     }
@@ -100,16 +123,15 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     private fun setupRoot(
         vararg includeSubprojects: String,
     ) {
-        listOf(
-            Root.localProperties,
-            Root.libsVersionToml,
-            Root.gradleProperties,
-            Root.buildGradleKts,
-            Root.settingsGradleKts(*includeSubprojects),
-        ).forEach {
-            val dst = rootDir.resolve(it.dstPath)
-            dst.parentFile.mkdirs()
-            dst.writeText(it.content)
-        }
+        writeFiles(
+            root = rootDir,
+            files = arrayOf(
+                Root.localProperties,
+                Root.libsVersionToml,
+                Root.gradleProperties,
+                Root.buildGradleKts,
+                Root.settingsGradleKts(*includeSubprojects),
+            ),
+        )
     }
 }
