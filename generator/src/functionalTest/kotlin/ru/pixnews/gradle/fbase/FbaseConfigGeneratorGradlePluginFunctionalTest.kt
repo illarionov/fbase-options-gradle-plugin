@@ -19,7 +19,6 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     @JvmField
     @RegisterExtension
     var project = AndroidProjectExtension()
-
     val submoduleFixtures = SubmoduleFixtures()
 
     @Test
