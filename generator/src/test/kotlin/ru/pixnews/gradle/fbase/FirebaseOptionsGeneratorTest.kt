@@ -6,11 +6,12 @@
 
 package ru.pixnews.gradle.fbase
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.SourceFile
-import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -62,7 +63,7 @@ class FirebaseOptionsGeneratorTest {
             properties,
             codeGenDir!!,
         )
-        compilationResult.exitCode shouldBe OK
+        assertThat(compilationResult.exitCode).isEqualTo(OK)
     }
 
     private fun compileFirebaseOptions(

@@ -162,7 +162,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         }
     }
 
-    private class FbaseGeneratorSourceTransformer(
+    internal class FbaseGeneratorSourceTransformer(
         project: Project,
         variant: Variant,
     ) : Transformer<Provider<LocalFirebaseOptions>, FbaseGeneratorSource> {
@@ -197,7 +197,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         }
     }
 
-    private class ExtensionMerger(
+    internal class ExtensionMerger(
         private val objects: ObjectFactory,
         private val globalExtension: FbaseGeneratorExtension,
     ) : (VariantExtensionConfig<out Variant>) -> VariantExtension {

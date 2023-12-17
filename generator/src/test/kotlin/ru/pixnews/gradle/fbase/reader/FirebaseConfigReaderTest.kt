@@ -6,7 +6,8 @@
 
 package ru.pixnews.gradle.fbase.reader
 
-import io.kotest.matchers.shouldBe
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
@@ -25,7 +26,7 @@ class FirebaseConfigReaderTest {
 
         val parsedOptions = reader.read()
 
-        parsedOptions shouldBe source.expectedResult
+        assertThat(parsedOptions).isEqualTo(source.expectedResult)
     }
 
     data class ConfigReaderTest(
