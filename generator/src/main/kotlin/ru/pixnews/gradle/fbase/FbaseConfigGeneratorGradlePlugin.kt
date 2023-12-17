@@ -218,7 +218,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
 
             val flavorExtensions = variantExtensionConfig.productFlavorsExtensions(
                 FbaseGeneratorExtension::class.java,
-            )
+            ).reversed()
             flavorExtensions.forEach { extension ->
                 mergedConfigs.addConfigurations(extension.configurations)
                 mergedAddGoogleAppId = extension.addGoogleAppIdResource.orElse(mergedAddGoogleAppId)

@@ -35,10 +35,10 @@ android {
             }
         }
     }
-    flavorDimensions += "version"
+    flavorDimensions += listOf("api", "mode")
     productFlavors {
         create("demo") {
-            dimension = "version"
+            dimension = "mode"
             applicationIdSuffix = ".demo"
             extensions.configure<FbaseGeneratorExtension> {
                 configurations.create("demoFirebaseOptions") {
@@ -50,8 +50,44 @@ android {
             }
         }
         create("full") {
-            dimension = "version"
+            dimension = "mode"
             applicationIdSuffix = ".full"
+            extensions.configure<FbaseGeneratorExtension> {
+                configurations.create("fullFirebaseOptions") {
+                    fromPropertiesFile {
+                        location = layout.projectDirectory.file("firebase_full.properties")
+                    }
+                    targetPackage = "com.example.samplefbase.config"
+                }
+            }
+        }
+        create("minApi24") {
+            dimension = "api"
+            minSdk = 24
+            versionCode = 30000 + (android.defaultConfig.versionCode ?: 0)
+            versionNameSuffix = "-minApi24"
+            extensions.configure<FbaseGeneratorExtension> {
+                configurations.create("minApi24FirebaseOptions") {
+                    fromPropertiesFile {
+                        location = layout.projectDirectory.file("firebase_minapi24.properties")
+                    }
+                    targetPackage = "com.example.samplefbase.config"
+                }
+            }
+        }
+        create("minApi21") {
+            dimension = "api"
+            minSdk = 21
+            versionCode = 10000 + (android.defaultConfig.versionCode ?: 0)
+            versionNameSuffix = "-minApi21"
+            extensions.configure<FbaseGeneratorExtension> {
+                configurations.create("minapi21FirebaseOptions") {
+                    fromPropertiesFile {
+                        location = layout.projectDirectory.file("firebase_minapi21.properties")
+                    }
+                    targetPackage = "com.example.samplefbase.config"
+                }
+            }
         }
     }
 
