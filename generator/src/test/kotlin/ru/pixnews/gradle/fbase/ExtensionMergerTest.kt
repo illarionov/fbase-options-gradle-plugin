@@ -55,7 +55,7 @@ class ExtensionMergerTest {
 
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
 
-        assertThat(result.addGoogleAppIdResource.isPresent).isFalse()
+        assertThat(result.addGoogleAppIdResource).isNotPresent()
         assertThat(result.configurations.asMap).isEmpty()
     }
 
@@ -132,7 +132,7 @@ class ExtensionMergerTest {
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
 
         assertThat(result.addGoogleAppIdResource).value().isFalse()
-        assertThat(result.configurations.asMap.keys).containsOnly("global", "shared", "local")
+        assertThat(result.configurations.names).containsOnly("local", "global", "shared")
         assertThat(result.configurations.getByName("global")).all {
             transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
                 hasFileName("testfile")

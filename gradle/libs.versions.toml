@@ -3,6 +3,8 @@ agp = "8.2.0"
 kotlin = "1.9.21"
 
 androidx-core-ktx = "1.12.0"
+android-tools = "31.3.0-alpha18"
+android-tools-dexlib2 = "3.0.3"
 assertk = "0.28.0"
 detekt = "1.23.4"
 diktat = "1.2.5"
@@ -20,6 +22,10 @@ spotless = "6.23.3"
 [libraries]
 agp-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 agp-plugin-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
+android-tools-apkparser-apkanalyzer = { group = "com.android.tools.apkparser", name = "apkanalyzer", version.ref = "android-tools" }
+android-tools-apkparser-binary-resources = { group = "com.android.tools.apkparser", name = "binary-resources", version.ref = "android-tools" }
+android-tools-smali-dexlib2 = { group = "com.android.tools.smali", name = "smali-dexlib2", version.ref = "android-tools-dexlib2" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase"}

@@ -47,6 +47,8 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     fun submoduleRootDir(submoduleName: String) = rootDir.resolve(submoduleName)
 
+    fun submoduleOutputApkDir(submoduleName: String) = rootDir.resolve(submoduleName).resolve("build/outputs/apk/")
+
     fun setupTestProject(
         name: String,
         namespace: String = DEFAULT_NAMESPACE,
