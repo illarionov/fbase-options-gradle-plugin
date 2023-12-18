@@ -24,6 +24,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Test
 import ru.pixnews.gradle.fbase.FbaseConfigGeneratorGradlePlugin.ExtensionMerger
 import ru.pixnews.gradle.fbase.TargetVisibility.INTERNAL
+import ru.pixnews.gradle.fbase.TargetVisibility.PUBLIC
 import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
 import ru.pixnews.gradle.fbase.util.applicationId
 import ru.pixnews.gradle.fbase.util.hasFileName
@@ -62,11 +63,10 @@ class ExtensionMergerTest {
     fun `should use globalExtension when variant extensions are empty`() {
         globalExtension.apply {
             addGoogleAppIdResource.set(true)
-            configurations.create("globalFirebaseOptions1").apply {
-                fromPropertiesFile {
-                    it.location.set(project.file("testfile"))
-                }
-            }
+            createConfiguration(
+                name = "global",
+                propertiesFileName = "testfile",
+            )
         }
         val variantExtensionConfig = MockVariantExtensionConfig(
             variant = mockk<ApplicationVariant>(),
@@ -75,9 +75,10 @@ class ExtensionMergerTest {
         )
 
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
+
         assertThat(result.addGoogleAppIdResource).value().isTrue()
-        assertThat(result.configurations.asMap.keys).containsOnly("globalFirebaseOptions1")
-        assertThat(result.configurations.getByName("globalFirebaseOptions1")).all {
+        assertThat(result.configurations.asMap.keys).containsOnly("global")
+        assertThat(result.configurations.getByName("global")).all {
             transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
                 hasFileName("testfile")
                 applicationId().isNotPresent()
@@ -86,43 +87,40 @@ class ExtensionMergerTest {
             targetFileName().isNotPresent()
             propertyName().isNotPresent()
             visibility().isNotPresent()
-            nameProp().isEqualTo("globalFirebaseOptions1")
+            nameProp().isEqualTo("global")
         }
     }
 
-    @Test
     @Suppress("LongMethod")
+    @Test
     fun `should merge globalExtension and build type extension`() {
         globalExtension.apply {
             addGoogleAppIdResource.set(true)
-            configurations.create("globalFirebaseOptions1").apply {
-                fromPropertiesFile {
-                    it.location.set(project.file("testfile"))
-                }
-            }
-            configurations.create("sharedFirebaseOptions1").apply {
-                fromPropertiesFile {
-                    it.location.set(project.file("testfile2"))
-                }
-                targetPackage.set("com.example.global")
-                visibility.set(INTERNAL)
-            }
+            createConfiguration(
+                name = "global",
+                propertiesFileName = "testfile",
+            )
+            createConfiguration(
+                name = "shared",
+                propertiesFileName = "global_testfile",
+                applicationId = "com.example.global",
+                targetPackage = "com.example.global",
+                visibility = INTERNAL,
+            )
         }
         val buildTypeExtension = createExtension().apply {
             addGoogleAppIdResource.set(false)
-            configurations.create("localBuildTypeOptions1").apply {
-                fromPropertiesFile {
-                    it.location.set(project.file("testfileBuildType"))
-                }
-            }
-            configurations.create("sharedFirebaseOptions1").apply {
-                fromPropertiesFile {
-                    it.location.set(project.file("testfileBuildType3"))
-                    it.applicationId.set("test.app")
-                }
-                targetPackage.set("com.example.buildtype")
-                targetFileName.set("targetFilename")
-            }
+            createConfiguration(
+                name = "local",
+                propertiesFileName = "local_test_file_build_type",
+            )
+            createConfiguration(
+                name = "shared",
+                propertiesFileName = "shared_test_file_build_type",
+                applicationId = "test.app",
+                targetPackage = "com.example.buildtype",
+                targetFileName = "targetFilename",
+            )
         }
 
         val variantExtensionConfig = MockVariantExtensionConfig(
@@ -132,13 +130,10 @@ class ExtensionMergerTest {
         )
 
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
+
         assertThat(result.addGoogleAppIdResource).value().isFalse()
-        assertThat(result.configurations.asMap.keys).containsOnly(
-            "globalFirebaseOptions1",
-            "sharedFirebaseOptions1",
-            "localBuildTypeOptions1",
-        )
-        assertThat(result.configurations.getByName("globalFirebaseOptions1")).all {
+        assertThat(result.configurations.asMap.keys).containsOnly("global", "shared", "local")
+        assertThat(result.configurations.getByName("global")).all {
             transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
                 hasFileName("testfile")
                 applicationId().isNotPresent()
@@ -147,9 +142,94 @@ class ExtensionMergerTest {
             targetFileName().isNotPresent()
             propertyName().isNotPresent()
             visibility().isNotPresent()
-            nameProp().isEqualTo("globalFirebaseOptions1")
+            nameProp().isEqualTo("global")
         }
-        assertThat(result.configurations.getByName("localBuildTypeOptions1")).all {
+        assertThat(result.configurations.getByName("local")).all {
+            transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
+                hasFileName("local_test_file_build_type")
+                applicationId().isNotPresent()
+            }
+            targetPackage().isNotPresent()
+            targetFileName().isNotPresent()
+            propertyName().isNotPresent()
+            visibility().isNotPresent()
+            nameProp().isEqualTo("local")
+        }
+        assertThat(result.configurations.getByName("shared")).all {
+            transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
+                hasFileName("shared_test_file_build_type")
+                applicationId().value().isEqualTo("test.app")
+            }
+            targetPackage().value().isEqualTo("com.example.buildtype")
+            targetFileName().value().isEqualTo("targetFilename")
+            propertyName().isNotPresent()
+            visibility().value().isEqualTo(INTERNAL)
+            nameProp().isEqualTo("shared")
+        }
+    }
+
+    @Suppress("LongMethod")
+    @Test
+    fun `should merge flavor extensions`() {
+        val buildTypeExtension = createExtension().apply {
+            addGoogleAppIdResource.set(false)
+            createConfiguration(
+                name = "localBuildType",
+                propertiesFileName = "testfileBuildType",
+            )
+            createConfiguration(
+                name = "shared",
+                propertiesFileName = "testfileBuildType3.propertis",
+                applicationId = "test.app",
+                targetPackage = "com.example.buildtype",
+                targetFileName = "targetFilename",
+            )
+        }
+        val demoModeFlavorExtension = createExtension().apply {
+            addGoogleAppIdResource.set(true)
+            createConfiguration(
+                name = "demoModeFlavor",
+                propertiesFileName = "demo.properties",
+                targetPackage = "com.example.demo",
+            )
+            createConfiguration(
+                name = "shared",
+                propertiesFileName = "demo.properties",
+                propertyName = "demo",
+                targetFileName = "demo",
+                visibility = PUBLIC,
+            )
+        }
+        val minApi21FlavorExtension = createExtension().apply {
+            addGoogleAppIdResource.set(false)
+            createConfiguration(
+                name = "minApi21Flavor",
+                propertiesFileName = "minapi21.properties",
+                targetPackage = "com.example.minapi21",
+            )
+            createConfiguration(
+                name = "shared",
+                propertiesFileName = "minapi21.properties",
+                targetFileName = "targetFilenameMinapi21",
+            )
+        }
+
+        val variantExtensionConfig = MockVariantExtensionConfig(
+            variant = mockk<ApplicationVariant>(),
+            buildTypeExtension = buildTypeExtension,
+            productFlavorsExtensions = listOf(minApi21FlavorExtension, demoModeFlavorExtension),
+        )
+
+        val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
+
+        assertThat(result.addGoogleAppIdResource).value().isFalse()
+        assertThat(result.configurations.asMap.keys).containsOnly(
+            "localBuildType",
+            "demoModeFlavor",
+            "minApi21Flavor",
+            "shared",
+        )
+        assertThat(result.configurations.getByName("localBuildType")).all {
             transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
                 hasFileName("testfileBuildType")
                 applicationId().isNotPresent()
@@ -158,22 +238,73 @@ class ExtensionMergerTest {
             targetFileName().isNotPresent()
             propertyName().isNotPresent()
             visibility().isNotPresent()
-            nameProp().isEqualTo("localBuildTypeOptions1")
+            nameProp().isEqualTo("localBuildType")
         }
-        assertThat(result.configurations.getByName("sharedFirebaseOptions1")).all {
+        assertThat(result.configurations.getByName("demoModeFlavor")).all {
             transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
-                hasFileName("testfileBuildType3")
-                applicationId().value().isEqualTo("test.app")
+                hasFileName("demo.properties")
+                applicationId().isNotPresent()
+            }
+            targetPackage().value().isEqualTo("com.example.demo")
+            targetFileName().isNotPresent()
+            propertyName().isNotPresent()
+            visibility().isNotPresent()
+            nameProp().isEqualTo("demoModeFlavor")
+        }
+        assertThat(result.configurations.getByName("minApi21Flavor")).all {
+            transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
+                hasFileName("minapi21.properties")
+                applicationId().isNotPresent()
+            }
+            targetPackage().value().isEqualTo("com.example.minapi21")
+            targetFileName().isNotPresent()
+            propertyName().isNotPresent()
+            visibility().isNotPresent()
+            nameProp().isEqualTo("minApi21Flavor")
+        }
+        assertThat(result.configurations.getByName("shared")).all {
+            transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
+                hasFileName("minapi21.properties")
+                applicationId().isNotPresent()
             }
             targetPackage().value().isEqualTo("com.example.buildtype")
-            targetFileName().value().isEqualTo("targetFilename")
-            propertyName().isNotPresent()
-            visibility().value().isEqualTo(INTERNAL)
-            nameProp().isEqualTo("sharedFirebaseOptions1")
+            targetFileName().value().isEqualTo("targetFilenameMinapi21")
+            propertyName().value().isEqualTo("demo")
+            visibility().value().isEqualTo(PUBLIC)
+            nameProp().isEqualTo("shared")
         }
     }
 
     private fun createExtension(): FbaseGeneratorExtension = objects.newInstance(FbaseGeneratorExtension::class.java)
+
+    private fun FbaseGeneratorExtension.createConfiguration(
+        name: String,
+        propertiesFileName: String,
+        applicationId: String? = null,
+        targetPackage: String? = null,
+        targetFileName: String? = null,
+        propertyName: String? = null,
+        visibility: TargetVisibility? = null,
+    ): FbaseBuilderExtension = this.configurations.create(name).apply {
+        fromPropertiesFile {
+            it.location.set(project.file(propertiesFileName))
+            if (applicationId != null) {
+                it.applicationId.set(applicationId)
+            }
+        }
+        if (targetPackage != null) {
+            this.targetPackage.set(targetPackage)
+        }
+        if (targetFileName != null) {
+            this.targetFileName.set(targetFileName)
+        }
+        if (propertyName != null) {
+            this.propertyName.set(propertyName)
+        }
+        if (visibility != null) {
+            this.visibility.set(visibility)
+        }
+    }
 
     @Suppress("UNCHECKED_CAST", "GENERIC_NAME")
     private class MockVariantExtensionConfig<VariantT : Variant>(
