@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.samplefbase.flavors"
+    namespace = "com.example.samplefbase"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.samplefbase.flavors"
+        applicationId = "com.example.samplefbase"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -114,6 +114,12 @@ android {
     }
 }
 
+dependencies {
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.androidx.core.ktx)
+}
+
 firebaseConfig {
     configurations {
         create("firebaseOptions") {
@@ -123,10 +129,4 @@ firebaseConfig {
             targetPackage = "com.example.samplefbase.config"
         }
     }
-}
-
-dependencies {
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation(libs.androidx.core.ktx)
 }

@@ -6,8 +6,10 @@
 
 package ru.pixnews.gradle.fbase
 
-import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.matchers.string.shouldContain
+import assertk.assertFailure
+import assertk.assertions.cause
+import assertk.assertions.isNotNull
+import assertk.assertions.messageContains
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Test
@@ -17,10 +19,10 @@ class FbaseConfigGradlePluginPluginTest {
     fun `plugin should fail if Android plugin is not applied`() {
         val project = ProjectBuilder.builder().build()
         project.plugins.apply("ru.pixnews.gradle.fbase")
-        val exception = shouldThrowAny {
+        assertFailure {
             (project as? ProjectInternal)?.evaluate()
-        }.cause!!
-
-        exception.message shouldContain "can only be applied to an Android project."
+        }.cause()
+            .isNotNull()
+            .messageContains("can only be applied to an Android project")
     }
 }

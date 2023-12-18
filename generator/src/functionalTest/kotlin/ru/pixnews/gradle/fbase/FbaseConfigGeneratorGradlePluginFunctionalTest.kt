@@ -40,6 +40,18 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     }
 
     @Test
+    fun `can build project with flavors`() {
+        project.setupTestProject(
+            name = "android-app-flavors",
+            namespace = "com.example.samplefbase.flavors",
+        )
+
+        val result = project.build("assemble")
+
+        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @Test
     fun `can build project if configurations are not defined`() {
         val submoduleName = "android-app-noconf"
         project.setupTestProjectScaffold(submoduleName)
@@ -86,8 +98,12 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         project.writeFilesToSubmoduleRoot(
             submoduleName = submoduleName,
             buildGradleKts,
+            submoduleFixtures.application,
         )
-        project.writeFiles(project.rootDir, Root.defaultFirebaseProperties)
+        project.writeFiles(
+            project.rootDir,
+            Root.defaultFirebaseProperties,
+        )
 
         val result = project.build("assemble")
 
@@ -97,7 +113,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     @Nested
     inner class PropertiesFileTests {
         @Test
-        fun `should tail if proeprties file not found`() {
+        fun `should tail if properties file not found`() {
             val submoduleName = "android-app-no-properties-file"
             project.setupTestProjectScaffold(submoduleName)
 
@@ -117,6 +133,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             project.writeFilesToSubmoduleRoot(
                 submoduleName = submoduleName,
                 buildGradleKts,
+                submoduleFixtures.application,
             )
 
             val result = project.buildAndFail("assemble")
