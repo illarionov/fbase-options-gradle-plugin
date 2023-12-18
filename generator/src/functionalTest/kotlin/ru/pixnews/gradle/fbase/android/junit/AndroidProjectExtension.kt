@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestWatcher
 import ru.pixnews.gradle.fbase.android.fixtures.FileContent
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.DEFAULT_NAMESPACE
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.SubmoduleFixtures
 import java.io.File
@@ -46,11 +47,14 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     fun submoduleRootDir(submoduleName: String) = rootDir.resolve(submoduleName)
 
-    fun setupTestProject(name: String) = setupTestProject(testProjectsRoot.resolve(name))
+    fun setupTestProject(
+        name: String,
+        namespace: String = DEFAULT_NAMESPACE,
+    ) = setupTestProject(testProjectsRoot.resolve(name), namespace)
 
     fun setupTestProject(
         projectDir: File,
-        namespace: String = "com.example.samplefbase",
+        namespace: String = DEFAULT_NAMESPACE,
     ) {
         val submoduleName = projectDir.name
         setupTestProjectScaffold(submoduleName, namespace)
@@ -60,7 +64,7 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     fun setupTestProjectScaffold(
         submoduleName: String,
-        namespace: String = "com.example.samplefbase",
+        namespace: String = DEFAULT_NAMESPACE,
     ) {
         setupRoot(submoduleName)
         val submoduleFixtures = SubmoduleFixtures(namespace)
@@ -68,7 +72,6 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
             submoduleName,
             submoduleFixtures.androidManifestXml,
             submoduleFixtures.mainActivity,
-            submoduleFixtures.application,
             submoduleFixtures.buildGradleKts(),
         )
     }
