@@ -81,7 +81,7 @@ android {
             versionCode = 10000 + (android.defaultConfig.versionCode ?: 0)
             versionNameSuffix = "-minApi21"
             extensions.configure<FbaseGeneratorExtension> {
-                configurations.create("minapi21FirebaseOptions") {
+                configurations.create("minApi21FirebaseOptions") {
                     fromPropertiesFile {
                         location = layout.projectDirectory.file("firebase_minapi21.properties")
                     }

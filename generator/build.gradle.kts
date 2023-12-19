@@ -47,6 +47,11 @@ testing {
 
             dependencies {
                 implementation(project())
+                implementation(libs.android.tools.apkparser.apkanalyzer)
+                implementation(libs.android.tools.apkparser.binary.resources)
+                implementation(libs.android.tools.common)
+                implementation(libs.android.tools.smali.dexlib2)
+                implementation(libs.assertk)
             }
 
             targets {
