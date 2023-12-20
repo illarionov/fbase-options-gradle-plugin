@@ -125,9 +125,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
         AndroidAppFlavorsFixtures.testedVariants.forEach { testedVariant ->
             val apk = ApkAnalyzer(submoduleDir.resolve(testedVariant.apkPath))
-            // TODO
-            // assertThat(apk.getStringResource("google_app_id"))
-            // .isEqualTo(testedVariant.expectedGoogleAppId)
+            assertThat(apk.getStringResource("google_app_id"))
+                .isEqualTo(testedVariant.expectedGoogleAppId)
 
             testedVariant.expectedBuilders.forEach { (className, expectedOptions) ->
                 val code = apk.getDexCode("com.example.samplefbase.config.$className")
@@ -195,10 +194,83 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
 
+    @Test
+    fun `should fail when multiple configurations are defined and the main configuration is not set`() {
+        val submoduleName = "android-app-multimple-config-no-primary"
+        project.setupTestProjectScaffold(submoduleName)
+
+        val buildGradleKts = submoduleFixtures.buildGradleKts(
+            """
+            firebaseConfig {
+               configurations {
+                   create("firebaseOptions1") {
+                   }
+                   create("firebaseOptions2") {
+                   }
+               }
+            }
+        """.trimIndent(),
+        )
+        project.writeFilesToSubmoduleRoot(
+            submoduleName = submoduleName,
+            buildGradleKts,
+            submoduleFixtures.application,
+        )
+        project.writeFiles(
+            project.rootDir,
+            Root.defaultFirebaseProperties,
+        )
+
+        val result = project.buildAndFail("assemble")
+
+        assertTrue(
+            result.output.contains(
+                "FbaseGeneratorExtension.primaryConfiguration must be set when using multiple configurations",
+            ),
+        )
+    }
+
+    @Test
+    fun `should fail when multiple configurations are defined and the main configuration is set to a non-existent`() {
+        val submoduleName = "android-app-multimple-config-wrong-primary"
+        project.setupTestProjectScaffold(submoduleName)
+
+        val buildGradleKts = submoduleFixtures.buildGradleKts(
+            """
+            firebaseConfig {
+               primaryConfiguration = "firebaseOptions3"
+               configurations {
+                   create("firebaseOptions1") {
+                   }
+                   create("firebaseOptions2") {
+                   }
+               }
+            }
+        """.trimIndent(),
+        )
+        project.writeFilesToSubmoduleRoot(
+            submoduleName = submoduleName,
+            buildGradleKts,
+            submoduleFixtures.application,
+        )
+        project.writeFiles(
+            project.rootDir,
+            Root.defaultFirebaseProperties,
+        )
+
+        val result = project.buildAndFail("assemble")
+
+        assertTrue(
+            result.output.contains(
+                "Configuration named `firebaseOptions3` is not defined",
+            ),
+        )
+    }
+
     @Nested
     inner class PropertiesFileTests {
         @Test
-        fun `should tail if properties file not found`() {
+        fun `should fail if properties file not found`() {
             val submoduleName = "android-app-no-properties-file"
             project.setupTestProjectScaffold(submoduleName)
 

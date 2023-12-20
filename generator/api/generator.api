@@ -23,6 +23,7 @@ public abstract class ru/pixnews/gradle/fbase/FbaseGeneratorExtension : com/andr
 	public static final field Companion Lru/pixnews/gradle/fbase/FbaseGeneratorExtension$Companion;
 	public abstract fun getAddGoogleAppIdResource ()Lorg/gradle/api/provider/Property;
 	public abstract fun getConfigurations ()Lorg/gradle/api/NamedDomainObjectContainer;
+	public abstract fun getPrimaryConfiguration ()Lorg/gradle/api/provider/Property;
 }
 
 public final class ru/pixnews/gradle/fbase/FbaseGeneratorExtension$Companion {

@@ -26,6 +26,7 @@ android {
         create("benchmark") {
             applicationIdSuffix = ".benchmark"
             extensions.configure<FbaseGeneratorExtension> {
+                primaryConfiguration = "benchmarkFirebaseOptions"
                 configurations.create("benchmarkFirebaseOptions") {
                     fromPropertiesFile {
                         location = layout.projectDirectory.file("firebase_benchmark.properties")
@@ -41,6 +42,7 @@ android {
             dimension = "mode"
             applicationIdSuffix = ".demo"
             extensions.configure<FbaseGeneratorExtension> {
+                primaryConfiguration = "demoFirebaseOptions"
                 configurations.create("demoFirebaseOptions") {
                     fromPropertiesFile {
                         location = layout.projectDirectory.file("firebase_demo.properties")
@@ -53,6 +55,7 @@ android {
             dimension = "mode"
             applicationIdSuffix = ".full"
             extensions.configure<FbaseGeneratorExtension> {
+                primaryConfiguration = "fullFirebaseOptions"
                 configurations.create("fullFirebaseOptions") {
                     fromPropertiesFile {
                         location = layout.projectDirectory.file("firebase_full.properties")
@@ -67,6 +70,7 @@ android {
             versionCode = 30000 + (android.defaultConfig.versionCode ?: 0)
             versionNameSuffix = "-minApi24"
             extensions.configure<FbaseGeneratorExtension> {
+                primaryConfiguration = "minApi24FirebaseOptions"
                 configurations.create("minApi24FirebaseOptions") {
                     fromPropertiesFile {
                         location = layout.projectDirectory.file("firebase_minapi24.properties")
@@ -81,6 +85,7 @@ android {
             versionCode = 10000 + (android.defaultConfig.versionCode ?: 0)
             versionNameSuffix = "-minApi21"
             extensions.configure<FbaseGeneratorExtension> {
+                primaryConfiguration = "minApi21FirebaseOptions"
                 configurations.create("minApi21FirebaseOptions") {
                     fromPropertiesFile {
                         location = layout.projectDirectory.file("firebase_minapi21.properties")
