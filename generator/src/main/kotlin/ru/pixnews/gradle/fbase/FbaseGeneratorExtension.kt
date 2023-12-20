@@ -16,9 +16,17 @@ public abstract class FbaseGeneratorExtension @Inject internal constructor() : S
     /**
      * Should the google_app_id string parameter be added to Android resources.
      * Enabled by default.
-     * Android string resource "google_app_id" will be initialized with the value from the first configuration defined.
+     * Android string resource "google_app_id" will be initialized with the value from the configuration specified
+     * by [primaryConfiguration].
      */
     public abstract val addGoogleAppIdResource: Property<Boolean>
+
+    /**
+     * Name of the configuration from the [configurations] that will be used to fill "google_app_id" string resource.
+     *
+     * Required when using 2 or more configurations.
+     */
+    public abstract val primaryConfiguration: Property<String>
     public abstract val configurations: NamedDomainObjectContainer<FbaseBuilderExtension>
 
     public companion object {

@@ -116,6 +116,7 @@ android {
 
 firebaseConfig {
     configurations {
+        primaryConfiguration = "firebaseOptions"
         create("firebaseOptions") {
             fromPropertiesFile {
                 location = layout.projectDirectory.file("firebase.properties")

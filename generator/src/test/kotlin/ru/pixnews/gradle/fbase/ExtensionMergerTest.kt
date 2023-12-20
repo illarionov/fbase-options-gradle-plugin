@@ -56,6 +56,7 @@ class ExtensionMergerTest {
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
 
         assertThat(result.addGoogleAppIdResource).isNotPresent()
+        assertThat(result.primaryConfiguration).isNotPresent()
         assertThat(result.configurations.asMap).isEmpty()
     }
 
@@ -63,6 +64,7 @@ class ExtensionMergerTest {
     fun `should use globalExtension when variant extensions are empty`() {
         globalExtension.apply {
             addGoogleAppIdResource.set(true)
+            primaryConfiguration.set("global")
             createConfiguration(
                 name = "global",
                 propertiesFileName = "testfile",
@@ -77,7 +79,8 @@ class ExtensionMergerTest {
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
 
         assertThat(result.addGoogleAppIdResource).value().isTrue()
-        assertThat(result.configurations.asMap.keys).containsOnly("global")
+        assertThat(result.primaryConfiguration).value().isEqualTo("global")
+        assertThat(result.configurations.names).containsOnly("global")
         assertThat(result.configurations.getByName("global")).all {
             transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
                 hasFileName("testfile")
@@ -96,6 +99,7 @@ class ExtensionMergerTest {
     fun `should merge globalExtension and build type extension`() {
         globalExtension.apply {
             addGoogleAppIdResource.set(true)
+            primaryConfiguration.set("global")
             createConfiguration(
                 name = "global",
                 propertiesFileName = "testfile",
@@ -110,6 +114,7 @@ class ExtensionMergerTest {
         }
         val buildTypeExtension = createExtension().apply {
             addGoogleAppIdResource.set(false)
+            primaryConfiguration.set("local")
             createConfiguration(
                 name = "local",
                 propertiesFileName = "local_test_file_build_type",
@@ -132,6 +137,7 @@ class ExtensionMergerTest {
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
 
         assertThat(result.addGoogleAppIdResource).value().isFalse()
+        assertThat(result.primaryConfiguration).value().isEqualTo("local")
         assertThat(result.configurations.names).containsOnly("local", "global", "shared")
         assertThat(result.configurations.getByName("global")).all {
             transform { it.source.get() }.isInstanceOf<PropertiesFileGeneratorSource>().all {
@@ -173,6 +179,7 @@ class ExtensionMergerTest {
     fun `should merge flavor extensions`() {
         val buildTypeExtension = createExtension().apply {
             addGoogleAppIdResource.set(false)
+            primaryConfiguration.set("shared")
             createConfiguration(
                 name = "localBuildType",
                 propertiesFileName = "testfileBuildType",
@@ -187,6 +194,7 @@ class ExtensionMergerTest {
         }
         val demoModeFlavorExtension = createExtension().apply {
             addGoogleAppIdResource.set(true)
+            primaryConfiguration.set("demoModeFlavor")
             createConfiguration(
                 name = "demoModeFlavor",
                 propertiesFileName = "demo.properties",
@@ -223,6 +231,7 @@ class ExtensionMergerTest {
         val result = ExtensionMerger(objects, globalExtension).invoke(variantExtensionConfig)
 
         assertThat(result.addGoogleAppIdResource).value().isFalse()
+        assertThat(result.primaryConfiguration).value().isEqualTo("demoModeFlavor")
         assertThat(result.configurations.asMap.keys).containsOnly(
             "localBuildType",
             "demoModeFlavor",

@@ -42,6 +42,7 @@ dependencies {
 }
 
 firebaseConfig {
+    primaryConfiguration = "firebaseOptions"
     configurations {
         create("firebaseOptions") {
             fromPropertiesFile {
