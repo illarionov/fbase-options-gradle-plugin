@@ -7,7 +7,7 @@
 package ru.pixnews.gradle.fbase.android.fixtures
 
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.android.util.capitalizeAscii
+import ru.pixnews.gradle.fbase.android.util.capitalized
 
 object AndroidAppFlavorsFixtures {
     const val PROJECT_NAME = "android-app-flavors"
@@ -131,7 +131,7 @@ object AndroidAppFlavorsFixtures {
             } else {
                 ""
             }
-            "$api${mode.capitalizeAscii()}/$buildType/$PROJECT_NAME-$api-$mode-$buildType$unsignedSuffix.apk"
+            "$api${mode.capitalized()}/$buildType/$PROJECT_NAME-$api-$mode-$buildType$unsignedSuffix.apk"
         }
     }
 }

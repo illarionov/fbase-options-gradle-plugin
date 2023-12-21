@@ -11,6 +11,7 @@ import org.gradle.api.Named
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
+import ru.pixnews.gradle.fbase.source.GoogleServicesJsonFileGeneratorSource
 import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
 import ru.pixnews.gradle.fbase.source.ProvidedGeneratorSource
 import java.io.Serializable
@@ -63,6 +64,13 @@ public abstract class FbaseBuilderExtension @Inject constructor(
 
     public fun fromValues(action: Action<ProvidedGeneratorSource>) {
         val valuesSource = objects.newInstance(ProvidedGeneratorSource::class.java)
+        action.execute(valuesSource)
+        source.set(valuesSource)
+        source.disallowChanges()
+    }
+
+    public fun fromGoogleServicesJson(action: Action<GoogleServicesJsonFileGeneratorSource>) {
+        val valuesSource = objects.newInstance(GoogleServicesJsonFileGeneratorSource::class.java)
         action.execute(valuesSource)
         source.set(valuesSource)
         source.disallowChanges()

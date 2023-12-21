@@ -8,6 +8,6 @@ package ru.pixnews.gradle.fbase.android.util
 
 import java.util.Locale
 
-internal fun String.capitalizeAscii() = replaceFirstChar {
+internal fun String.capitalized() = replaceFirstChar {
     if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
 }
