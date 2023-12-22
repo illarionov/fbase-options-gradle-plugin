@@ -11,6 +11,7 @@ diktat = "1.2.5"
 firebase = "32.6.0"
 fbase-config-generator-gradle-plugin = "0.1-SNAPSHOT"
 gradle-plugin-publish = "1.2.1"
+gson = "2.10.1"
 junit5 = "5.10.1"
 kotest = "5.8.0"
 kotlin-compile-testing-fork = "0.4.0"
@@ -28,8 +29,9 @@ android-tools-apkparser-binary-resources = { group = "com.android.tools.apkparse
 android-tools-smali-dexlib2 = { group = "com.android.tools.smali", name = "smali-dexlib2", version.ref = "android-tools-dexlib2" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase"}
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit5" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
@@ -39,7 +41,7 @@ kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core" 
 kotest-bom = { group = "io.kotest", name = "kotest-bom", version.ref = "kotest" }
 kotlin-compile-testing = { group = "dev.zacsweers.kctfork", name = "core", version.ref = "kotlin-compile-testing-fork" }
 kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinpoet" }
-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk"}
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 # Dependencies of the included build-logic
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }

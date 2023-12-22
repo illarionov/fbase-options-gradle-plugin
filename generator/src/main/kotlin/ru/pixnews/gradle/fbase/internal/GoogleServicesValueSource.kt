@@ -6,6 +6,7 @@
 
 package ru.pixnews.gradle.fbase.internal
 
+import org.gradle.api.GradleException
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
@@ -22,10 +23,17 @@ import ru.pixnews.gradle.fbase.source.GoogleServicesJsonFileGeneratorSource
 internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
     @Suppress("UnusedPrivateProperty")
     override fun obtain(): LocalFirebaseOptions? {
-        val files = parameters.configurationFiles
+        val files = parameters.configurationFiles.filter { it.isFile }
         val applicationid = parameters.applicationId.get()
 
-        return LocalFirebaseOptions.empty
+        if (files.isEmpty) {
+            val searchLocations = parameters.configurationFiles.joinToString { it.absolutePath }
+            throw GradleException("File $JSON_FILE_NAME is missing. Searched locations: $searchLocations")
+        }
+
+        val options = files.mapNotNull { parseGoogleServicesFile(it, applicationid) }
+
+        return options.first()
     }
 
     interface Parameters : ValueSourceParameters {

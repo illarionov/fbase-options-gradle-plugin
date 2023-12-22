@@ -90,6 +90,7 @@ private fun Test.configureTestTaskDefaults() {
 
 dependencies {
     implementation(libs.agp.plugin.api)
+    implementation(libs.gson)
     implementation(libs.kotlinpoet) {
         exclude(module = "kotlin-reflect")
     }
