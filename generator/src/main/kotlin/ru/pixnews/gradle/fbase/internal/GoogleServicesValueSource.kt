@@ -27,14 +27,49 @@ internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOpt
         val applicationid = parameters.applicationId.get()
 
         if (files.isEmpty) {
-            val searchLocations = parameters.configurationFiles.joinToString { it.absolutePath }
-            throw GradleException("File $JSON_FILE_NAME is missing. Searched locations: $searchLocations")
+            throw GradleException(
+                "File $JSON_FILE_NAME is missing. " +
+                        "Searched locations: ${parameters.configurationFilenames()}",
+            )
         }
 
-        val options = files.mapNotNull { parseGoogleServicesFile(it, applicationid) }
-
-        return options.first()
+        val gsonServiceFiles = files.mapNotNull { it to parseGoogleServicesFile(it) }
+        val (projectInfo, clientInfo) = if (applicationid.isNotEmpty()) {
+            val filePathServices = gsonServiceFiles.firstOrNull { (_, json) ->
+                json.clients.any { it.packageName == applicationid }
+            }
+            if (filePathServices == null) {
+                throw GradleException(
+                    "Can not find configuration for Android application with id `$applicationid`." +
+                            " Searched locations: ${parameters.configurationFilenames()}",
+                )
+            }
+            val json = filePathServices.second
+            json.projectInfo to json.clients.first { it.packageName == applicationid }
+        } else {
+            val (filePath, json) = gsonServiceFiles.first()
+            if (json.clients.size > 1) {
+                throw GradleException(
+                    "Found configurations for ${json.clients.size} clients in file " +
+                            "`${filePath.absolutePath}`, unable to determine which one to use. " +
+                            "Required application ID can be specified using the `applicationId` parameter of the " +
+                            "`fromGoogleServicesJson(){} block`",
+                )
+            }
+            json.projectInfo to json.clients.first()
+        }
+        return LocalFirebaseOptions(
+            projectId = projectInfo.projectId,
+            apiKey = clientInfo.googleApiKey,
+            applicationId = clientInfo.mobileSdkAppId,
+            databaseUrl = projectInfo.firebaseUrl,
+            gaTrackingId = clientInfo.trackingId,
+            gcmSenderId = projectInfo.projectNumber,
+            storageBucket = projectInfo.storageBucket,
+        )
     }
+
+    private fun Parameters.configurationFilenames(): String = configurationFiles.joinToString { it.absolutePath }
 
     interface Parameters : ValueSourceParameters {
         val configurationFiles: ConfigurableFileCollection
@@ -73,7 +108,7 @@ internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOpt
         ): List<RegularFile> = getJsonLocations(
             buildType,
             productFlavorNames,
-        ).map<String, RegularFile>(projectDirectory::file)
+        ).map(projectDirectory::file)
 
         private fun getJsonLocations(buildType: String, flavorNames: List<String>): List<String> {
             val flavorsName = flavorNames.reduce { fullName, flavorSuffix -> fullName + flavorSuffix.capitalized() }
