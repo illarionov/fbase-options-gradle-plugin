@@ -86,9 +86,8 @@ object AndroidAppFlavorsFixtures {
                     }
 
                     val variant = AppFlavorsVariant(
-                        api = api,
-                        mode = mode,
                         buildType = buildType,
+                        flavors = listOf(api, mode),
                         expectedGoogleAppId = expectedGoogleAppId,
                         expectedBuilders = getExpectedBuilders(api, mode, buildType),
                     )
@@ -119,16 +118,15 @@ object AndroidAppFlavorsFixtures {
     }
 
     data class AppFlavorsVariant(
-        val api: String,
-        val mode: String,
         val buildType: String,
+        val flavors: List<String>,
         val expectedGoogleAppId: String,
         val expectedBuilders: List<Pair<String, LocalFirebaseOptions>>,
     ) {
         val apkPath: String = getApkPath(
             appName = PROJECT_NAME,
             buildType = buildType,
-            flavors = arrayOf(api, mode),
+            flavors = flavors.toTypedArray(),
         )
     }
 }

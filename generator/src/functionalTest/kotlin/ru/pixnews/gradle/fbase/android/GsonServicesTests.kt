@@ -25,7 +25,7 @@ class GsonServicesTests {
 
     @Test
     fun `Should build project with default config from google-services`() {
-        val submoduleName = "android-app-google-services"
+        val submoduleName = "android-app-google-services-project1"
         val namespace = "com.example.myapplication"
 
         project.setupTestProject(
@@ -59,19 +59,64 @@ class GsonServicesTests {
                 classFqcn = "com.example.myapplication.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
             )
-            assertThat(apk.getStringResource("google_app_id"))
-                .isEqualTo("1:123456789000:android:f1bf012572b04063")
-            assertThat(optionsDexCode).dexBytecodeMatch(
-                LocalFirebaseOptions(
-                    projectId = "mockproject-1234",
-                    apiKey = "AIzbSzCn1N6LWIe6wthYyrgUUSAlUsdqMb-wvTo",
-                    applicationId = "1:123456789000:android:f1bf012572b04063",
-                    databaseUrl = "https://mockproject-1234.firebaseio.com",
-                    gaTrackingId = null,
-                    gcmSenderId = "123456789000",
-                    storageBucket = null,
-                ),
-            )
+            assertThat(apk.getStringResource("google_app_id")).isEqualTo(EXPECTED_GOOGLE_APP_ID)
+            assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_LOCAL_FIREBASE_OPTIONS)
         }
+    }
+
+    @Test
+    fun `Should build project with default config from google-services with flavors`() {
+        val submoduleName = "android-app-google-services-project1"
+        val namespace = "com.example.myapplication"
+
+        project.setupTestProject(
+            name = submoduleName,
+            namespace = namespace,
+        )
+
+        val googleServiceJson = SubmoduleFixtures(namespace).googleServicesJson
+        project.writeFilesToSubmoduleRoot(
+            submoduleName = submoduleName,
+            googleServiceJson.copy(dstPath = "src/free/google-services.json"),
+            googleServiceJson.copy(dstPath = "src/paid/google-services.json"),
+        )
+
+        val result = project.build("assemble")
+
+        Assertions.assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+
+        val apkPatches = buildList {
+            listOf("free", "paid").forEach { flavor1 ->
+                listOf("one", "two").forEach { flavor2 ->
+                    listOf("debug", "release").forEach { buildType ->
+                        add(getApkPath(submoduleName, buildType, flavor1, flavor2))
+                    }
+                }
+            }
+        }
+
+        val submoduleApkDir = project.submoduleOutputApkDir(submoduleName)
+        apkPatches.forEach { apkPath ->
+            val apk = ApkAnalyzer(submoduleApkDir.resolve(apkPath))
+            val optionsDexCode = apk.getDexCode(
+                classFqcn = "com.example.myapplication.config.FirebaseOptionsKt",
+                methodSignature = "<clinit>()V",
+            )
+            assertThat(apk.getStringResource("google_app_id")).isEqualTo(EXPECTED_GOOGLE_APP_ID)
+            assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_LOCAL_FIREBASE_OPTIONS)
+        }
+    }
+
+    internal companion object {
+        const val EXPECTED_GOOGLE_APP_ID = "1:123456789000:android:f1bf012572b04063"
+        val EXPECTED_LOCAL_FIREBASE_OPTIONS = LocalFirebaseOptions(
+            projectId = "mockproject-1234",
+            apiKey = "AIzbSzCn1N6LWIe6wthYyrgUUSAlUsdqMb-wvTo",
+            applicationId = "1:123456789000:android:f1bf012572b04063",
+            databaseUrl = "https://mockproject-1234.firebaseio.com",
+            gaTrackingId = null,
+            gcmSenderId = "123456789000",
+            storageBucket = null,
+        )
     }
 }

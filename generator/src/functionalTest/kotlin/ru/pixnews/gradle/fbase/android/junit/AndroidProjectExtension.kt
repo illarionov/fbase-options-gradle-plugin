@@ -85,7 +85,11 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     ): BuildResult {
         val runner = GradleRunner.create().apply {
             forwardOutput()
-            withArguments("--stacktrace", *args)
+            withArguments(
+                "-Dorg.gradle.daemon.performance.enable-monitoring=false",
+                "--stacktrace",
+                *args,
+            )
             withProjectDir(rootDir)
             if (gradleVersion != null) {
                 withGradleVersion(gradleVersion)
