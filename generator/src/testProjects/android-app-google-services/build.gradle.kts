@@ -1,5 +1,3 @@
-import ru.pixnews.gradle.fbase.FbaseGeneratorExtension
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)

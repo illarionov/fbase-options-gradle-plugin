@@ -7,7 +7,7 @@
 package ru.pixnews.gradle.fbase.android.fixtures
 
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.android.util.capitalized
+import ru.pixnews.gradle.fbase.android.util.getApkPath
 
 object AndroidAppFlavorsFixtures {
     const val PROJECT_NAME = "android-app-flavors"
@@ -125,13 +125,10 @@ object AndroidAppFlavorsFixtures {
         val expectedGoogleAppId: String,
         val expectedBuilders: List<Pair<String, LocalFirebaseOptions>>,
     ) {
-        val apkPath: String = run {
-            val unsignedSuffix = if (buildType != "debug") {
-                "-unsigned"
-            } else {
-                ""
-            }
-            "$api${mode.capitalized()}/$buildType/$PROJECT_NAME-$api-$mode-$buildType$unsignedSuffix.apk"
-        }
+        val apkPath: String = getApkPath(
+            appName = PROJECT_NAME,
+            buildType = buildType,
+            flavors = arrayOf(api, mode),
+        )
     }
 }
