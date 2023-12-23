@@ -96,6 +96,9 @@ object ProjectFixtures {
             """.trimIndent()
             FileContent(dstPath, content)
         }
+        val googleServicesJson: FileContent by lazy {
+            testFilesSubmoduleFileContent("google-services.json")
+        }
 
         fun buildGradleKts(
             additionalText: String = "",

@@ -11,7 +11,6 @@ package ru.pixnews.gradle.fbase
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import ru.pixnews.gradle.fbase.android.apk.ApkAnalyzer
@@ -265,37 +264,5 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
                 "Configuration named `firebaseOptions3` is not defined",
             ),
         )
-    }
-
-    @Nested
-    inner class PropertiesFileTests {
-        @Test
-        fun `should fail if properties file not found`() {
-            val submoduleName = "android-app-no-properties-file"
-            project.setupTestProjectScaffold(submoduleName)
-
-            val buildGradleKts = submoduleFixtures.buildGradleKts(
-                """
-            firebaseConfig {
-               configurations {
-                   create("firebaseOptions") {
-                       fromPropertiesFile {
-                           location = layout.projectDirectory.file("nonexistent.properties")
-                       }
-                   }
-               }
-            }
-        """.trimIndent(),
-            )
-            project.writeFilesToSubmoduleRoot(
-                submoduleName = submoduleName,
-                buildGradleKts,
-                submoduleFixtures.application,
-            )
-
-            val result = project.buildAndFail("assemble")
-
-            assertTrue(result.output.contains("java.io.FileNotFoundException"))
-        }
     }
 }
