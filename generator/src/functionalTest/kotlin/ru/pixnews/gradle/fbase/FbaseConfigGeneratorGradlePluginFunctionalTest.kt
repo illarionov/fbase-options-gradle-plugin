@@ -13,11 +13,9 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
-import ru.pixnews.gradle.fbase.android.apk.ApkAnalyzer
 import ru.pixnews.gradle.fbase.android.fixtures.AndroidAppFlavorsFixtures
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.DEFAULT_NAMESPACE
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.SubmoduleFixtures
 import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
 import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
 
@@ -36,7 +34,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
         val submodule = project.submodule(projectName)
-        ApkAnalyzer(submodule.apkFile( "release")).also { releaseApk ->
+        submodule.apk("release").also { releaseApk ->
             val releaseDexCode = releaseApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -56,7 +54,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             )
         }
 
-        ApkAnalyzer(submodule.apkFile("benchmark")).also { benchmarkApk ->
+        submodule.apk("benchmark").also { benchmarkApk ->
             val benchmarkDexCode = benchmarkApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -76,7 +74,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             )
         }
 
-        ApkAnalyzer(submodule.apkFile("debug")).also { debugApk ->
+        submodule.apk("debug").also { debugApk ->
             val debugDexCode = debugApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -122,7 +120,10 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
         AndroidAppFlavorsFixtures.testedVariants.forEach { testedVariant ->
-            val apk = ApkAnalyzer(submodule.apkDir.resolve(testedVariant.apkPath))
+            val apk = submodule.apk(
+                buildType = testedVariant.buildType,
+                flavors = testedVariant.flavors.toTypedArray(),
+            )
             assertThat(apk.getStringResource("google_app_id"))
                 .isEqualTo(testedVariant.expectedGoogleAppId)
 

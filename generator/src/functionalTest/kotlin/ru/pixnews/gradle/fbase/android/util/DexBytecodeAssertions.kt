@@ -15,8 +15,8 @@ fun Assert<String?>.dexBytecodeMatch(
     options: LocalFirebaseOptions,
 ) = this
     .isNotNull()
-    .transform { dex ->
-        dex.split("\n")
+    .transform { dexBytecodeAsString ->
+        dexBytecodeAsString.split("\n")
             .map(String::trim)
             .filter(String::isNotEmpty)
             .filterNot(lineRegex::matches)

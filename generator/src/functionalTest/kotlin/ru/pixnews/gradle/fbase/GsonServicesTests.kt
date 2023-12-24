@@ -11,7 +11,6 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
-import ru.pixnews.gradle.fbase.android.apk.ApkAnalyzer
 import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
 import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
 
@@ -32,7 +31,7 @@ class GsonServicesTests {
 
         val submodule = project.submodule(submoduleName, namespace)
         submodule.writeFilesToSubmoduleRoot(
-            submodule.fixtures.googleServicesJson
+            submodule.fixtures.googleServicesJson,
         )
 
         val result = project.build("assemble")
@@ -43,14 +42,13 @@ class GsonServicesTests {
             listOf("free", "paid").forEach { flavor1 ->
                 listOf("one", "two").forEach { flavor2 ->
                     listOf("debug", "release").forEach { buildType ->
-                        add(submodule.apkFile(buildType, flavor1, flavor2))
+                        add(submodule.apk(buildType, flavor1, flavor2))
                     }
                 }
             }
         }
 
-        apkFiles.forEach { apkPath ->
-            val apk = ApkAnalyzer(apkPath)
+        apkFiles.forEach { apk ->
             val optionsDexCode = apk.getDexCode(
                 classFqcn = "com.example.myapplication.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -85,14 +83,13 @@ class GsonServicesTests {
             listOf("free", "paid").forEach { flavor1 ->
                 listOf("one", "two").forEach { flavor2 ->
                     listOf("debug", "release").forEach { buildType ->
-                        add(submodule.apkFile(buildType, flavor1, flavor2))
+                        add(submodule.apk(buildType, flavor1, flavor2))
                     }
                 }
             }
         }
 
-        apkFiles.forEach { apkPath ->
-            val apk = ApkAnalyzer(apkPath)
+        apkFiles.forEach { apk ->
             val optionsDexCode = apk.getDexCode(
                 classFqcn = "com.example.myapplication.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -122,8 +119,7 @@ class GsonServicesTests {
 
         Assertions.assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
-        val releaseApk = submodule.apkFile("release")
-        val apk = ApkAnalyzer(releaseApk)
+        val apk = submodule.apk("release")
         val optionsDexCode = apk.getDexCode(
             classFqcn = "com.example.myapplication.config.FirebaseOptionsKt",
             methodSignature = "<clinit>()V",

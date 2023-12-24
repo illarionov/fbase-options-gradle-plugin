@@ -14,8 +14,6 @@ import org.junit.jupiter.api.extension.TestWatcher
 import ru.pixnews.gradle.fbase.android.fixtures.FileContent
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.DEFAULT_NAMESPACE
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.SubmoduleFixtures
-import ru.pixnews.gradle.fbase.android.util.getApkPath
 import java.io.File
 import java.nio.file.Files
 import java.util.Optional
@@ -48,7 +46,7 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     public fun submodule(
         submoduleName: String,
-        namespace: String = DEFAULT_NAMESPACE
+        namespace: String = DEFAULT_NAMESPACE,
     ): Submodule = Submodule(rootDir, submoduleName, namespace)
 
     fun setupTestProject(
@@ -71,7 +69,7 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         namespace: String = DEFAULT_NAMESPACE,
     ) {
         setupRoot(submoduleName)
-        val submodule = submodule(submoduleName,  namespace)
+        val submodule = submodule(submoduleName, namespace)
         submodule.writeFilesToSubmoduleRoot(
             submodule.fixtures.androidManifestXml,
             submodule.fixtures.mainActivity,

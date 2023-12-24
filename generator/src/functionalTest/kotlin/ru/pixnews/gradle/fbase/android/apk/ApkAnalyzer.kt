@@ -17,16 +17,14 @@ import com.google.devrel.gmscore.tools.apk.arsc.BinaryResourceValue
 import com.google.devrel.gmscore.tools.apk.arsc.Chunk
 import com.google.devrel.gmscore.tools.apk.arsc.ResourceTableChunk
 import com.google.devrel.gmscore.tools.apk.arsc.TypeSpecChunk
-import org.gradle.internal.impldep.org.eclipse.jgit.annotations.NonNull
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
 import java.nio.file.Path
-import java.util.stream.Collectors
 import kotlin.io.path.readBytes
+import kotlin.io.path.useDirectoryEntries
 
 class ApkAnalyzer(
-    private val path: File,
+    val path: File,
 ) {
     fun getStringResource(
         name: String = "google_app_id",
@@ -84,8 +82,11 @@ class ApkAnalyzer(
         methodSignature: String? = "<clinit>()V",
     ): String? {
         return Archives.open(path.toPath()).use { archiveContext ->
-            val dexPaths = getDexFilesFrom(archiveContext.archive.contentRoot)
-            dexPaths.firstNotNullOfOrNull { getDexCodeOrNull(it, classFqcn, methodSignature) }
+            archiveContext.archive.contentRoot.useDirectoryEntries("*.dex") { dexPaths ->
+                dexPaths.firstNotNullOfOrNull {
+                    getDexCodeOrNull(it, classFqcn, methodSignature)
+                }
+            }
         }
     }
 
@@ -116,12 +117,5 @@ class ApkAnalyzer(
             }
         }
         return null
-    }
-
-    @NonNull
-    private fun getDexFilesFrom(dir: Path): List<Path> = Files.list(dir).use { stream ->
-        stream.filter { path ->
-            (Files.isRegularFile(path) && path.getFileName().toString().endsWith(".dex"))
-        }.collect(Collectors.toList())
     }
 }

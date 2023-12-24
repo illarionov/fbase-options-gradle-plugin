@@ -7,7 +7,6 @@
 package ru.pixnews.gradle.fbase.android.fixtures
 
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.android.util.getApkPath
 
 object AndroidAppFlavorsFixtures {
     const val PROJECT_NAME = "android-app-flavors"
@@ -122,11 +121,5 @@ object AndroidAppFlavorsFixtures {
         val flavors: List<String>,
         val expectedGoogleAppId: String,
         val expectedBuilders: List<Pair<String, LocalFirebaseOptions>>,
-    ) {
-        val apkPath: String = getApkPath(
-            appName = PROJECT_NAME,
-            buildType = buildType,
-            flavors = flavors.toTypedArray(),
-        )
-    }
+    )
 }
