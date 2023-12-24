@@ -25,17 +25,17 @@ import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
 class FbaseConfigGeneratorGradlePluginFunctionalTest {
     @JvmField
     @RegisterExtension
-    var project = AndroidProjectExtension()
+    var projectBuilder = AndroidProjectExtension()
 
     @Test
     fun `can build simple project`() {
-        project.setupTestProject(androidAppSimple)
+        val rootProject = projectBuilder.setupTestProject(androidAppSimple)
 
-        val result = project.build("assemble")
+        val result = projectBuilder.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
-        val submodule = project.submodule(androidAppSimple)
+        val submodule = rootProject.subProject(androidAppSimple)
         submodule.apk("release").also { releaseApk ->
             val releaseDexCode = releaseApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
@@ -99,19 +99,19 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `can build project with multiple configurations`() {
-        project.setupTestProject(androidAppMulticonfig)
+        projectBuilder.setupTestProject(androidAppMulticonfig)
 
-        val result = project.build("assemble")
+        val result = projectBuilder.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
 
     @Test
     fun `can build project with flavors`() {
-        project.setupTestProject(androidAppFlavors)
-        val submodule = project.submodule(androidAppFlavors)
+        val rootProject = projectBuilder.setupTestProject(androidAppFlavors)
+        val submodule = rootProject.subProject(androidAppFlavors)
 
-        val result = project.build("assemble")
+        val result = projectBuilder.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
@@ -137,8 +137,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             namespace = "com.example.samplefbase",
         )
 
-        project.setupTestProjectScaffold(submoduleId)
-        val submodule = project.submodule(submoduleId)
+        val submodule = projectBuilder.setupTestProjectScaffold(submoduleId)
+            .subProject(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -158,7 +158,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             application,
         )
 
-        val result = project.build("assemble")
+        val result = projectBuilder.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
@@ -169,9 +169,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             projectName = "android-app-no-source-set",
             namespace = "com.example.samplefbase",
         )
-        project.setupTestProjectScaffold(submoduleId)
-
-        val submodule = project.submodule(submoduleId)
+        val rootProject = projectBuilder.setupTestProjectScaffold(submoduleId)
+        val submodule = rootProject.subProject(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -187,11 +186,11 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             buildGradleKts,
             submodule.fixtures.application,
         )
-        project.writeFilesToRoot(
+        rootProject.writeFiles(
             Root.defaultFirebaseProperties,
         )
 
-        val result = project.build("assemble")
+        val result = projectBuilder.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
@@ -202,8 +201,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             projectName = "android-app-multimple-config-no-primary",
             namespace = "com.example.samplefbase",
         )
-        project.setupTestProjectScaffold(submoduleId)
-        val submodule = project.submodule(submoduleId)
+        val rootProject = projectBuilder.setupTestProjectScaffold(submoduleId)
+        val submodule = rootProject.subProject(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -221,9 +220,9 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             buildGradleKts,
             submodule.fixtures.application,
         )
-        project.writeFilesToRoot(Root.defaultFirebaseProperties)
+        rootProject.writeFiles(Root.defaultFirebaseProperties)
 
-        val result = project.buildAndFail("assemble")
+        val result = projectBuilder.buildAndFail("assemble")
 
         assertTrue(
             result.output.contains(
@@ -238,8 +237,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             projectName = "android-app-multimple-config-wrong-primary",
             namespace = "com.example.samplefbase",
         )
-        project.setupTestProjectScaffold(submoduleId)
-        val submodule = project.submodule(submoduleId)
+        val rootProject = projectBuilder.setupTestProjectScaffold(submoduleId)
+        val submodule = rootProject.subProject(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -254,13 +253,13 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             }
         """.trimIndent(),
         )
-        project.writeFilesToRoot(Root.defaultFirebaseProperties)
+        rootProject.writeFiles(Root.defaultFirebaseProperties)
         submodule.writeFiles(
             buildGradleKts,
             submodule.fixtures.application,
         )
 
-        val result = project.buildAndFail("assemble")
+        val result = projectBuilder.buildAndFail("assemble")
 
         assertTrue(
             result.output.contains(

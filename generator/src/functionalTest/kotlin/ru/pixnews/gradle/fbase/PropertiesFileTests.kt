@@ -23,8 +23,7 @@ class PropertiesFileTests {
             projectName = "android-app-no-properties-file",
             namespace = "com.example.samplefbase",
         )
-        project.setupTestProjectScaffold(submoduleId)
-        val submodule = project.submodule(submoduleId)
+        val submodule = project.setupTestProjectScaffold(submoduleId).subProject(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """

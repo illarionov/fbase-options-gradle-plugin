@@ -7,8 +7,8 @@
 package ru.pixnews.gradle.fbase
 
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppGoogleServicesCustomLocation
@@ -23,15 +23,13 @@ class GsonServicesTests {
 
     @Test
     fun `Should build project with default config from google-services`() {
-        project.setupTestProject(androidAppGoogleServicesProject1)
-        val submodule = project.submodule(androidAppGoogleServicesProject1)
-        submodule.writeFiles(
-            submodule.fixtures.googleServicesJson,
-        )
+        val submodule = project.setupTestProject(androidAppGoogleServicesProject1)
+            .subProject(androidAppGoogleServicesProject1)
+        submodule.writeFiles(submodule.fixtures.googleServicesJson)
 
         val result = project.build("assemble")
 
-        Assertions.assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+        assertThat(result.output).contains("BUILD SUCCESSFUL")
 
         val apkFiles = buildList {
             listOf("free", "paid").forEach { flavor1 ->
@@ -55,8 +53,8 @@ class GsonServicesTests {
 
     @Test
     fun `Should build project with default config from google-services with flavors`() {
-        project.setupTestProject(androidAppGoogleServicesProject1)
-        val submodule = project.submodule(androidAppGoogleServicesProject1)
+        val submodule = project.setupTestProject(androidAppGoogleServicesProject1)
+            .subProject(androidAppGoogleServicesProject1)
         val googleServiceJson = submodule.fixtures.googleServicesJson
 
         submodule.writeFiles(
@@ -66,7 +64,7 @@ class GsonServicesTests {
 
         val result = project.build("assemble")
 
-        Assertions.assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+        assertThat(result.output).contains("BUILD SUCCESSFUL")
 
         val apkFiles = buildList {
             listOf("free", "paid").forEach { flavor1 ->
@@ -90,17 +88,17 @@ class GsonServicesTests {
 
     @Test
     fun `Should build project with custom google-services location`() {
-        project.setupTestProject(androidAppGoogleServicesCustomLocation)
-        val submodule = project.submodule(androidAppGoogleServicesCustomLocation)
+        val rootProject = project.setupTestProject(androidAppGoogleServicesCustomLocation)
+        val submodule = rootProject.subProject(androidAppGoogleServicesCustomLocation)
 
         val googleServiceJson = submodule.fixtures.googleServicesJson
-        project.writeFilesToRoot(
+        rootProject.writeFiles(
             googleServiceJson.copy(dstPath = "config/google-services.json"),
         )
 
         val result = project.build("assemble")
 
-        Assertions.assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+        assertThat(result.output).contains("BUILD SUCCESSFUL")
 
         val apk = submodule.apk("release")
         val optionsDexCode = apk.getDexCode(
