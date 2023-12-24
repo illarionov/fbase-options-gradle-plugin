@@ -15,6 +15,7 @@ import ru.pixnews.gradle.fbase.android.fixtures.FileContent
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.DEFAULT_NAMESPACE
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.SubmoduleFixtures
+import ru.pixnews.gradle.fbase.android.util.getApkPath
 import java.io.File
 import java.nio.file.Files
 import java.util.Optional
@@ -49,6 +50,15 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     fun submoduleOutputApkDir(submoduleName: String) = rootDir.resolve(submoduleName).resolve("build/outputs/apk/")
 
+    fun apkFilePath(
+        submoduleName: String,
+        buildType: String,
+        vararg flavors: String,
+    ): File {
+        val apkPath = getApkPath(submoduleName, buildType, *flavors)
+        return rootDir.resolve(submoduleName).resolve("build/outputs/apk/$apkPath")
+    }
+
     fun setupTestProject(
         name: String,
         namespace: String = DEFAULT_NAMESPACE,
@@ -61,7 +71,7 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         val submoduleName = projectDir.name
         setupTestProjectScaffold(submoduleName, namespace)
 
-        projectDir.copyRecursively(this.rootDir.resolve(submoduleName), overwrite = true)
+        projectDir.copyRecursively(rootDir.resolve(submoduleName), overwrite = true)
     }
 
     fun setupTestProjectScaffold(
@@ -105,6 +115,10 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     fun build(vararg args: String) = buildWithGradleVersion(null, false, *args)
 
     fun buildAndFail(vararg args: String) = buildWithGradleVersion(null, true, *args)
+
+    fun writeFilesToRoot(
+        vararg files: FileContent,
+    ) = writeFiles(rootDir, *files)
 
     fun writeFilesToSubmoduleRoot(
         submoduleName: String,

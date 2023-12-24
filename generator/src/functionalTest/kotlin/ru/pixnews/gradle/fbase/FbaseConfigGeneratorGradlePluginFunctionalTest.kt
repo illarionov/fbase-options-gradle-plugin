@@ -30,15 +30,13 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     @Test
     fun `can build simple project`() {
         val projectName = "android-app-simple"
-        val submoduleDir = project.submoduleOutputApkDir(projectName)
-
         project.setupTestProject(projectName)
 
         val result = project.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
-        ApkAnalyzer(submoduleDir.resolve("release/$projectName-release-unsigned.apk")).also { releaseApk ->
+        ApkAnalyzer(project.apkFilePath(projectName, "release")).also { releaseApk ->
             val releaseDexCode = releaseApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -58,7 +56,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             )
         }
 
-        ApkAnalyzer(submoduleDir.resolve("benchmark/$projectName-benchmark-unsigned.apk")).also { benchmarkApk ->
+        ApkAnalyzer(project.apkFilePath(projectName, "benchmark")).also { benchmarkApk ->
             val benchmarkDexCode = benchmarkApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -78,7 +76,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             )
         }
 
-        ApkAnalyzer(submoduleDir.resolve("debug/$projectName-debug.apk")).also { debugApk ->
+        ApkAnalyzer(project.apkFilePath(projectName, "debug")).also { debugApk ->
             val debugDexCode = debugApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
                 methodSignature = "<clinit>()V",
@@ -111,7 +109,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
     @Test
     fun `can build project with flavors`() {
         val projectName = AndroidAppFlavorsFixtures.PROJECT_NAME
-        val submoduleDir = project.submoduleOutputApkDir(projectName)
+        val apkDir = project.submoduleOutputApkDir(projectName)
 
         project.setupTestProject(
             name = projectName,
@@ -123,7 +121,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
         AndroidAppFlavorsFixtures.testedVariants.forEach { testedVariant ->
-            val apk = ApkAnalyzer(submoduleDir.resolve(testedVariant.apkPath))
+            val apk = ApkAnalyzer(apkDir.resolve(testedVariant.apkPath))
             assertThat(apk.getStringResource("google_app_id"))
                 .isEqualTo(testedVariant.expectedGoogleAppId)
 
@@ -215,10 +213,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             buildGradleKts,
             submoduleFixtures.application,
         )
-        project.writeFiles(
-            project.rootDir,
-            Root.defaultFirebaseProperties,
-        )
+        project.writeFilesToRoot(Root.defaultFirebaseProperties)
 
         val result = project.buildAndFail("assemble")
 
@@ -247,14 +242,11 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             }
         """.trimIndent(),
         )
+        project.writeFilesToRoot(Root.defaultFirebaseProperties)
         project.writeFilesToSubmoduleRoot(
             submoduleName = submoduleName,
             buildGradleKts,
             submoduleFixtures.application,
-        )
-        project.writeFiles(
-            project.rootDir,
-            Root.defaultFirebaseProperties,
         )
 
         val result = project.buildAndFail("assemble")

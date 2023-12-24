@@ -11,7 +11,7 @@ internal fun getApkPath(
     buildType: String,
     vararg flavors: String,
 ): String {
-    val flavorsFullNameCamelCase = flavors.reduce { name, subFlavor -> name + subFlavor.capitalized() }
+    val flavorsFullNameCamelCase = flavors.reduceOrNull { name, subFlavor -> name + subFlavor.capitalized() }
 
     val apkName = buildList {
         add(appName)
@@ -22,5 +22,9 @@ internal fun getApkPath(
         }
     }.joinToString("-")
 
-    return "$flavorsFullNameCamelCase/$buildType/$apkName.apk"
+    return if (flavorsFullNameCamelCase != null) {
+        "$flavorsFullNameCamelCase/$buildType/$apkName.apk"
+    } else {
+        "$buildType/$apkName.apk"
+    }
 }
