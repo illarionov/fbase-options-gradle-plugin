@@ -11,6 +11,8 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppGoogleServicesCustomLocation
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppGoogleServicesProject1
 import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
 import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
 
@@ -21,16 +23,9 @@ class GsonServicesTests {
 
     @Test
     fun `Should build project with default config from google-services`() {
-        val submoduleName = "android-app-google-services-project1"
-        val namespace = "com.example.myapplication"
-
-        project.setupTestProject(
-            name = submoduleName,
-            namespace = namespace,
-        )
-
-        val submodule = project.submodule(submoduleName, namespace)
-        submodule.writeFilesToSubmoduleRoot(
+        project.setupTestProject(androidAppGoogleServicesProject1)
+        val submodule = project.submodule(androidAppGoogleServicesProject1)
+        submodule.writeFiles(
             submodule.fixtures.googleServicesJson,
         )
 
@@ -60,17 +55,11 @@ class GsonServicesTests {
 
     @Test
     fun `Should build project with default config from google-services with flavors`() {
-        val submoduleName = "android-app-google-services-project1"
-        val namespace = "com.example.myapplication"
-
-        project.setupTestProject(
-            name = submoduleName,
-            namespace = namespace,
-        )
-
-        val submodule = project.submodule(submoduleName, namespace)
+        project.setupTestProject(androidAppGoogleServicesProject1)
+        val submodule = project.submodule(androidAppGoogleServicesProject1)
         val googleServiceJson = submodule.fixtures.googleServicesJson
-        submodule.writeFilesToSubmoduleRoot(
+
+        submodule.writeFiles(
             googleServiceJson.copy(dstPath = "src/free/google-services.json"),
             googleServiceJson.copy(dstPath = "src/paid/google-services.json"),
         )
@@ -101,14 +90,8 @@ class GsonServicesTests {
 
     @Test
     fun `Should build project with custom google-services location`() {
-        val submoduleName = "android-app-google-services-custom-location"
-        val namespace = "com.example.myapplication"
-
-        project.setupTestProject(
-            name = submoduleName,
-            namespace = namespace,
-        )
-        val submodule = project.submodule(submoduleName, namespace)
+        project.setupTestProject(androidAppGoogleServicesCustomLocation)
+        val submodule = project.submodule(androidAppGoogleServicesCustomLocation)
 
         val googleServiceJson = submodule.fixtures.googleServicesJson
         project.writeFilesToRoot(

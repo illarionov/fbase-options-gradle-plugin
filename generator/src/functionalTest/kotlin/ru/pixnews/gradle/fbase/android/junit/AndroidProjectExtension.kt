@@ -12,8 +12,8 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestWatcher
 import ru.pixnews.gradle.fbase.android.fixtures.FileContent
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.DEFAULT_NAMESPACE
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
+import ru.pixnews.gradle.fbase.android.fixtures.SubmoduleId
 import java.io.File
 import java.nio.file.Files
 import java.util.Optional
@@ -22,8 +22,6 @@ import java.util.Optional
 class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     internal val testProjectsRoot
         get() = File(System.getProperty("user.dir"), "src/testProjects")
-    internal val testFilesRoot
-        get() = File(System.getProperty("user.dir"), "src/testFiles")
     lateinit var rootDir: File
 
     override fun beforeEach(context: ExtensionContext?) {
@@ -45,32 +43,27 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     override fun testDisabled(context: ExtensionContext?, reason: Optional<String>?) = Unit
 
     public fun submodule(
-        submoduleName: String,
-        namespace: String = DEFAULT_NAMESPACE,
-    ): Submodule = Submodule(rootDir, submoduleName, namespace)
+        submoduleId: SubmoduleId,
+    ): SubmoduleDsl = SubmoduleDsl(rootDir, submoduleId)
 
     fun setupTestProject(
-        name: String,
-        namespace: String = DEFAULT_NAMESPACE,
-    ) = setupTestProject(testProjectsRoot.resolve(name), namespace)
-
-    fun setupTestProject(
-        projectDir: File,
-        namespace: String = DEFAULT_NAMESPACE,
+        submoduleId: SubmoduleId,
     ) {
-        val submoduleName = projectDir.name
-        setupTestProjectScaffold(submoduleName, namespace)
+        val testProjectDir = testProjectsRoot.resolve(submoduleId.projectName)
 
-        projectDir.copyRecursively(rootDir.resolve(submoduleName), overwrite = true)
+        setupTestProjectScaffold(submoduleId)
+        testProjectDir.copyRecursively(
+            target = rootDir.resolve(submoduleId.projectName),
+            overwrite = true,
+        )
     }
 
     fun setupTestProjectScaffold(
-        submoduleName: String,
-        namespace: String = DEFAULT_NAMESPACE,
+        submoduleId: SubmoduleId,
     ) {
-        setupRoot(submoduleName)
-        val submodule = submodule(submoduleName, namespace)
-        submodule.writeFilesToSubmoduleRoot(
+        setupRoot(submoduleId.projectName)
+        val submodule = submodule(submoduleId)
+        submodule.writeFiles(
             submodule.fixtures.androidManifestXml,
             submodule.fixtures.mainActivity,
             submodule.fixtures.buildGradleKts(),
@@ -125,7 +118,7 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     }
 
     private fun setupRoot(
-        vararg includeSubprojects: String,
+        vararg submoduleNames: String,
     ) {
         writeFiles(
             root = rootDir,
@@ -134,7 +127,7 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
                 Root.libsVersionToml,
                 Root.gradleProperties,
                 Root.buildGradleKts,
-                Root.settingsGradleKts(*includeSubprojects),
+                Root.settingsGradleKts(*submoduleNames),
             ),
         )
     }

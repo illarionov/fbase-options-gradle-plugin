@@ -9,8 +9,6 @@ package ru.pixnews.gradle.fbase.android.fixtures
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
 
 object AndroidAppFlavorsFixtures {
-    const val PROJECT_NAME = "android-app-flavors"
-    const val NAMESPACE = "com.example.samplefbase.flavors"
     val firebaseProperties = LocalFirebaseOptions(
         projectId = "sample-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZ8",

@@ -10,8 +10,6 @@ import ru.pixnews.gradle.fbase.android.util.androidHome
 import java.io.File
 
 object ProjectFixtures {
-    const val DEFAULT_NAMESPACE = "com.example.samplefbase"
-
     private val userDir: String
         get() = System.getProperty("user.dir")
     public val testProjectsRoot
@@ -58,6 +56,29 @@ object ProjectFixtures {
         private fun testFilesRootFileContent(dstPath: String) = FileContent(
             dstPath,
             File(testFilesRoot, "root").resolve(dstPath).readText(),
+        )
+    }
+
+    object TestSubmodules {
+        val androidAppSimple = SubmoduleId(
+            projectName = "android-app-simple",
+            namespace = "com.example.samplefbase",
+        )
+        val androidAppFlavors = SubmoduleId(
+            projectName = "android-app-flavors",
+            namespace = "com.example.samplefbase.flavors",
+        )
+        val androidAppMulticonfig = SubmoduleId(
+            projectName = "android-app-multiconfig",
+            namespace = "com.example.samplefbase",
+        )
+        val androidAppGoogleServicesProject1 = SubmoduleId(
+            projectName = "android-app-google-services-project1",
+            namespace = "com.example.myapplication",
+        )
+        val androidAppGoogleServicesCustomLocation = SubmoduleId(
+            projectName = "android-app-google-services-custom-location",
+            namespace = "com.example.myapplication",
         )
     }
 

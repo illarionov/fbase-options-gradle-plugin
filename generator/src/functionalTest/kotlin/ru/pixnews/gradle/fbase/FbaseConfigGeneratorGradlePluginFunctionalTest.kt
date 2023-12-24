@@ -14,8 +14,11 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import ru.pixnews.gradle.fbase.android.fixtures.AndroidAppFlavorsFixtures
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.DEFAULT_NAMESPACE
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppFlavors
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppMulticonfig
+import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppSimple
+import ru.pixnews.gradle.fbase.android.fixtures.SubmoduleId
 import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
 import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
 
@@ -26,14 +29,13 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `can build simple project`() {
-        val projectName = "android-app-simple"
-        project.setupTestProject(projectName)
+        project.setupTestProject(androidAppSimple)
 
         val result = project.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
-        val submodule = project.submodule(projectName)
+        val submodule = project.submodule(androidAppSimple)
         submodule.apk("release").also { releaseApk ->
             val releaseDexCode = releaseApk.getDexCode(
                 classFqcn = "com.example.samplefbase.config.FirebaseOptionsKt",
@@ -97,7 +99,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `can build project with multiple configurations`() {
-        project.setupTestProject("android-app-multiconfig")
+        project.setupTestProject(androidAppMulticonfig)
 
         val result = project.build("assemble")
 
@@ -106,14 +108,8 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `can build project with flavors`() {
-        val projectName = AndroidAppFlavorsFixtures.PROJECT_NAME
-        val namespace = AndroidAppFlavorsFixtures.NAMESPACE
-
-        project.setupTestProject(
-            name = projectName,
-            namespace = AndroidAppFlavorsFixtures.NAMESPACE,
-        )
-        val submodule = project.submodule(projectName, namespace)
+        project.setupTestProject(androidAppFlavors)
+        val submodule = project.submodule(androidAppFlavors)
 
         val result = project.build("assemble")
 
@@ -136,9 +132,13 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `can build project if configurations are not defined`() {
-        val submoduleName = "android-app-noconf"
-        project.setupTestProjectScaffold(submoduleName)
-        val submodule = project.submodule(submoduleName)
+        val submoduleId = SubmoduleId(
+            projectName = "android-app-noconf",
+            namespace = "com.example.samplefbase",
+        )
+
+        project.setupTestProjectScaffold(submoduleId)
+        val submodule = project.submodule(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -147,13 +147,16 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         )
         val application = submodule.fixtures.application.copy(
             content = """
-                package $DEFAULT_NAMESPACE
+                package ${submodule.id.namespace}
                 import android.app.Application
                 class Application : Application()
         """.trimIndent(),
         )
 
-        submodule.writeFilesToSubmoduleRoot(buildGradleKts, application)
+        submodule.writeFiles(
+            buildGradleKts,
+            application,
+        )
 
         val result = project.build("assemble")
 
@@ -162,10 +165,13 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `can build project with default value if source is not set`() {
-        val submoduleName = "android-app-no-source-set"
-        project.setupTestProjectScaffold(submoduleName)
+        val submoduleId = SubmoduleId(
+            projectName = "android-app-no-source-set",
+            namespace = "com.example.samplefbase",
+        )
+        project.setupTestProjectScaffold(submoduleId)
 
-        val submodule = project.submodule(submoduleName)
+        val submodule = project.submodule(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -177,7 +183,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             }
         """.trimIndent(),
         )
-        submodule.writeFilesToSubmoduleRoot(
+        submodule.writeFiles(
             buildGradleKts,
             submodule.fixtures.application,
         )
@@ -192,9 +198,12 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `should fail when multiple configurations are defined and the main configuration is not set`() {
-        val submoduleName = "android-app-multimple-config-no-primary"
-        project.setupTestProjectScaffold(submoduleName)
-        val submodule = project.submodule(submoduleName)
+        val submoduleId = SubmoduleId(
+            projectName = "android-app-multimple-config-no-primary",
+            namespace = "com.example.samplefbase",
+        )
+        project.setupTestProjectScaffold(submoduleId)
+        val submodule = project.submodule(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -208,7 +217,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             }
         """.trimIndent(),
         )
-        submodule.writeFilesToSubmoduleRoot(
+        submodule.writeFiles(
             buildGradleKts,
             submodule.fixtures.application,
         )
@@ -225,9 +234,12 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
 
     @Test
     fun `should fail when multiple configurations are defined and the main configuration is set to a non-existent`() {
-        val submoduleName = "android-app-multimple-config-wrong-primary"
-        project.setupTestProjectScaffold(submoduleName)
-        val submodule = project.submodule(submoduleName)
+        val submoduleId = SubmoduleId(
+            projectName = "android-app-multimple-config-wrong-primary",
+            namespace = "com.example.samplefbase",
+        )
+        project.setupTestProjectScaffold(submoduleId)
+        val submodule = project.submodule(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -243,7 +255,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         """.trimIndent(),
         )
         project.writeFilesToRoot(Root.defaultFirebaseProperties)
-        submodule.writeFilesToSubmoduleRoot(
+        submodule.writeFiles(
             buildGradleKts,
             submodule.fixtures.application,
         )

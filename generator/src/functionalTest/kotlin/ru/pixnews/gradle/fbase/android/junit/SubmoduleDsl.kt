@@ -8,20 +8,19 @@ package ru.pixnews.gradle.fbase.android.junit
 
 import ru.pixnews.gradle.fbase.android.apk.ApkAnalyzer
 import ru.pixnews.gradle.fbase.android.fixtures.FileContent
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures
 import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.SubmoduleFixtures
+import ru.pixnews.gradle.fbase.android.fixtures.SubmoduleId
 import ru.pixnews.gradle.fbase.android.util.getApkPath
 import java.io.File
 
-class Submodule(
+class SubmoduleDsl(
     private val projectRoot: File,
-    val submoduleName: String,
-    val namespace: String = ProjectFixtures.DEFAULT_NAMESPACE,
+    val id: SubmoduleId,
 ) {
     val root: File
-        get() = projectRoot.resolve(submoduleName)
+        get() = projectRoot.resolve(id.projectName)
 
-    val fixtures: SubmoduleFixtures = SubmoduleFixtures(namespace)
+    val fixtures: SubmoduleFixtures = SubmoduleFixtures(id.namespace)
 
     val apkDir: File
         get() = root.resolve("build/outputs/apk/")
@@ -30,11 +29,11 @@ class Submodule(
         buildType: String,
         vararg flavors: String,
     ): ApkAnalyzer {
-        val apkPath = getApkPath(submoduleName, buildType, *flavors)
+        val apkPath = getApkPath(id.projectName, buildType, *flavors)
         return ApkAnalyzer(apkDir.resolve(apkPath))
     }
 
-    fun writeFilesToSubmoduleRoot(
+    fun writeFiles(
         vararg files: FileContent,
     ) {
         files.forEach {

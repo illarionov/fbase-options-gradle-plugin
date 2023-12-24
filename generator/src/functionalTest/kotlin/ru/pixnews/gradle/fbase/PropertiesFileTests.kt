@@ -9,6 +9,7 @@ package ru.pixnews.gradle.fbase
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import ru.pixnews.gradle.fbase.android.fixtures.SubmoduleId
 import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
 
 class PropertiesFileTests {
@@ -18,9 +19,12 @@ class PropertiesFileTests {
 
     @Test
     fun `Should fail if properties file not found`() {
-        val submoduleName = "android-app-no-properties-file"
-        project.setupTestProjectScaffold(submoduleName)
-        val submodule = project.submodule(submoduleName)
+        val submoduleId = SubmoduleId(
+            projectName = "android-app-no-properties-file",
+            namespace = "com.example.samplefbase",
+        )
+        project.setupTestProjectScaffold(submoduleId)
+        val submodule = project.submodule(submoduleId)
 
         val buildGradleKts = submodule.fixtures.buildGradleKts(
             """
@@ -35,7 +39,7 @@ class PropertiesFileTests {
         }
     """.trimIndent(),
         )
-        submodule.writeFilesToSubmoduleRoot(
+        submodule.writeFiles(
             buildGradleKts,
             submodule.fixtures.application,
         )
