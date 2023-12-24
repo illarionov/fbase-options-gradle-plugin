@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import ru.pixnews.gradle.fbase.android.apk.ApkAnalyzer
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures
 import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
 import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
 
@@ -31,9 +30,9 @@ class GsonServicesTests {
             namespace = namespace,
         )
 
-        project.writeFilesToSubmoduleRoot(
-            submoduleName = submoduleName,
-            ProjectFixtures.SubmoduleFixtures(namespace).googleServicesJson,
+        val submodule = project.submodule(submoduleName, namespace)
+        submodule.writeFilesToSubmoduleRoot(
+            submodule.fixtures.googleServicesJson
         )
 
         val result = project.build("assemble")
@@ -44,7 +43,7 @@ class GsonServicesTests {
             listOf("free", "paid").forEach { flavor1 ->
                 listOf("one", "two").forEach { flavor2 ->
                     listOf("debug", "release").forEach { buildType ->
-                        add(project.apkFilePath(submoduleName, buildType, flavor1, flavor2))
+                        add(submodule.apkFile(buildType, flavor1, flavor2))
                     }
                 }
             }
@@ -71,9 +70,9 @@ class GsonServicesTests {
             namespace = namespace,
         )
 
-        val googleServiceJson = ProjectFixtures.SubmoduleFixtures(namespace).googleServicesJson
-        project.writeFilesToSubmoduleRoot(
-            submoduleName = submoduleName,
+        val submodule = project.submodule(submoduleName, namespace)
+        val googleServiceJson = submodule.fixtures.googleServicesJson
+        submodule.writeFilesToSubmoduleRoot(
             googleServiceJson.copy(dstPath = "src/free/google-services.json"),
             googleServiceJson.copy(dstPath = "src/paid/google-services.json"),
         )
@@ -86,7 +85,7 @@ class GsonServicesTests {
             listOf("free", "paid").forEach { flavor1 ->
                 listOf("one", "two").forEach { flavor2 ->
                     listOf("debug", "release").forEach { buildType ->
-                        add(project.apkFilePath(submoduleName, buildType, flavor1, flavor2))
+                        add(submodule.apkFile(buildType, flavor1, flavor2))
                     }
                 }
             }
@@ -112,8 +111,9 @@ class GsonServicesTests {
             name = submoduleName,
             namespace = namespace,
         )
+        val submodule = project.submodule(submoduleName, namespace)
 
-        val googleServiceJson = ProjectFixtures.SubmoduleFixtures(namespace).googleServicesJson
+        val googleServiceJson = submodule.fixtures.googleServicesJson
         project.writeFilesToRoot(
             googleServiceJson.copy(dstPath = "config/google-services.json"),
         )
@@ -122,7 +122,7 @@ class GsonServicesTests {
 
         Assertions.assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
-        val releaseApk = project.apkFilePath(submoduleName, "release")
+        val releaseApk = submodule.apkFile("release")
         val apk = ApkAnalyzer(releaseApk)
         val optionsDexCode = apk.getDexCode(
             classFqcn = "com.example.myapplication.config.FirebaseOptionsKt",

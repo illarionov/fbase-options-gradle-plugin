@@ -61,8 +61,8 @@ object ProjectFixtures {
         )
     }
 
-    class SubmoduleFixtures(
-        val namespace: String = DEFAULT_NAMESPACE,
+    class SubmoduleFixtures internal constructor(
+        val namespace: String,
     ) {
         val androidManifestXml: FileContent by lazy {
             testFilesSubmoduleFileContent("src/main/AndroidManifest.xml")

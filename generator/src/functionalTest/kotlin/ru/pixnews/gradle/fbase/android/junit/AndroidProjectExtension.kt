@@ -46,18 +46,10 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
 
     override fun testDisabled(context: ExtensionContext?, reason: Optional<String>?) = Unit
 
-    fun submoduleRootDir(submoduleName: String) = rootDir.resolve(submoduleName)
-
-    fun submoduleOutputApkDir(submoduleName: String) = rootDir.resolve(submoduleName).resolve("build/outputs/apk/")
-
-    fun apkFilePath(
+    public fun submodule(
         submoduleName: String,
-        buildType: String,
-        vararg flavors: String,
-    ): File {
-        val apkPath = getApkPath(submoduleName, buildType, *flavors)
-        return rootDir.resolve(submoduleName).resolve("build/outputs/apk/$apkPath")
-    }
+        namespace: String = DEFAULT_NAMESPACE
+    ): Submodule = Submodule(rootDir, submoduleName, namespace)
 
     fun setupTestProject(
         name: String,
@@ -79,12 +71,11 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         namespace: String = DEFAULT_NAMESPACE,
     ) {
         setupRoot(submoduleName)
-        val submoduleFixtures = SubmoduleFixtures(namespace)
-        writeFilesToSubmoduleRoot(
-            submoduleName,
-            submoduleFixtures.androidManifestXml,
-            submoduleFixtures.mainActivity,
-            submoduleFixtures.buildGradleKts(),
+        val submodule = submodule(submoduleName,  namespace)
+        submodule.writeFilesToSubmoduleRoot(
+            submodule.fixtures.androidManifestXml,
+            submodule.fixtures.mainActivity,
+            submodule.fixtures.buildGradleKts(),
         )
     }
 
@@ -119,14 +110,6 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
     fun writeFilesToRoot(
         vararg files: FileContent,
     ) = writeFiles(rootDir, *files)
-
-    fun writeFilesToSubmoduleRoot(
-        submoduleName: String,
-        vararg files: FileContent,
-    ) = writeFiles(
-        root = submoduleRootDir(submoduleName),
-        files = files,
-    )
 
     fun writeFiles(
         root: File,
