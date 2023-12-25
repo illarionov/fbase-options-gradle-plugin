@@ -21,7 +21,6 @@ import ru.pixnews.gradle.fbase.internal.util.capitalized
 import ru.pixnews.gradle.fbase.source.GoogleServicesJsonFileGeneratorSource
 
 internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
-    @Suppress("UnusedPrivateProperty")
     override fun obtain(): LocalFirebaseOptions? {
         val files = parameters.configurationFiles.filter { it.isFile }
         val applicationid = parameters.applicationId.get()
@@ -110,30 +109,45 @@ internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOpt
             productFlavorNames,
         ).map(projectDirectory::file)
 
-        private fun getJsonLocations(buildType: String, flavorNames: List<String>): List<String> {
-            val flavorsName = flavorNames.reduce { fullName, flavorSuffix -> fullName + flavorSuffix.capitalized() }
-
-            val fileLocations = listOf(
-                "",
-                "src/$flavorsName/$buildType",
-                "src/$buildType/$flavorsName",
-                "src/$flavorsName",
-                "src/$buildType",
-                "src/$flavorsName${buildType.capitalized()}",
-            ) + flavorNames.flatMap { flavor ->
+        internal fun getJsonLocations(buildType: String, flavorNames: List<String>): List<String> {
+            val fileLocations: List<String> = if (flavorNames.isEmpty()) {
                 listOf(
-                    "src/$flavor",
-                    "src/$flavor/$buildType",
-                    "src/$flavor${buildType.capitalized()}",
+                    "src/$buildType",
+                    "src",
+                    "",
                 )
+            } else {
+                val fullFlavorName: String = flavorNames.reduce { fullName, flavorName ->
+                    fullName + flavorName.capitalized()
+                }
+                val fullFlavorNamePaths = listOf(
+                    "",
+                    "src/$fullFlavorName/$buildType",
+                    "src/$buildType/$fullFlavorName",
+                    "src/$fullFlavorName",
+                    "src/$buildType",
+                    "src/$fullFlavorName${buildType.capitalized()}",
+                )
+
+                val flavorSubpaths: List<String> = flavorNames.runningReduce { path, flavorName ->
+                    "$path/$flavorName"
+                }
+                val flavorPaths = flavorSubpaths.flatMap { subpath ->
+                    listOf(
+                        "src/$subpath",
+                        "src/$subpath/$buildType",
+                        "src/$subpath${buildType.capitalized()}",
+                    )
+                }
+                fullFlavorNamePaths + flavorPaths
             }
 
             return fileLocations
                 .distinct()
-                .sortedByDescending { path -> path.count { it == '/' } }
                 .map { location: String ->
-                    if (location.isEmpty()) JSON_FILE_NAME else "$location/$JSON_FILE_NAME"
+                    if (location.isEmpty()) location + JSON_FILE_NAME else "$location/$JSON_FILE_NAME"
                 }
+                .sortedByDescending { path -> path.count { it == '/' } }
         }
     }
 }
