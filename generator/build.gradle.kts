@@ -77,7 +77,7 @@ testing {
 
 private fun Test.configureTestTaskDefaults() {
     maxHeapSize = "1512M"
-    jvmArgs = listOf("-XX:MaxMetaspaceSize=512M")
+    jvmArgs = listOf("-XX:MaxMetaspaceSize=768M")
     testLogging {
         events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED)
     }
