@@ -77,7 +77,7 @@ testing {
 
 private fun Test.configureTestTaskDefaults() {
     maxHeapSize = "1512M"
-    jvmArgs = listOf("-XX:MaxMetaspaceSize=512M")
+    jvmArgs = listOf("-XX:MaxMetaspaceSize=768M")
     testLogging {
         events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED)
     }
@@ -90,6 +90,7 @@ private fun Test.configureTestTaskDefaults() {
 
 dependencies {
     implementation(libs.agp.plugin.api)
+    implementation(libs.gson)
     implementation(libs.kotlinpoet) {
         exclude(module = "kotlin-reflect")
     }

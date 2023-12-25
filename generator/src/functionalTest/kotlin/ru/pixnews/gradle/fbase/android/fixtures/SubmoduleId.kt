@@ -4,10 +4,9 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.android.util
+package ru.pixnews.gradle.fbase.android.fixtures
 
-import java.util.Locale
-
-internal fun String.capitalized() = replaceFirstChar {
-    if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
-}
+data class SubmoduleId(
+    val projectName: String,
+    val namespace: String,
+)

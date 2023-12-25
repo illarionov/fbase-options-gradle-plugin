@@ -7,7 +7,12 @@
 package ru.pixnews.gradle.fbase.internal.util
 
 import java.io.File
+import java.util.Locale
 import java.util.Properties
+
+internal fun String.capitalized() = replaceFirstChar {
+    if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+}
 
 internal fun File.toProperties(): Properties = Properties().apply {
     this@toProperties.bufferedReader().use { load(it) }

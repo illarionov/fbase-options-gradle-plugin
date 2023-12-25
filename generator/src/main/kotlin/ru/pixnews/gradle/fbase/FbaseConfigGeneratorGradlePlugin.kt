@@ -22,10 +22,12 @@ import org.gradle.api.Project
 import org.gradle.api.Transformer
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
+import ru.pixnews.gradle.fbase.internal.GoogleServicesValueSource.Companion.createGoogleServicesValueSource
 import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource
 import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.EXTENSION_NAME
 import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
+import ru.pixnews.gradle.fbase.source.GoogleServicesJsonFileGeneratorSource
 import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
 import ru.pixnews.gradle.fbase.source.ProvidedGeneratorSource
 import java.util.SortedMap
@@ -187,11 +189,14 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         private val defaultConfigFile = project.rootProject.layout.projectDirectory.file(
             VariantDefaults.DEFAULT_CONFIG_FILE_PATH,
         )
+        private val projectDirectory = project.layout.projectDirectory
         private val defaultApplicationIdProvider: Provider<String> = if (variant is ApplicationVariant) {
             variant.applicationId
         } else {
             providers.provider { "" }
         }
+        private val buildType = variant.buildType.orEmpty()
+        private val productFlavorNames = variant.productFlavors.map(Pair<String, String>::second)
 
         override fun transform(source: FbaseGeneratorSource): Provider<LocalFirebaseOptions> {
             return when (source) {
@@ -208,6 +213,15 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
                         }
                     }
                 }
+
+                is GoogleServicesJsonFileGeneratorSource -> createGoogleServicesValueSource(
+                    source = source,
+                    providers = providers,
+                    buildType = buildType,
+                    productFlavorNames = productFlavorNames,
+                    projectDirectory = projectDirectory,
+                    defaultApplicationIdProvider = defaultApplicationIdProvider,
+                )
 
                 else -> error("Unexpected source")
             }

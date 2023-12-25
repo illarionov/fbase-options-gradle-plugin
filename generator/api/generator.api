@@ -1,6 +1,7 @@
 public abstract class ru/pixnews/gradle/fbase/FbaseBuilderExtension : java/io/Serializable, org/gradle/api/Named {
 	public static final field Companion Lru/pixnews/gradle/fbase/FbaseBuilderExtension$Companion;
 	public fun <init> (Lorg/gradle/api/model/ObjectFactory;Ljava/lang/String;)V
+	public final fun fromGoogleServicesJson (Lorg/gradle/api/Action;)V
 	public final fun fromPropertiesFile (Lorg/gradle/api/Action;)V
 	public final fun fromValues (Lorg/gradle/api/Action;)V
 	public fun getName ()Ljava/lang/String;
@@ -70,6 +71,12 @@ public final class ru/pixnews/gradle/fbase/TargetVisibility : java/lang/Enum {
 }
 
 public abstract interface class ru/pixnews/gradle/fbase/source/FbaseGeneratorSource {
+}
+
+public abstract class ru/pixnews/gradle/fbase/source/GoogleServicesJsonFileGeneratorSource : ru/pixnews/gradle/fbase/source/FbaseGeneratorSource {
+	public fun <init> ()V
+	public abstract fun getApplicationId ()Lorg/gradle/api/provider/Property;
+	public abstract fun getLocation ()Lorg/gradle/api/file/RegularFileProperty;
 }
 
 public abstract class ru/pixnews/gradle/fbase/source/PropertiesFileGeneratorSource : ru/pixnews/gradle/fbase/source/FbaseGeneratorSource {

@@ -7,11 +7,8 @@
 package ru.pixnews.gradle.fbase.android.fixtures
 
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.android.util.capitalizeAscii
 
 object AndroidAppFlavorsFixtures {
-    const val PROJECT_NAME = "android-app-flavors"
-    const val NAMESPACE = "com.example.samplefbase.flavors"
     val firebaseProperties = LocalFirebaseOptions(
         projectId = "sample-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZ8",
@@ -86,9 +83,8 @@ object AndroidAppFlavorsFixtures {
                     }
 
                     val variant = AppFlavorsVariant(
-                        api = api,
-                        mode = mode,
                         buildType = buildType,
+                        flavors = listOf(api, mode),
                         expectedGoogleAppId = expectedGoogleAppId,
                         expectedBuilders = getExpectedBuilders(api, mode, buildType),
                     )
@@ -119,19 +115,9 @@ object AndroidAppFlavorsFixtures {
     }
 
     data class AppFlavorsVariant(
-        val api: String,
-        val mode: String,
         val buildType: String,
+        val flavors: List<String>,
         val expectedGoogleAppId: String,
         val expectedBuilders: List<Pair<String, LocalFirebaseOptions>>,
-    ) {
-        val apkPath: String = run {
-            val unsignedSuffix = if (buildType != "debug") {
-                "-unsigned"
-            } else {
-                ""
-            }
-            "$api${mode.capitalizeAscii()}/$buildType/$PROJECT_NAME-$api-$mode-$buildType$unsignedSuffix.apk"
-        }
-    }
+    )
 }
