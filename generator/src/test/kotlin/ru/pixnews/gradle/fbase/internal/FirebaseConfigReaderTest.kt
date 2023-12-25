@@ -4,14 +4,13 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.reader
+package ru.pixnews.gradle.fbase.internal
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import ru.pixnews.gradle.fbase.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.internal.FirebaseConfigReader
 import java.util.Properties
 
 class FirebaseConfigReaderTest {
