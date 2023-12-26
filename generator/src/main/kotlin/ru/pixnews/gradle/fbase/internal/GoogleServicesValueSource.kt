@@ -23,7 +23,7 @@ import ru.pixnews.gradle.fbase.source.GoogleServicesJsonFileGeneratorSource
 internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
     override fun obtain(): LocalFirebaseOptions? {
         val files = parameters.configurationFiles.filter { it.isFile }
-        val applicationid = parameters.applicationId.get()
+        val applicationId = parameters.applicationId.get()
 
         if (files.isEmpty) {
             throw GradleException(
@@ -33,18 +33,18 @@ internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOpt
         }
 
         val gsonServiceFiles = files.mapNotNull { it to parseGoogleServicesFile(it) }
-        val (projectInfo, clientInfo) = if (applicationid.isNotEmpty()) {
+        val (projectInfo, clientInfo) = if (applicationId.isNotEmpty()) {
             val filePathServices = gsonServiceFiles.firstOrNull { (_, json) ->
-                json.clients.any { it.packageName == applicationid }
+                json.clients.any { it.packageName == applicationId }
             }
             if (filePathServices == null) {
                 throw GradleException(
-                    "Can not find configuration for Android application with id `$applicationid`." +
+                    "Can not find configuration for Android application with id `$applicationId`." +
                             " Searched locations: ${parameters.configurationFilenames()}",
                 )
             }
             val json = filePathServices.second
-            json.projectInfo to json.clients.first { it.packageName == applicationid }
+            json.projectInfo to json.clients.first { it.packageName == applicationId }
         } else {
             val (filePath, json) = gsonServiceFiles.first()
             if (json.clients.size > 1) {
