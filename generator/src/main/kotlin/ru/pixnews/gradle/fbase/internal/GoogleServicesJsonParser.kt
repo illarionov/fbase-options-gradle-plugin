@@ -38,18 +38,23 @@ internal class Client(
     val defaultWebClientId: String?,
 )
 
+internal class JsonParseException : GradleException {
+    internal constructor(msg: String) : super(msg)
+    internal constructor(msg: String, cause: Throwable) : super(msg, cause)
+}
+
 @Suppress("UnusedPrivateProperty", "LOCAL_VARIABLE_EARLY_DECLARATION")
 internal fun parseGoogleServicesFile(
     file: File,
 ): GoogleServicesJson {
-    val root = JsonParser.parseReader(file.bufferedReader()) as? JsonObject ?: throw GradleException(
+    val root = JsonParser.parseReader(file.bufferedReader()) as? JsonObject ?: throw JsonParseException(
         "Malformed root json at ${file.absolutePath}",
     )
     val projectInfo = parseProjectInfo(root)
     val clientInfos = parseClientInfos(root)
 
     if (clientInfos.isEmpty()) {
-        throw GradleException("No clients in ${file.absolutePath}")
+        throw JsonParseException("No clients in ${file.absolutePath}")
     }
 
     return GoogleServicesJson(projectInfo, clientInfos)
@@ -57,7 +62,7 @@ internal fun parseGoogleServicesFile(
 
 private fun parseProjectInfo(root: JsonObject): ProjectInfo {
     val projectInfo = root.getAsJsonObject("project_info")
-        ?: throw GradleException("Missing project_info object")
+        ?: throw JsonParseException("Missing project_info object")
     return ProjectInfo(
         projectNumber = projectInfo.getStringOrThrow("project_info", "project_number"),
         projectId = projectInfo.getStringOrThrow("project_info", "project_id"),
@@ -79,7 +84,7 @@ private fun parseClientInfos(root: JsonObject): List<Client> {
 
 private fun parseClient(clientRoot: JsonObject): Client {
     val clientInfo = clientRoot.getAsJsonObject("client_info")
-        ?: throw GradleException("Client does not have client info")
+        ?: throw JsonParseException("Client does not have client info")
     val mobileSdkAppId = clientInfo.getStringOrThrow("client_info", "mobilesdk_app_id")
     val packageName = clientInfo.getAsJsonObject("android_client_info")
         ?.getStringOrNull("package_name")
@@ -88,18 +93,21 @@ private fun parseClient(clientRoot: JsonObject): Client {
         ?.getAsJsonObject("analytics_property")
         ?.getStringOrNull("tracking_id")
 
-    val googleApiKey = clientRoot.getAsJsonArray("api_key")
-        .firstNotNullOfOrNull { (it as? JsonObject)?.getStringOrNull("current_key") }
+    val googleApiKey = clientRoot.getAsJsonArray("api_key")?.let { keys ->
+        keys.firstNotNullOfOrNull { (it as? JsonObject)?.getStringOrNull("current_key") }
+    } ?: throw JsonParseException("Client does not have api_key")
 
-    val defaultWebClientId = clientRoot.getAsJsonArray("oauth_client")
-        .mapNotNull { it as? JsonObject }
-        .firstNotNullOfOrNull { oauthClient ->
-            if (oauthClient.getStringOrNull("client_type") == OAUTH_CLIENT_TYPE_WEB) {
-                oauthClient.getStringOrNull("client_id")
-            } else {
-                null
+    val defaultWebClientId = clientRoot.getAsJsonArray("oauth_client")?.let { clients ->
+        clients
+            .mapNotNull { it as? JsonObject }
+            .firstNotNullOfOrNull { oauthClient ->
+                if (oauthClient.getStringOrNull("client_type") == OAUTH_CLIENT_TYPE_WEB) {
+                    oauthClient.getStringOrNull("client_id")
+                } else {
+                    null
+                }
             }
-        }
+    }
 
     return Client(
         mobileSdkAppId = mobileSdkAppId,
@@ -120,7 +128,7 @@ private fun getService(client: JsonObject, serviceName: String): JsonObject? {
 }
 
 private fun JsonObject.getStringOrThrow(group: String, key: String): String {
-    val value = this.getAsJsonPrimitive(key) ?: throw GradleException("Missing $group/$key object")
+    val value = this.getAsJsonPrimitive(key) ?: throw JsonParseException("Missing $group/$key object")
     return value.asString
 }
 
