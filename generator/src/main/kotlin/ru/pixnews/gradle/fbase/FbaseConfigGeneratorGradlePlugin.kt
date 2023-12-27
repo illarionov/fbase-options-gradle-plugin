@@ -87,7 +87,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
                     "${variant.name}GenerateFirebaseOptions",
                     GenerateFirebaseOptionsTask::class.java,
                 ) { task ->
-                    task.group = "Build"
+                    task.description = "Generates FirebaseOptions.Builder's for the `${variant.name}` variant"
                     task.sourceOutputDir.set(layout.buildDirectory.dir("firebase-options"))
                     task.configs.set(
                         variantExtension.configurations.map { config ->
