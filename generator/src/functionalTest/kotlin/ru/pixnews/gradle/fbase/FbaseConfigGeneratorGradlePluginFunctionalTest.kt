@@ -13,25 +13,32 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
-import ru.pixnews.gradle.fbase.android.fixtures.AndroidAppFlavorsFixtures
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.Root
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppFlavors
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppMulticonfig
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppSimple
-import ru.pixnews.gradle.fbase.android.fixtures.SubmoduleId
-import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
-import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
+import ru.pixnews.gradle.fbase.assertions.dexBytecodeMatch
+import ru.pixnews.gradle.fbase.fixtures.AndroidAppFlavorsFixtures
+import ru.pixnews.gradle.fbase.fixtures.RootProjectFixtures
+import ru.pixnews.gradle.fbase.fixtures.TestSubmodules.androidAppFlavors
+import ru.pixnews.gradle.fbase.fixtures.TestSubmodules.androidAppMulticonfig
+import ru.pixnews.gradle.fbase.fixtures.TestSubmodules.androidAppSimple
+import ru.pixnews.gradle.fbase.fixtures.fixtures
+import ru.pixnews.gradle.fbase.junit.AndroidProjectExtension
+import ru.pixnews.gradle.fbase.junit.SubmoduleId
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.TestMatrix.FIREBASE_TEST_VARIANTS_FQN
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.TestMatrix.MAIN_TEST_VARIANTS_FQN
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.VersionCatalog
 
 class FbaseConfigGeneratorGradlePluginFunctionalTest {
     @JvmField
     @RegisterExtension
     var projectBuilder = AndroidProjectExtension()
 
-    @Test
-    fun `can build simple project`() {
-        val rootProject = projectBuilder.setupTestProject(androidAppSimple)
+    @ParameterizedTest
+    @MethodSource(MAIN_TEST_VARIANTS_FQN, FIREBASE_TEST_VARIANTS_FQN)
+    fun `can build simple project`(versions: VersionCatalog) {
+        val rootProject = projectBuilder.setupTestProject(androidAppSimple, versions)
 
-        val result = projectBuilder.build("assemble")
+        val result = projectBuilder.build(versions.gradleVersion, "assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
@@ -97,21 +104,23 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         }
     }
 
-    @Test
-    fun `can build project with multiple configurations`() {
-        projectBuilder.setupTestProject(androidAppMulticonfig)
+    @ParameterizedTest
+    @MethodSource(MAIN_TEST_VARIANTS_FQN, FIREBASE_TEST_VARIANTS_FQN)
+    fun `can build project with multiple configurations`(versions: VersionCatalog) {
+        projectBuilder.setupTestProject(androidAppMulticonfig, versions)
 
-        val result = projectBuilder.build("assemble")
+        val result = projectBuilder.build(versions.gradleVersion, "assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
     }
 
-    @Test
-    fun `can build project with flavors`() {
-        val rootProject = projectBuilder.setupTestProject(androidAppFlavors)
+    @ParameterizedTest
+    @MethodSource(MAIN_TEST_VARIANTS_FQN, FIREBASE_TEST_VARIANTS_FQN)
+    fun `can build project with flavors`(versions: VersionCatalog) {
+        val rootProject = projectBuilder.setupTestProject(androidAppFlavors, versions)
         val submodule = rootProject.subProject(androidAppFlavors)
 
-        val result = projectBuilder.build("assemble")
+        val result = projectBuilder.build(versions.gradleVersion, "assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
 
@@ -187,7 +196,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             submodule.fixtures.application,
         )
         rootProject.writeFiles(
-            Root.defaultFirebaseProperties,
+            RootProjectFixtures.defaultFirebaseProperties,
         )
 
         val result = projectBuilder.build("assemble")
@@ -220,7 +229,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             buildGradleKts,
             submodule.fixtures.application,
         )
-        rootProject.writeFiles(Root.defaultFirebaseProperties)
+        rootProject.writeFiles(RootProjectFixtures.defaultFirebaseProperties)
 
         val result = projectBuilder.buildAndFail("assemble")
 
@@ -253,7 +262,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             }
         """.trimIndent(),
         )
-        rootProject.writeFiles(Root.defaultFirebaseProperties)
+        rootProject.writeFiles(RootProjectFixtures.defaultFirebaseProperties)
         submodule.writeFiles(
             buildGradleKts,
             submodule.fixtures.application,

@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
+    id("ru.pixnews.gradle.fbase.buildlogic.project.kotlin.version")
 }
 
 repositories {
@@ -16,6 +18,8 @@ repositories {
 
 group = "ru.pixnews.gradle.fbase"
 version = "0.1-SNAPSHOT"
+
+val functionalTestRepository = rootProject.layout.buildDirectory.dir("functional-tests-plugin-repository")
 
 @Suppress("UnstableApiUsage")
 testing {
@@ -47,24 +51,23 @@ testing {
 
             dependencies {
                 implementation(project())
-                implementation(libs.android.tools.apkparser.apkanalyzer)
-                implementation(libs.android.tools.apkparser.binary.resources)
-                implementation(libs.android.tools.common)
-                implementation(libs.android.tools.smali.dexlib2)
                 implementation(libs.assertk)
+                implementation(project(":functional-test-utils"))
             }
 
             targets {
                 all {
                     testTask.configure {
                         configureTestTaskDefaults()
+                        dependsOn(tasks.named("publishAllPublicationsToFunctionalTestsRepository"))
+                        inputs.dir(functionalTestRepository)
                         shouldRunAfter(test)
                         testLogging {
                             if (providers.gradleProperty("verboseTest").map(String::toBoolean).getOrElse(false)) {
                                 events = setOf(
-                                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-                                    org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR,
-                                    org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
+                                    TestLogEvent.FAILED,
+                                    TestLogEvent.STANDARD_ERROR,
+                                    TestLogEvent.STANDARD_OUT,
                                 )
                             }
                         }
@@ -79,7 +82,7 @@ private fun Test.configureTestTaskDefaults() {
     maxHeapSize = "1512M"
     jvmArgs = listOf("-XX:MaxMetaspaceSize=768M")
     testLogging {
-        events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED)
+        events = setOf(TestLogEvent.FAILED)
     }
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = providers.environmentVariable("TEST_JDK_VERSION")
@@ -89,7 +92,7 @@ private fun Test.configureTestTaskDefaults() {
 }
 
 dependencies {
-    implementation(libs.agp.plugin.api)
+    compileOnly(libs.agp.plugin.api)
     implementation(libs.gson)
     implementation(libs.kotlinpoet) {
         exclude(module = "kotlin-reflect")
@@ -118,6 +121,10 @@ publishing {
             url = uri("../build/local-plugin-repository")
         }
         maven {
+            name = "functionalTests"
+            url = uri(functionalTestRepository)
+        }
+        maven {
             name = "PixnewsS3"
             setUrl("s3://maven.pixnews.ru/")
             credentials(AwsCredentials::class) {
@@ -135,8 +142,8 @@ signing {
     useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
     setRequired {
-        val signingDisabled = providers.gradleProperty("disableSigning").map(String::toBoolean).orElse(false)
-        !signingDisabled.get()
+        val signingRequired = providers.gradleProperty("enableSigning").map(String::toBoolean).orElse(false)
+        signingRequired.get()
     }
 }
 

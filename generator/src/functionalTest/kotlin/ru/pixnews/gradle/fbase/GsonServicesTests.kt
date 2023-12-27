@@ -11,10 +11,11 @@ import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppGoogleServicesCustomLocation
-import ru.pixnews.gradle.fbase.android.fixtures.ProjectFixtures.TestSubmodules.androidAppGoogleServicesProject1
-import ru.pixnews.gradle.fbase.android.junit.AndroidProjectExtension
-import ru.pixnews.gradle.fbase.android.util.dexBytecodeMatch
+import ru.pixnews.gradle.fbase.assertions.dexBytecodeMatch
+import ru.pixnews.gradle.fbase.fixtures.TestSubmodules.androidAppGoogleServicesCustomLocation
+import ru.pixnews.gradle.fbase.fixtures.TestSubmodules.androidAppGoogleServicesProject1
+import ru.pixnews.gradle.fbase.fixtures.fixtures
+import ru.pixnews.gradle.fbase.junit.AndroidProjectExtension
 
 class GsonServicesTests {
     @JvmField
