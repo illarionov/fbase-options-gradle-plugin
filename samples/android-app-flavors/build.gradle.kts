@@ -42,10 +42,10 @@ android {
             applicationIdSuffix = ".demo"
             extensions.configure<FbaseGeneratorExtension> {
                 configurations.create("demoFirebaseOptions") {
-                    fromPropertiesFile {
-                        location = layout.projectDirectory.file("firebase_demo.properties")
+                    fromGoogleServicesJson {
+                        location = layout.projectDirectory.file("google-services-demo.json")
                     }
-                    targetPackage = "com.example.samplefbase.config"
+                    targetPackage = "com.example.samplefbase.config.json"
                 }
             }
         }
