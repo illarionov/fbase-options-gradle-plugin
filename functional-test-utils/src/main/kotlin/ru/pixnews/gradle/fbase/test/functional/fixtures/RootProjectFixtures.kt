@@ -4,24 +4,26 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.fixtures
+package ru.pixnews.gradle.fbase.test.functional.fixtures
 
-import ru.pixnews.gradle.fbase.junit.FileContent
+import ru.pixnews.gradle.fbase.test.functional.junit.FileContent
 import ru.pixnews.gradle.fbase.test.functional.util.androidHome
 import java.io.File
 
-object RootProjectFixtures {
-    val gradleProperties: FileContent by lazy { FixturesPaths.testFilesRootFileContent("gradle.properties") }
-    val buildGradleKts: FileContent by lazy { FixturesPaths.testFilesRootFileContent("build.gradle.kts") }
-    val localProperties: FileContent by lazy {
+public object RootProjectFixtures {
+    public val gradleProperties: FileContent by lazy { FixturesPaths.testFilesRootFileContent("gradle.properties") }
+    public val buildGradleKts: FileContent by lazy { FixturesPaths.testFilesRootFileContent("build.gradle.kts") }
+    public val localProperties: FileContent by lazy {
         FileContent(
             "local.properties",
             "sdk.dir=${androidHome()}".trimIndent(),
         )
     }
-    val defaultFirebaseProperties by lazy { FixturesPaths.testFilesRootFileContent("config/firebase.properties") }
+    public val defaultFirebaseProperties: FileContent by lazy {
+        FixturesPaths.testFilesRootFileContent("config/firebase.properties")
+    }
 
-    fun settingsGradleKts(
+    public fun settingsGradleKts(
         vararg includeSubprojects: String,
     ): FileContent {
         val settingsFile = FixturesPaths.testFilesRootFileContent("settings.gradle.kts")

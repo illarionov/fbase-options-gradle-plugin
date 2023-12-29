@@ -4,17 +4,17 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.fixtures
+package ru.pixnews.gradle.fbase.test.functional.fixtures
 
-import ru.pixnews.gradle.fbase.junit.FileContent
+import ru.pixnews.gradle.fbase.test.functional.junit.FileContent
 import java.io.File
 
-object FixturesPaths {
+public object FixturesPaths {
     internal val userDir: String
         get() = System.getProperty("user.dir")
-    val testProjectsRoot
+    public val testProjectsRoot: File
         get() = File(userDir, "src/testProjects")
-    val testFilesRoot
+    public val testFilesRoot: File
         get() = File(userDir, "src/testFiles")
 
     internal fun testFilesRootFileContent(dstPath: String) = FileContent(

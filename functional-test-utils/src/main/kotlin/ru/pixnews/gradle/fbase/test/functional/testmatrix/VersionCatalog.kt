@@ -21,13 +21,14 @@ public data class VersionCatalog(
     val compileSdk: Int,
     val targetSdk: Int,
     val minSdk: Int = 21,
+    val fbasePluginVersion: String,
 ) {
     public companion object {
         public val ANDROIDX_CORE_VERSION: Version = Version(1, 12, 0)
-        public val DEFAULT: VersionCatalog = run {
+        public fun getDefault(fbasePluginVersion: String): VersionCatalog {
             val agpVersion = AGP_8_3_0_BETA01
             val compileTargetSdk = getCompatibleAndroidApiLevel(agpVersion)
-            VersionCatalog(
+            return VersionCatalog(
                 gradleVersion = GRADLE_8_5,
                 kotlinVersion = KOTLIN_1_9_22,
                 agpVersion = AGP_8_3_0_BETA01,
@@ -35,6 +36,7 @@ public data class VersionCatalog(
                 firebaseVersion = FIREBASE_BOM_32_7_0,
                 compileSdk = compileTargetSdk,
                 targetSdk = compileTargetSdk,
+                fbasePluginVersion = fbasePluginVersion,
             )
         }
     }

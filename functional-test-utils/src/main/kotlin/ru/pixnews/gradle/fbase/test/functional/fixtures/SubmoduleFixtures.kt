@@ -4,22 +4,22 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.fixtures
+package ru.pixnews.gradle.fbase.test.functional.fixtures
 
-import ru.pixnews.gradle.fbase.junit.FileContent
-import ru.pixnews.gradle.fbase.junit.SubmoduleDsl
+import ru.pixnews.gradle.fbase.test.functional.junit.FileContent
+import ru.pixnews.gradle.fbase.test.functional.junit.SubmoduleDsl
 import java.io.File
 
-val SubmoduleDsl.fixtures: SubmoduleFixtures
+public val SubmoduleDsl.fixtures: SubmoduleFixtures
     get() = SubmoduleFixtures(id.namespace)
 
-class SubmoduleFixtures internal constructor(
-    val namespace: String,
+public class SubmoduleFixtures internal constructor(
+    public val namespace: String,
 ) {
-    val androidManifestXml: FileContent by lazy {
+    public val androidManifestXml: FileContent by lazy {
         testFilesSubmoduleFileContent("src/main/AndroidManifest.xml")
     }
-    val mainActivity: FileContent by lazy {
+    public val mainActivity: FileContent by lazy {
         val dstPath = "src/main/kotlin/${namespace.namespaceToPackage()}/MainActivity.kt"
         val content = """
             package $namespace
@@ -28,7 +28,7 @@ class SubmoduleFixtures internal constructor(
         """.trimIndent()
         FileContent(dstPath, content)
     }
-    val application: FileContent by lazy {
+    public val application: FileContent by lazy {
         val dstPath = "src/main/kotlin/${namespace.namespaceToPackage()}/Application.kt"
         val content = """
             package $namespace
@@ -48,11 +48,11 @@ class SubmoduleFixtures internal constructor(
         """.trimIndent()
         FileContent(dstPath, content)
     }
-    val googleServicesJson: FileContent by lazy {
+    public val googleServicesJson: FileContent by lazy {
         testFilesSubmoduleFileContent("google-services.json")
     }
 
-    fun buildGradleKts(
+    public fun buildGradleKts(
         additionalText: String = "",
     ): FileContent {
         val template = testFilesSubmoduleFileContent("build.gradle.kts")

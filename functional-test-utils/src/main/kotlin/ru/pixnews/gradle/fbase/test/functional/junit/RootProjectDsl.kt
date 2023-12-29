@@ -4,22 +4,22 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.junit
+package ru.pixnews.gradle.fbase.test.functional.junit
 
-import ru.pixnews.gradle.fbase.fixtures.RootProjectFixtures
-import ru.pixnews.gradle.fbase.fixtures.fixtures
-import ru.pixnews.gradle.fbase.fixtures.toLibsVersionsToml
+import ru.pixnews.gradle.fbase.test.functional.fixtures.RootProjectFixtures
+import ru.pixnews.gradle.fbase.test.functional.fixtures.fixtures
+import ru.pixnews.gradle.fbase.test.functional.fixtures.toLibsVersionsToml
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.VersionCatalog
 import java.io.File
 
-class RootProjectDsl private constructor(
+public class RootProjectDsl private constructor(
     val rootDir: File,
 ) {
-    fun subProject(
+    public fun subProject(
         submoduleId: SubmoduleId,
     ): SubmoduleDsl = SubmoduleDsl(rootDir, submoduleId)
 
-    fun writeFiles(
+    public fun writeFiles(
         vararg files: FileContent,
     ) {
         files.forEach {
@@ -32,7 +32,7 @@ class RootProjectDsl private constructor(
     internal companion object {
         internal fun setupTestProjectScaffold(
             rootDir: File,
-            versions: VersionCatalog = VersionCatalog.DEFAULT,
+            versions: VersionCatalog,
             vararg submodules: SubmoduleId,
         ): RootProjectDsl = RootProjectDsl(rootDir).apply {
             setupRoot(
@@ -52,7 +52,7 @@ class RootProjectDsl private constructor(
 
         private fun setupRoot(
             rootProject: RootProjectDsl,
-            versions: VersionCatalog = VersionCatalog.DEFAULT,
+            versions: VersionCatalog,
             vararg submodules: SubmoduleId,
         ) {
             rootProject.writeFiles(

@@ -30,12 +30,11 @@ import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVe
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6_RC1
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.isGradleCompatibleWithRuntime
 
-public object TestMatrix {
+public class TestMatrix(
+    fbasePluginVersion: String,
+) {
     private val logger: Logger = LoggerFactory.getLogger(TestMatrix::class.java)
-    public const val MAIN_TEST_VARIANTS_FQN: String =
-        "ru.pixnews.gradle.fbase.test.functional.testmatrix.TestMatrix#getMainTestVariants"
-    public const val FIREBASE_TEST_VARIANTS_FQN: String =
-        "ru.pixnews.gradle.fbase.test.functional.testmatrix.TestMatrix#getFirebaseTestVariants"
+    private val defaultVersionCatalog: VersionCatalog = VersionCatalog.getDefault(fbasePluginVersion)
     private val gradleVersions = listOf(
         GRADLE_8_6_RC1,
         GRADLE_8_5,
@@ -62,11 +61,10 @@ public object TestMatrix {
         FIREBASE_BOM_32_3_1,
     )
 
-    @JvmStatic
     public fun getMainTestVariants(): List<VersionCatalog> = getCompatibleGradleAgpVariants()
         .map { (gradleVersion, agpVersion) ->
             val compileTargetSdk = getCompatibleAndroidApiLevel(agpVersion)
-            VersionCatalog.DEFAULT.copy(
+            defaultVersionCatalog.copy(
                 gradleVersion = gradleVersion,
                 agpVersion = agpVersion,
                 compileSdk = compileTargetSdk,
@@ -80,9 +78,8 @@ public object TestMatrix {
             }
         }
 
-    @JvmStatic
     public fun getFirebaseTestVariants(): List<VersionCatalog> = firebaseVersions().map {
-        VersionCatalog.DEFAULT.copy(firebaseVersion = it)
+        defaultVersionCatalog.copy(firebaseVersion = it)
     }
 
     private fun getCompatibleGradleAgpVariants(): Sequence<Pair<Version, Version>> {

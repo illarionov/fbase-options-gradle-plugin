@@ -4,16 +4,16 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.assertions
+package ru.pixnews.gradle.fbase.test.functional.assertions
 
 import assertk.Assert
 import assertk.assertions.contains
 import assertk.assertions.isNotNull
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.test.functional.TestFirebaseOptions
 
-fun Assert<String?>.dexBytecodeMatch(
-    options: LocalFirebaseOptions,
-) = this
+public fun Assert<String?>.dexBytecodeMatch(
+    options: TestFirebaseOptions,
+): Unit = this
     .isNotNull()
     .transform { dexBytecodeAsString ->
         dexBytecodeAsString.split("\n")
@@ -48,11 +48,11 @@ private fun getMatchBuilderMethod(
 private val lineRegex = """\s*\.line \d+""".toRegex()
 
 private val propToBuilderMethodName = listOf(
-    LocalFirebaseOptions::projectId to "setProjectId",
-    LocalFirebaseOptions::apiKey to "setApiKey",
-    LocalFirebaseOptions::applicationId to "setApplicationId",
-    LocalFirebaseOptions::databaseUrl to "setDatabaseUrl",
-    LocalFirebaseOptions::gaTrackingId to "setGaTrackingId",
-    LocalFirebaseOptions::gcmSenderId to "setGcmSenderId",
-    LocalFirebaseOptions::storageBucket to "setStorageBucket",
+    TestFirebaseOptions::projectId to "setProjectId",
+    TestFirebaseOptions::apiKey to "setApiKey",
+    TestFirebaseOptions::applicationId to "setApplicationId",
+    TestFirebaseOptions::databaseUrl to "setDatabaseUrl",
+    TestFirebaseOptions::gaTrackingId to "setGaTrackingId",
+    TestFirebaseOptions::gcmSenderId to "setGcmSenderId",
+    TestFirebaseOptions::storageBucket to "setStorageBucket",
 )
