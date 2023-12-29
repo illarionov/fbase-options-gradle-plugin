@@ -40,9 +40,9 @@ firebaseConfig {
     configurations {
         create("firebaseOptions") {
             fromGoogleServicesJson {
-                location = rootProject.layout.projectDirectory.file("config/google-services.json")
+                location.set(rootProject.layout.projectDirectory.file("config/google-services.json"))
             }
-            targetPackage = "com.example.myapplication.config"
+            targetPackage.set("com.example.myapplication.config")
         }
     }
 }

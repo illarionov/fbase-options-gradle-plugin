@@ -42,5 +42,6 @@ class VersionTest {
         assertThat(Version(12, 451).toString()).isEqualTo("12.451")
         assertThat(Version(12, 451, 6).toString()).isEqualTo("12.451.6")
         assertThat(Version(12, 451, 6, "beta05").toString()).isEqualTo("12.451.6-beta05")
+        assertThat(Version(12, 451, null, "beta05").toString()).isEqualTo("12.451-beta05")
     }
 }

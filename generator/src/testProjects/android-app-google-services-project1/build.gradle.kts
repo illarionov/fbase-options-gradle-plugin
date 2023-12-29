@@ -58,7 +58,7 @@ firebaseConfig {
     configurations {
         create("firebaseOptions") {
             fromGoogleServicesJson {}
-            targetPackage = "com.example.myapplication.config"
+            targetPackage.set("com.example.myapplication.config")
         }
     }
 }
