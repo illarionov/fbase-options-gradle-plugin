@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.samplefbase"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.example.samplefbase"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -33,6 +33,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    lint {
+        checkOnly += listOf("AnnotationProcessorOnCompilePath")
+    }
 }
 
 dependencies {
@@ -42,27 +45,27 @@ dependencies {
 }
 
 firebaseConfig {
-    primaryConfiguration = "firebaseOptions"
+    primaryConfiguration.set("firebaseOptions")
     configurations {
         create("firebaseOptions") {
             fromPropertiesFile {
-                location = layout.projectDirectory.file("firebase.properties")
+                location.set(layout.projectDirectory.file("firebase.properties"))
             }
-            targetPackage = "com.example.samplefbase.config"
+            targetPackage.set("com.example.samplefbase.config")
         }
         create("firebaseOptionsOrg2") {
             fromPropertiesFile {
-                location = layout.projectDirectory.file("firebase2.properties")
+                location.set(layout.projectDirectory.file("firebase2.properties"))
             }
-            targetPackage = "com.example.samplefbase.config"
-            targetFileName = "FirebaseOptionsOrg23"
+            targetPackage.set("com.example.samplefbase.config")
+            targetFileName.set("FirebaseOptionsOrg23")
         }
         create("firebaseOptionsOrg3") {
             fromPropertiesFile {
-                location = layout.projectDirectory.file("firebase3.properties")
+                location.set(layout.projectDirectory.file("firebase3.properties"))
             }
-            targetPackage = "com.example.samplefbase.config"
-            targetFileName = "FirebaseOptionsOrg23"
+            targetPackage.set("com.example.samplefbase.config")
+            targetFileName.set("FirebaseOptionsOrg23")
         }
     }
 }

@@ -13,3 +13,4 @@ plugins {
 
 rootProject.name = "fbase-config-generator-gradle-plugin"
 include("generator")
+include("functional-test-utils")

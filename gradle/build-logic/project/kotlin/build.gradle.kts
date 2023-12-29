@@ -10,8 +10,6 @@ plugins {
 group = "ru.pixnews.gradle.fbase.build-logic.project.lint"
 
 dependencies {
-    implementation(project(":lint"))
     implementation(libs.agp.plugin.api)
     implementation(libs.kotlin.plugin)
-    runtimeOnly(libs.agp.plugin)
 }

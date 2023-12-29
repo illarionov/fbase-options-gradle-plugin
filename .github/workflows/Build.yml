@@ -25,6 +25,7 @@ env:
     -Dorg.gradle.dependency.verification.console=verbose
   KOTLIN_DAEMON_JVMARGS: >-
     -Xmx512M -XX:MaxMetaspaceSize=320M -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC -XX:NewRatio=1
+  ORG_GRADLE_PROJECT_verboseTest: true
 
 permissions:
   checks: write
@@ -55,15 +56,11 @@ jobs:
           dependency-graph: generate
 
       - name: Assemble debug build, run tests
-        env:
-          ORG_GRADLE_PROJECT_disableSigning: true
         run: >
           ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
-          build publishAllPublicationsToTestRepository --stacktrace --scan
+          assemble test publishAllPublicationsToTestRepository --stacktrace --scan
 
       - name: Build samples
-        env:
-          ORG_GRADLE_PROJECT_disableSigning: true
         run: >
           ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
           -p samples build --stacktrace --scan
@@ -101,6 +98,100 @@ jobs:
         with:
           name: local-plugin-repository
           path: local-plugin-repository.tar.zst
+
+  functional-tests:
+    name: Run functional tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+
+          # AGP 8.3.0-beta01
+          - gradle: 8.6-rc-1
+            agp: 8.3.0-beta01
+            jdk: 21
+          - gradle: 8.5
+            agp: 8.3.0-beta01
+            jdk: 21
+          - gradle: 8.4
+            agp: 8.3.0-beta01
+            jdk: 17
+
+          # AGP 8.2.0
+          - gradle: 8.6-rc-1
+            agp: 8.2.0
+          - gradle: 8.5
+            agp: 8.2.0
+          - gradle: 8.4
+            agp: 8.2.0
+          - gradle: 8.3
+            agp: 8.2.0
+          - gradle: 8.2.1
+            agp: 8.2.0
+
+          # AGP 8.1.4
+          - gradle: 8.5
+            agp: 8.1.4
+          - gradle: 8.4
+            agp: 8.1.4
+          - gradle: 8.3
+            agp: 8.1.4
+          - gradle: 8.2.1
+            agp: 8.1.4
+          - gradle: 8.1.1
+            agp: 8.1.4
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Assemble debug build, run tests
+        env:
+          GRADLE_VERSION: ${{ matrix.gradle }}
+          AGP_VERSION: ${{ matrix.agp }}
+          TEST_JDK_VERSION: ${{ matrix.jdk || '17' }}
+        run: >
+          ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
+          functionalTest --stacktrace
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: ${{ !cancelled() && (github.actor != 'dependabot[bot]') }}
+        with:
+          comment_mode: off
+          junit_files: '**/build/test-results/**/*.xml'
+          check_name: ${{ format('Test results - {0}, {1}, {2}', matrix.gradle, matrix.agp, matrix.jdk || '') }}
+
+      - name: Bundle the test reports
+        if: failure()
+        run: >
+          find . \(
+          -name .idea -o -path '*build/intermediates' -o -path '*build/.transforms' -o -path '*build/generated'
+          \) -prune -o
+          -type d -name 'reports' -print0
+          | xargs -0 tar -c -I 'zstd -19 -T0' -f test-reports.tar.zst
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-reports
+          path: test-reports.tar.zst
 
   static-analysis:
     name: Style check
