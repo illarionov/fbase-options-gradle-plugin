@@ -175,7 +175,7 @@ jobs:
         with:
           comment_mode: off
           junit_files: '**/build/test-results/**/*.xml'
-          check_name: format('Test results - {0}, {1}, {2}', matrix.gradle, matrix.agp, matrix.jdk || '')
+          check_name: ${{ format('Test results - {0}, {1}, {2}', matrix.gradle, matrix.agp, matrix.jdk || '') }}
 
       - name: Bundle the test reports
         if: failure()

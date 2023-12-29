@@ -6,7 +6,6 @@
 
 package ru.pixnews.gradle.fbase.test.functional.testmatrix
 
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_2_0
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_3_0_BETA01
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_7_0
@@ -31,7 +30,7 @@ public data class VersionCatalog(
             VersionCatalog(
                 gradleVersion = GRADLE_8_5,
                 kotlinVersion = KOTLIN_1_9_22,
-                agpVersion = AGP_8_2_0,
+                agpVersion = AGP_8_3_0_BETA01,
                 androidxCore = ANDROIDX_CORE_VERSION,
                 firebaseVersion = FIREBASE_BOM_32_7_0,
                 compileSdk = compileTargetSdk,
