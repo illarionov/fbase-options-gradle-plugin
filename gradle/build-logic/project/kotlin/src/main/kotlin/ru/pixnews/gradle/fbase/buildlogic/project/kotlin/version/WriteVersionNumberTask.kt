@@ -26,7 +26,6 @@ abstract class WriteVersionNumberTask : DefaultTask() {
         outputDir.listFiles()?.forEach { it.deleteRecursively() }
 
         val outputFile = outputDir.resolve("FbaseVersion.kt")
-
         outputFile.writeText(
             """
             package ru.pixnews.gradle.fbase

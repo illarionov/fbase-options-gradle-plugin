@@ -8,10 +8,17 @@
 
 package ru.pixnews.gradle.fbase
 
+import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.isEqualTo
+import org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import ru.pixnews.gradle.fbase.test.functional.assertions.outcomeOfTask
 import ru.pixnews.gradle.fbase.test.functional.fixtures.RootProjectFixtures
+import ru.pixnews.gradle.fbase.test.functional.fixtures.TestSubmodules
 import ru.pixnews.gradle.fbase.test.functional.fixtures.fixtures
 import ru.pixnews.gradle.fbase.test.functional.junit.AndroidProjectExtension
 import ru.pixnews.gradle.fbase.test.functional.junit.SubmoduleId
@@ -52,6 +59,28 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         val result = projectBuilder.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+    }
+
+    @Test
+    fun `task should be up-to-date on second build and configuration cache should be reused`() {
+        projectBuilder.setupTestProject(TestSubmodules.androidAppSimple)
+
+        projectBuilder.build("clean")
+
+        val generateOptionsTask = ":android-app-simple:releaseGenerateFirebaseOptions"
+        projectBuilder.build(
+            "--configuration-cache",
+            generateOptionsTask,
+        ).let { result ->
+            assertThat(result).outcomeOfTask(generateOptionsTask).isEqualTo(SUCCESS)
+        }
+        projectBuilder.build(
+            "--configuration-cache",
+            generateOptionsTask,
+        ).let { result ->
+            assertThat(result).outcomeOfTask(generateOptionsTask).isEqualTo(UP_TO_DATE)
+            assertThat(result.output).contains("Reusing configuration cache.")
+        }
     }
 
     @Test
