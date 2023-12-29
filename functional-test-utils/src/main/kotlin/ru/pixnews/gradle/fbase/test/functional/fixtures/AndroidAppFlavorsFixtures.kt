@@ -4,12 +4,12 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.fixtures
+package ru.pixnews.gradle.fbase.test.functional.fixtures
 
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.test.functional.TestFirebaseOptions
 
-object AndroidAppFlavorsFixtures {
-    val firebaseProperties = LocalFirebaseOptions(
+public object AndroidAppFlavorsFixtures {
+    public val firebaseProperties: TestFirebaseOptions = TestFirebaseOptions(
         projectId = "sample-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZ8",
         applicationId = "1:1035469437089:android:73a4fb8297b2cd4f",
@@ -18,7 +18,7 @@ object AndroidAppFlavorsFixtures {
         gcmSenderId = "1035469437089",
         storageBucket = "sample-en.appspot.com",
     )
-    val firebaseBenchmarkProperties = LocalFirebaseOptions(
+    public val firebaseBenchmarkProperties: TestFirebaseOptions = TestFirebaseOptions(
         projectId = "sample-benchmark-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZ9",
         applicationId = "1:1035469437089:android:73a4fb8297b2cd50",
@@ -27,7 +27,7 @@ object AndroidAppFlavorsFixtures {
         gcmSenderId = "1035469437090",
         storageBucket = "sample-benchmark-en.appspot.com",
     )
-    val firebaseDemoProperties = LocalFirebaseOptions(
+    public val firebaseDemoProperties: TestFirebaseOptions = TestFirebaseOptions(
         projectId = "sample-demo-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZA",
         applicationId = "1:1035469437089:android:73a4fb8297b2cd51",
@@ -36,7 +36,7 @@ object AndroidAppFlavorsFixtures {
         gcmSenderId = "1035469437091",
         storageBucket = "sample-demo-en.appspot.com",
     )
-    val firebaseFullProperties = LocalFirebaseOptions(
+    public val firebaseFullProperties: TestFirebaseOptions = TestFirebaseOptions(
         projectId = "sample-full-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZB",
         applicationId = "1:1035469437089:android:73a4fb8297b2cd52",
@@ -45,7 +45,7 @@ object AndroidAppFlavorsFixtures {
         gcmSenderId = "1035469437092",
         storageBucket = "sample-full-en.appspot.com",
     )
-    val firebaseMinApi21Properties = LocalFirebaseOptions(
+    public val firebaseMinApi21Properties: TestFirebaseOptions = TestFirebaseOptions(
         projectId = "sample-minapi21-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZC",
         applicationId = "1:1035469437089:android:73a4fb8297b2cd53",
@@ -54,7 +54,7 @@ object AndroidAppFlavorsFixtures {
         gcmSenderId = "1035469437093",
         storageBucket = "sample-minapi21-en.appspot.com",
     )
-    val firebaseMinApi24Properties = LocalFirebaseOptions(
+    public val firebaseMinApi24Properties: TestFirebaseOptions = TestFirebaseOptions(
         projectId = "sample-minapi24-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZD",
         applicationId = "1:1035469437089:android:73a4fb8297b2cd54",
@@ -63,7 +63,7 @@ object AndroidAppFlavorsFixtures {
         gcmSenderId = "1035469437094",
         storageBucket = "sample-minapi24-en.appspot.com",
     )
-    val firebaseReleaseProperties = LocalFirebaseOptions(
+    public val firebaseReleaseProperties: TestFirebaseOptions = TestFirebaseOptions(
         projectId = "sample-release-en",
         apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZE",
         applicationId = "1:1035469437089:android:73a4fb8297b2cd55",
@@ -72,7 +72,7 @@ object AndroidAppFlavorsFixtures {
         gcmSenderId = "1035469437095",
         storageBucket = "sample-release-en.appspot.com",
     )
-    val testedVariants: List<AppFlavorsVariant> = buildList {
+    public val testedVariants: List<AppFlavorsVariant> = buildList {
         listOf("minApi21", "minApi24").forEach { api ->
             listOf("demo", "full").forEach { mode ->
                 listOf("debug", "benchmark", "release").forEach { buildType ->
@@ -98,26 +98,31 @@ object AndroidAppFlavorsFixtures {
         api: String,
         mode: String,
         buildType: String,
-    ): List<Pair<String, LocalFirebaseOptions>> = buildList {
+    ): List<ExpectedBuilder> = buildList {
         when (api) {
-            "minApi21" -> add("MinApi21FirebaseOptionsKt" to firebaseMinApi21Properties)
-            "minApi24" -> add("MinApi24FirebaseOptionsKt" to firebaseMinApi24Properties)
+            "minApi21" -> add(ExpectedBuilder("MinApi21FirebaseOptionsKt", firebaseMinApi21Properties))
+            "minApi24" -> add(ExpectedBuilder("MinApi24FirebaseOptionsKt", firebaseMinApi24Properties))
         }
         when (mode) {
-            "demo" -> add("DemoFirebaseOptionsKt" to firebaseDemoProperties)
-            "full" -> add("FullFirebaseOptionsKt" to firebaseFullProperties)
+            "demo" -> add(ExpectedBuilder("DemoFirebaseOptionsKt", firebaseDemoProperties))
+            "full" -> add(ExpectedBuilder("FullFirebaseOptionsKt", firebaseFullProperties))
         }
         when (buildType) {
-            "release" -> add("ReleaseFirebaseOptionsKt" to firebaseReleaseProperties)
-            "benchmark" -> add("BenchmarkFirebaseOptionsKt" to firebaseBenchmarkProperties)
+            "release" -> add(ExpectedBuilder("ReleaseFirebaseOptionsKt", firebaseReleaseProperties))
+            "benchmark" -> add(ExpectedBuilder("BenchmarkFirebaseOptionsKt", firebaseBenchmarkProperties))
         }
-        add("FirebaseOptionsKt" to firebaseProperties)
+        add(ExpectedBuilder("FirebaseOptionsKt", firebaseProperties))
     }
 
-    data class AppFlavorsVariant(
+    public data class AppFlavorsVariant(
         val buildType: String,
         val flavors: List<String>,
         val expectedGoogleAppId: String,
-        val expectedBuilders: List<Pair<String, LocalFirebaseOptions>>,
+        val expectedBuilders: List<ExpectedBuilder>,
+    )
+
+    public data class ExpectedBuilder(
+        val className: String,
+        val properties: TestFirebaseOptions,
     )
 }

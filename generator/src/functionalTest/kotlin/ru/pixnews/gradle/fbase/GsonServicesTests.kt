@@ -11,16 +11,17 @@ import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
-import ru.pixnews.gradle.fbase.assertions.dexBytecodeMatch
-import ru.pixnews.gradle.fbase.fixtures.TestSubmodules.androidAppGoogleServicesCustomLocation
-import ru.pixnews.gradle.fbase.fixtures.TestSubmodules.androidAppGoogleServicesProject1
-import ru.pixnews.gradle.fbase.fixtures.fixtures
-import ru.pixnews.gradle.fbase.junit.AndroidProjectExtension
+import ru.pixnews.gradle.fbase.test.functional.TestFirebaseOptions
+import ru.pixnews.gradle.fbase.test.functional.assertions.dexBytecodeMatch
+import ru.pixnews.gradle.fbase.test.functional.fixtures.TestSubmodules.androidAppGoogleServicesCustomLocation
+import ru.pixnews.gradle.fbase.test.functional.fixtures.TestSubmodules.androidAppGoogleServicesProject1
+import ru.pixnews.gradle.fbase.test.functional.fixtures.fixtures
+import ru.pixnews.gradle.fbase.test.functional.junit.AndroidProjectExtension
 
 class GsonServicesTests {
     @JvmField
     @RegisterExtension
-    var project = AndroidProjectExtension()
+    var project = AndroidProjectExtension(FBASE_VERSION)
 
     @Test
     fun `Should build project with default config from google-services`() {
@@ -48,7 +49,7 @@ class GsonServicesTests {
                 methodSignature = "<clinit>()V",
             )
             assertThat(apk.getStringResource("google_app_id")).isEqualTo(EXPECTED_GOOGLE_APP_ID)
-            assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_LOCAL_FIREBASE_OPTIONS)
+            assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_FIREBASE_OPTIONS)
         }
     }
 
@@ -83,7 +84,7 @@ class GsonServicesTests {
                 methodSignature = "<clinit>()V",
             )
             assertThat(apk.getStringResource("google_app_id")).isEqualTo(EXPECTED_GOOGLE_APP_ID)
-            assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_LOCAL_FIREBASE_OPTIONS)
+            assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_FIREBASE_OPTIONS)
         }
     }
 
@@ -107,12 +108,12 @@ class GsonServicesTests {
             methodSignature = "<clinit>()V",
         )
         assertThat(apk.getStringResource("google_app_id")).isEqualTo(EXPECTED_GOOGLE_APP_ID)
-        assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_LOCAL_FIREBASE_OPTIONS)
+        assertThat(optionsDexCode).dexBytecodeMatch(EXPECTED_FIREBASE_OPTIONS)
     }
 
     internal companion object {
         const val EXPECTED_GOOGLE_APP_ID = "1:123456789000:android:f1bf012572b04063"
-        val EXPECTED_LOCAL_FIREBASE_OPTIONS = LocalFirebaseOptions(
+        val EXPECTED_FIREBASE_OPTIONS = TestFirebaseOptions(
             projectId = "mockproject-1234",
             apiKey = "AIzbSzCn1N6LWIe6wthYyrgUUSAlUsdqMb-wvTo",
             applicationId = "1:123456789000:android:f1bf012572b04063",

@@ -4,13 +4,12 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.fixtures
+package ru.pixnews.gradle.fbase.test.functional.fixtures
 
-import ru.pixnews.gradle.fbase.FBASE_VERSION
-import ru.pixnews.gradle.fbase.junit.FileContent
+import ru.pixnews.gradle.fbase.test.functional.junit.FileContent
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.VersionCatalog
 
-fun VersionCatalog.toLibsVersionsToml(): FileContent {
+public fun VersionCatalog.toLibsVersionsToml(): FileContent {
     val versionCatalogText = """
         [versions]
         agp = "$agpVersion"
@@ -20,7 +19,7 @@ fun VersionCatalog.toLibsVersionsToml(): FileContent {
         compileSdk = "$compileSdk"
 
         androidx-core-ktx = "$androidxCore"
-        fbase-config-generator-gradle-plugin = "$FBASE_VERSION"
+        fbase-config-generator-gradle-plugin = "$fbasePluginVersion"
         firebase = "$firebaseVersion"
 
         [libraries]

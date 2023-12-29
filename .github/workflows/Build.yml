@@ -58,7 +58,7 @@ jobs:
       - name: Assemble debug build, run tests
         run: >
           ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
-          assemble test publishAllPublicationsToTestRepository --stacktrace --scan
+          build publishAllPublicationsToTestRepository --stacktrace --scan
 
       - name: Build samples
         run: >
@@ -100,7 +100,7 @@ jobs:
           path: local-plugin-repository.tar.zst
 
   functional-tests:
-    name: Run functional tests
+    name: Run functional matrix tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
     if: ${{ !contains(github.event.head_commit.message, '[ci skip]') }}
@@ -160,14 +160,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Assemble debug build, run tests
+      - name: Assemble debug build, run matrix tests
         env:
           GRADLE_VERSION: ${{ matrix.gradle }}
           AGP_VERSION: ${{ matrix.agp }}
           TEST_JDK_VERSION: ${{ matrix.jdk || '17' }}
         run: >
           ./gradlew -Pkotlin.daemon.jvmargs="${{ env.KOTLIN_DAEMON_JVMARGS }}"
-          functionalTest --stacktrace
+          functionalMatrixTest --stacktrace
 
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2

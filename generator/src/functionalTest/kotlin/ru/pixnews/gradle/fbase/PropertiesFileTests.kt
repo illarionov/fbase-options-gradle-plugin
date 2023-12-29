@@ -9,14 +9,14 @@ package ru.pixnews.gradle.fbase
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
-import ru.pixnews.gradle.fbase.fixtures.fixtures
-import ru.pixnews.gradle.fbase.junit.AndroidProjectExtension
-import ru.pixnews.gradle.fbase.junit.SubmoduleId
+import ru.pixnews.gradle.fbase.test.functional.fixtures.fixtures
+import ru.pixnews.gradle.fbase.test.functional.junit.AndroidProjectExtension
+import ru.pixnews.gradle.fbase.test.functional.junit.SubmoduleId
 
 class PropertiesFileTests {
     @JvmField
     @RegisterExtension
-    var project = AndroidProjectExtension()
+    var project = AndroidProjectExtension(FBASE_VERSION)
 
     @Test
     fun `Should fail if properties file not found`() {

@@ -4,9 +4,9 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.junit
+package ru.pixnews.gradle.fbase.test.functional.junit
 
-data class SubmoduleId(
+public data class SubmoduleId(
     val projectName: String,
     val namespace: String,
 )

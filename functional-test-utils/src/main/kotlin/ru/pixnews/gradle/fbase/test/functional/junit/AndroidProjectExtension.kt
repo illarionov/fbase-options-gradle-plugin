@@ -4,14 +4,14 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.junit
+package ru.pixnews.gradle.fbase.test.functional.junit
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestWatcher
-import ru.pixnews.gradle.fbase.fixtures.FixturesPaths.testProjectsRoot
+import ru.pixnews.gradle.fbase.test.functional.fixtures.FixturesPaths.testProjectsRoot
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.Version
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.VersionCatalog
 import java.io.File
@@ -19,7 +19,10 @@ import java.nio.file.Files
 import java.util.Optional
 
 @Suppress("TooManyFunctions")
-class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
+public class AndroidProjectExtension(
+    fbasePluginVersion: String,
+) : BeforeEachCallback, TestWatcher {
+    public val defaultVersionCatalog: VersionCatalog = VersionCatalog.getDefault(fbasePluginVersion)
     private lateinit var rootDir: File
 
     override fun beforeEach(context: ExtensionContext?) {
@@ -38,11 +41,11 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         // do not clean up, leave a temporary rootDir directory for future inspection
     }
 
-    override fun testDisabled(context: ExtensionContext?, reason: Optional<String>?) = Unit
+    override fun testDisabled(context: ExtensionContext?, reason: Optional<String>?): Unit = Unit
 
-    fun setupTestProject(
+    public fun setupTestProject(
         submoduleId: SubmoduleId,
-        versions: VersionCatalog = VersionCatalog.DEFAULT,
+        versions: VersionCatalog = defaultVersionCatalog,
     ): RootProjectDsl = RootProjectDsl.setupTestProjectScaffold(
         rootDir,
         versions,
@@ -55,17 +58,17 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         )
     }
 
-    fun setupTestProjectScaffold(
+    public fun setupTestProjectScaffold(
         submoduleId: SubmoduleId,
-        versions: VersionCatalog = VersionCatalog.DEFAULT,
+        versions: VersionCatalog = defaultVersionCatalog,
     ): RootProjectDsl = RootProjectDsl.setupTestProjectScaffold(
         rootDir,
         versions,
         submoduleId,
     )
 
-    fun buildWithGradleVersion(
-        gradleVersion: Version = VersionCatalog.DEFAULT.gradleVersion,
+    public fun buildWithGradleVersion(
+        gradleVersion: Version = defaultVersionCatalog.gradleVersion,
         expectFail: Boolean,
         vararg args: String,
     ): BuildResult {
@@ -85,33 +88,33 @@ class AndroidProjectExtension : BeforeEachCallback, TestWatcher {
         }
     }
 
-    fun build(
+    public fun build(
         vararg args: String,
-    ) = buildWithGradleVersion(
+    ): BuildResult = buildWithGradleVersion(
         expectFail = false,
         args = args,
     )
 
-    fun build(
-        gradleVersion: Version = VersionCatalog.DEFAULT.gradleVersion,
+    public fun build(
+        gradleVersion: Version = defaultVersionCatalog.gradleVersion,
         vararg args: String,
-    ) = buildWithGradleVersion(
+    ): BuildResult = buildWithGradleVersion(
         gradleVersion = gradleVersion,
         expectFail = false,
         args = args,
     )
 
-    fun buildAndFail(
+    public fun buildAndFail(
         vararg args: String,
-    ) = buildWithGradleVersion(
+    ): BuildResult = buildWithGradleVersion(
         expectFail = true,
         args = args,
     )
 
-    fun buildAndFail(
-        gradleVersion: Version = VersionCatalog.DEFAULT.gradleVersion,
+    public fun buildAndFail(
+        gradleVersion: Version = defaultVersionCatalog.gradleVersion,
         vararg args: String,
-    ) = buildWithGradleVersion(
+    ): BuildResult = buildWithGradleVersion(
         gradleVersion = gradleVersion,
         expectFail = true,
         args = args,

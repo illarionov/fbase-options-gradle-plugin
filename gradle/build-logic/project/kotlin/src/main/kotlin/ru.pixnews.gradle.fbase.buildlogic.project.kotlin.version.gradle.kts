@@ -15,15 +15,18 @@ plugins {
 val versionProvider: Provider<String> = providers.provider { project.version.toString() }
 val writeVersionNumberTaskTest = registerWriteVersionNumberTask("test")
 val writeVersionNumberTaskFunctionalTest = registerWriteVersionNumberTask("functionalTest")
+val writeVersionNumberTaskMatrixTest = registerWriteVersionNumberTask("functionalMatrixTest")
 
 kotlin {
     sourceSets {
         test {
             kotlin.srcDirs(writeVersionNumberTaskTest)
         }
-
         matching { return@matching it.name == "functionalTest" }.configureEach {
             kotlin.srcDirs(writeVersionNumberTaskFunctionalTest)
+        }
+        matching { return@matching it.name == "functionalMatrixTest" }.configureEach {
+            kotlin.srcDirs(writeVersionNumberTaskMatrixTest)
         }
     }
 }

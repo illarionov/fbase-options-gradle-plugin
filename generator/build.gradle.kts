@@ -46,7 +46,9 @@ testing {
             }
         }
 
-        register<JvmTestSuite>("functionalTest") {
+        withType(JvmTestSuite::class).matching {
+            it.name in setOf("functionalTest", "functionalMatrixTest")
+        }.configureEach {
             useJUnitJupiter(libs.versions.junit5)
 
             dependencies {
@@ -62,18 +64,16 @@ testing {
                         dependsOn(tasks.named("publishAllPublicationsToFunctionalTestsRepository"))
                         inputs.dir(functionalTestRepository)
                         shouldRunAfter(test)
-                        testLogging {
-                            if (providers.gradleProperty("verboseTest").map(String::toBoolean).getOrElse(false)) {
-                                events = setOf(
-                                    TestLogEvent.FAILED,
-                                    TestLogEvent.STANDARD_ERROR,
-                                    TestLogEvent.STANDARD_OUT,
-                                )
-                            }
-                        }
                     }
                 }
             }
+        }
+
+        register<JvmTestSuite>("functionalTest") {
+            testType = "functional-test"
+        }
+        register<JvmTestSuite>("functionalMatrixTest") {
+            testType = "functional-matrix-test"
         }
     }
 }
@@ -82,7 +82,15 @@ private fun Test.configureTestTaskDefaults() {
     maxHeapSize = "1512M"
     jvmArgs = listOf("-XX:MaxMetaspaceSize=768M")
     testLogging {
-        events = setOf(TestLogEvent.FAILED)
+        if (providers.gradleProperty("verboseTest").map(String::toBoolean).getOrElse(false)) {
+            events = setOf(
+                TestLogEvent.FAILED,
+                TestLogEvent.STANDARD_ERROR,
+                TestLogEvent.STANDARD_OUT,
+            )
+        } else {
+            events = setOf(TestLogEvent.FAILED)
+        }
     }
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = providers.environmentVariable("TEST_JDK_VERSION")

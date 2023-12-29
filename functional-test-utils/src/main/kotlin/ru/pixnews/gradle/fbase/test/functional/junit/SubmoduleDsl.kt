@@ -4,23 +4,23 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
-package ru.pixnews.gradle.fbase.junit
+package ru.pixnews.gradle.fbase.test.functional.junit
 
 import ru.pixnews.gradle.fbase.test.functional.apk.ApkAnalyzer
 import ru.pixnews.gradle.fbase.test.functional.util.getApkPath
 import java.io.File
 
-class SubmoduleDsl(
+public class SubmoduleDsl(
     private val projectRoot: File,
-    val id: SubmoduleId,
+    public val id: SubmoduleId,
 ) {
-    val root: File
+    public val root: File
         get() = projectRoot.resolve(id.projectName)
 
-    val apkDir: File
+    public val apkDir: File
         get() = root.resolve("build/outputs/apk/")
 
-    fun apk(
+    public fun apk(
         buildType: String,
         vararg flavors: String,
     ): ApkAnalyzer {
@@ -28,7 +28,7 @@ class SubmoduleDsl(
         return ApkAnalyzer(apkDir.resolve(apkPath))
     }
 
-    fun writeFiles(
+    public fun writeFiles(
         vararg files: FileContent,
     ) {
         files.forEach {
