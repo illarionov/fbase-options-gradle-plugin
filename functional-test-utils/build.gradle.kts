@@ -26,7 +26,7 @@ dependencies {
 
 tasks.withType<KotlinJvmCompile>().configureEach {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_11
+        jvmTarget = JvmTarget.JVM_17
         // https://docs.gradle.org/current/userguide/compatibility.html#kotlin
         apiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_6
         languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_6
@@ -45,6 +45,6 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11.toString()
-    targetCompatibility = JavaVersion.VERSION_11.toString()
+    sourceCompatibility = JavaVersion.VERSION_17.toString()
+    targetCompatibility = JavaVersion.VERSION_17.toString()
 }

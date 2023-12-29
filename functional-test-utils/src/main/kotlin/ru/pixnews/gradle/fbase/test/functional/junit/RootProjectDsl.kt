@@ -13,7 +13,7 @@ import ru.pixnews.gradle.fbase.test.functional.testmatrix.VersionCatalog
 import java.io.File
 
 public class RootProjectDsl private constructor(
-    val rootDir: File,
+    public val rootDir: File,
 ) {
     public fun subProject(
         submoduleId: SubmoduleId,
