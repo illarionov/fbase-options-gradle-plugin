@@ -149,6 +149,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         ) {
             val googleAppIdKey = variant.makeResValueKey("string", "google_app_id")
             val sourceTransformer = FbaseGeneratorSourceTransformer(project, variant)
+            val configurationDefaultSource = VariantDefaults(objects, providers, variant).defaultSource
             val resourcesMapProvider = providers.provider {
                 if (addGoogleAppIdResource.getOrElse(true) == false) {
                     return@provider emptyMap<ResValue.Key, ResValue>()
@@ -170,7 +171,11 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
                     )
                 }
 
-                val applicationId = configuration.source.flatMap(sourceTransformer).orNull?.applicationId
+                val applicationId = configuration.source
+                    .orElse(configurationDefaultSource)
+                    .flatMap(sourceTransformer)
+                    .orNull
+                    ?.applicationId
                 return@provider if (applicationId != null) {
                     mapOf(googleAppIdKey to ResValue(applicationId))
                 } else {

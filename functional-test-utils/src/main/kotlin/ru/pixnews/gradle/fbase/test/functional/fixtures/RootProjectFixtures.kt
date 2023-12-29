@@ -6,6 +6,7 @@
 
 package ru.pixnews.gradle.fbase.test.functional.fixtures
 
+import ru.pixnews.gradle.fbase.test.functional.TestFirebaseOptions
 import ru.pixnews.gradle.fbase.test.functional.junit.FileContent
 import ru.pixnews.gradle.fbase.test.functional.util.androidHome
 import java.io.File
@@ -22,6 +23,15 @@ public object RootProjectFixtures {
     public val defaultFirebaseProperties: FileContent by lazy {
         FixturesPaths.testFilesRootFileContent("config/firebase.properties")
     }
+    public val defaultFirebasePropertiesReleaseConfig: TestFirebaseOptions = TestFirebaseOptions(
+        projectId = "sample-en",
+        apiKey = "AIzbSyCILMsOuUKwN3qhtxrPq7FFemDJUAXTyZ8",
+        applicationId = "1:1035469437089:android:112233445566778899aabb",
+        databaseUrl = "https://sample-en.firebaseio.com",
+        gaTrackingId = "UA-65557217-3",
+        gcmSenderId = "1035469437089",
+        storageBucket = "sample-en.appspot.com",
+    )
 
     public fun settingsGradleKts(
         vararg includeSubprojects: String,

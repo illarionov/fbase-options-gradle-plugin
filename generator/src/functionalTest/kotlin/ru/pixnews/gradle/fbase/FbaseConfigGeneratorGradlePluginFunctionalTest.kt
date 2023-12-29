@@ -11,13 +11,16 @@ package ru.pixnews.gradle.fbase
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import ru.pixnews.gradle.fbase.test.functional.assertions.dexBytecodeMatch
 import ru.pixnews.gradle.fbase.test.functional.assertions.outcomeOfTask
 import ru.pixnews.gradle.fbase.test.functional.fixtures.RootProjectFixtures
+import ru.pixnews.gradle.fbase.test.functional.fixtures.RootProjectFixtures.defaultFirebasePropertiesReleaseConfig
 import ru.pixnews.gradle.fbase.test.functional.fixtures.TestSubmodules
 import ru.pixnews.gradle.fbase.test.functional.fixtures.fixtures
 import ru.pixnews.gradle.fbase.test.functional.junit.AndroidProjectExtension
@@ -113,6 +116,57 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         val result = projectBuilder.build("assemble")
 
         assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+        submodule.apk("release").also { releaseApk ->
+            val releaseDexCode = releaseApk.getDexCode(
+                classFqcn = "com.example.samplefbase.FirebaseOptionsKt",
+                methodSignature = "<clinit>()V",
+            )
+            assertThat(releaseApk.getStringResource("google_app_id"))
+                .isEqualTo("1:1035469437089:android:112233445566778899aabb")
+            assertThat(releaseDexCode).dexBytecodeMatch(defaultFirebasePropertiesReleaseConfig)
+        }
+    }
+
+    @Test
+    fun `should not add google_app_id resource if addGoogleAppIdResource is false`() {
+        val submoduleId = SubmoduleId(
+            projectName = "android-app-no-google-app-id",
+            namespace = "com.example.samplefbase",
+        )
+        val rootProject = projectBuilder.setupTestProjectScaffold(submoduleId)
+        val submodule = rootProject.subProject(submoduleId)
+
+        val buildGradleKts = submodule.fixtures.buildGradleKts(
+            """
+            firebaseConfig {
+               addGoogleAppIdResource.set(false)
+               configurations {
+                   create("firebaseOptions") {
+                   }
+               }
+            }
+        """.trimIndent(),
+        )
+        submodule.writeFiles(
+            buildGradleKts,
+            submodule.fixtures.application,
+        )
+        rootProject.writeFiles(
+            RootProjectFixtures.defaultFirebaseProperties,
+        )
+
+        val result = projectBuilder.build("assemble")
+
+        assertTrue(result.output.contains("BUILD SUCCESSFUL"))
+
+        submodule.apk("release").also { releaseApk ->
+            val releaseDexCode = releaseApk.getDexCode(
+                classFqcn = "com.example.samplefbase.FirebaseOptionsKt",
+                methodSignature = "<clinit>()V",
+            )
+            assertThat(releaseApk.getStringResource("google_app_id")).isNull()
+            assertThat(releaseDexCode).dexBytecodeMatch(defaultFirebasePropertiesReleaseConfig)
+        }
     }
 
     @Test
