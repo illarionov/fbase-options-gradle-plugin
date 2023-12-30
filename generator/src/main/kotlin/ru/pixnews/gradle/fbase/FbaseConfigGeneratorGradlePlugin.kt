@@ -23,7 +23,7 @@ import org.gradle.api.Transformer
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
 import ru.pixnews.gradle.fbase.internal.GoogleServicesValueSource.Companion.createGoogleServicesValueSource
-import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource
+import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource.Companion.createPropertiesFileGeneratorSource
 import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.EXTENSION_NAME
 import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
@@ -191,9 +191,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         variant: Variant,
     ) : Transformer<Provider<LocalFirebaseOptions>, FbaseGeneratorSource> {
         private val providers = project.providers
-        private val defaultConfigFile = project.rootProject.layout.projectDirectory.file(
-            VariantDefaults.DEFAULT_CONFIG_FILE_PATH,
-        )
+        private val rootProjectDirectory = project.rootProject.layout.projectDirectory
         private val projectDirectory = project.layout.projectDirectory
         private val defaultApplicationIdProvider: Provider<String> = if (variant is ApplicationVariant) {
             variant.applicationId
@@ -207,17 +205,12 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
             return when (source) {
                 is ProvidedGeneratorSource -> source.source
 
-                is PropertiesFileGeneratorSource -> {
-                    val configFilePathProvider = source.location.orElse(defaultConfigFile)
-                    val applicationIdProvider = source.applicationId.orElse(defaultApplicationIdProvider)
-
-                    providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->
-                        valueSource.parameters {
-                            it.configFilePath.set(configFilePathProvider)
-                            it.applicationId.set(applicationIdProvider)
-                        }
-                    }
-                }
+                is PropertiesFileGeneratorSource -> createPropertiesFileGeneratorSource(
+                    source = source,
+                    providers = providers,
+                    rootProjectDirectory = rootProjectDirectory,
+                    defaultApplicationIdProvider = defaultApplicationIdProvider,
+                )
 
                 is GoogleServicesJsonFileGeneratorSource -> createGoogleServicesValueSource(
                     source = source,

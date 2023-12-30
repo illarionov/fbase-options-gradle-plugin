@@ -17,6 +17,7 @@ import org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import ru.pixnews.gradle.fbase.test.functional.TestFirebaseOptions
 import ru.pixnews.gradle.fbase.test.functional.assertions.dexBytecodeMatch
 import ru.pixnews.gradle.fbase.test.functional.assertions.outcomeOfTask
 import ru.pixnews.gradle.fbase.test.functional.fixtures.RootProjectFixtures
@@ -108,9 +109,7 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
         submodule.writeFiles(
             buildGradleKts,
             submodule.fixtures.application,
-        )
-        rootProject.writeFiles(
-            RootProjectFixtures.defaultFirebaseProperties,
+            submodule.fixtures.googleServicesJson,
         )
 
         val result = projectBuilder.build("assemble")
@@ -122,8 +121,18 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
                 methodSignature = "<clinit>()V",
             )
             assertThat(releaseApk.getStringResource("google_app_id"))
-                .isEqualTo("1:1035469437089:android:112233445566778899aabb")
-            assertThat(releaseDexCode).dexBytecodeMatch(defaultFirebasePropertiesReleaseConfig)
+                .isEqualTo("1:1035469437089:android:73a4fb8297b2cd6f")
+            assertThat(releaseDexCode).dexBytecodeMatch(
+                TestFirebaseOptions(
+                    projectId = "example-en",
+                    apiKey = "AIzbSzCn1N6LWIe6wthYyrgUUSAlUsdqMb-wvTo",
+                    applicationId = "1:1035469437089:android:73a4fb8297b2cd6f",
+                    databaseUrl = null,
+                    gaTrackingId = null,
+                    gcmSenderId = "123456789001",
+                    storageBucket = "example-en.appspot.com",
+                ),
+            )
         }
     }
 
@@ -142,6 +151,9 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
                addGoogleAppIdResource.set(false)
                configurations {
                    create("firebaseOptions") {
+                       fromPropertiesFile {
+                           location.set(rootProject.layout.projectDirectory.file("config/firebase.properties"))
+                       }
                    }
                }
             }
@@ -183,8 +195,14 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
             firebaseConfig {
                configurations {
                    create("firebaseOptions1") {
+                       fromPropertiesFile {
+                           location.set(rootProject.layout.projectDirectory.file("config/firebase.properties"))
+                       }
                    }
                    create("firebaseOptions2") {
+                       fromPropertiesFile {
+                           location.set(rootProject.layout.projectDirectory.file("config/firebase.properties"))
+                       }
                    }
                }
             }
@@ -220,8 +238,14 @@ class FbaseConfigGeneratorGradlePluginFunctionalTest {
                primaryConfiguration = "firebaseOptions3"
                configurations {
                    create("firebaseOptions1") {
+                       fromPropertiesFile {
+                           location.set(rootProject.layout.projectDirectory.file("config/firebase.properties"))
+                       }
                    }
                    create("firebaseOptions2") {
+                       fromPropertiesFile {
+                           location.set(rootProject.layout.projectDirectory.file("config/firebase.properties"))
+                       }
                    }
                }
             }

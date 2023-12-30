@@ -51,6 +51,11 @@ public class SubmoduleFixtures internal constructor(
     public val googleServicesJson: FileContent by lazy {
         testFilesSubmoduleFileContent("google-services.json")
     }
+    public val googleServicesJsonHuge: FileContent by lazy {
+        testFilesSubmoduleFileContent("google-services-huge.json").copy(
+            dstPath = "google-services.json",
+        )
+    }
 
     public fun buildGradleKts(
         additionalText: String = "",

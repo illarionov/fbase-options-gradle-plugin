@@ -43,7 +43,6 @@ internal class JsonParseException : GradleException {
     internal constructor(msg: String, cause: Throwable) : super(msg, cause)
 }
 
-@Suppress("UnusedPrivateProperty", "LOCAL_VARIABLE_EARLY_DECLARATION")
 internal fun parseGoogleServicesFile(
     file: File,
 ): GoogleServicesJson {

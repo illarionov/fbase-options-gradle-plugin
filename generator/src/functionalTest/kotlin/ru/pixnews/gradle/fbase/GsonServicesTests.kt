@@ -27,7 +27,7 @@ class GsonServicesTests {
     fun `Should build project with default config from google-services`() {
         val submodule = project.setupTestProject(androidAppGoogleServicesProject1)
             .subProject(androidAppGoogleServicesProject1)
-        submodule.writeFiles(submodule.fixtures.googleServicesJson)
+        submodule.writeFiles(submodule.fixtures.googleServicesJsonHuge)
 
         val result = project.build("assemble")
 
@@ -57,7 +57,7 @@ class GsonServicesTests {
     fun `Should build project with default config from google-services with flavors`() {
         val submodule = project.setupTestProject(androidAppGoogleServicesProject1)
             .subProject(androidAppGoogleServicesProject1)
-        val googleServiceJson = submodule.fixtures.googleServicesJson
+        val googleServiceJson = submodule.fixtures.googleServicesJsonHuge
 
         submodule.writeFiles(
             googleServiceJson.copy(dstPath = "src/free/google-services.json"),
@@ -93,7 +93,7 @@ class GsonServicesTests {
         val rootProject = project.setupTestProject(androidAppGoogleServicesCustomLocation)
         val submodule = rootProject.subProject(androidAppGoogleServicesCustomLocation)
 
-        val googleServiceJson = submodule.fixtures.googleServicesJson
+        val googleServiceJson = submodule.fixtures.googleServicesJsonHuge
         rootProject.writeFiles(
             googleServiceJson.copy(dstPath = "config/google-services.json"),
         )
