@@ -49,5 +49,6 @@ firebaseConfig {
 dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.common)
     implementation(libs.androidx.core.ktx)
 }

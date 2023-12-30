@@ -31,6 +31,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-common = { group = "com.google.firebase", name = "firebase-common" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit5" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
