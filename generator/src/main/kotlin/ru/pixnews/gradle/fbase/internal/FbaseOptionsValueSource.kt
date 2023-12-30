@@ -13,13 +13,13 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.provider.ValueSource
 import org.gradle.api.provider.ValueSourceParameters
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
-import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource.Parameters
+import ru.pixnews.gradle.fbase.FbaseOptions
+import ru.pixnews.gradle.fbase.internal.FbaseOptionsValueSource.Parameters
 import ru.pixnews.gradle.fbase.internal.util.toProperties
 import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
 
-internal abstract class LocalFirebaseOptionsValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
-    override fun obtain(): LocalFirebaseOptions? {
+internal abstract class FbaseOptionsValueSource : ValueSource<FbaseOptions, Parameters> {
+    override fun obtain(): FbaseOptions? {
         val configProperties = parameters.configFilePath.get().asFile.toProperties()
         return FirebaseConfigReader(
             configProperties,
@@ -38,12 +38,12 @@ internal abstract class LocalFirebaseOptionsValueSource : ValueSource<LocalFireb
             providers: ProviderFactory,
             rootProjectDirectory: Directory,
             defaultApplicationIdProvider: Provider<String>,
-        ): Provider<LocalFirebaseOptions> {
+        ): Provider<FbaseOptions> {
             val defaultConfigFile = rootProjectDirectory.file(VariantDefaults.DEFAULT_CONFIG_FILE_PATH)
             val configFilePathProvider = source.location.orElse(defaultConfigFile)
             val applicationIdProvider = source.applicationId.orElse(defaultApplicationIdProvider)
 
-            return providers.of(LocalFirebaseOptionsValueSource::class.java) { valueSource ->
+            return providers.of(FbaseOptionsValueSource::class.java) { valueSource ->
                 valueSource.parameters {
                     it.configFilePath.set(configFilePathProvider)
                     it.applicationId.set(applicationIdProvider)

@@ -11,7 +11,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.buildCodeBlock
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.FbaseOptions
 import ru.pixnews.gradle.fbase.TargetVisibility
 import java.io.File
 
@@ -38,7 +38,7 @@ internal class FirebaseOptionsGenerator(
         .initializer(
             buildCodeBlock {
                 addStatement("%T()", firebaseOptionsBuilderClassName)
-                val options: LocalFirebaseOptions = property.options
+                val options: FbaseOptions = property.options
                 firebaseBuilderMethods.forEach { (statement, valueFactory) ->
                     valueFactory(options)?.let {
                         addStatement(".$statement(%S)", it)
@@ -50,7 +50,7 @@ internal class FirebaseOptionsGenerator(
         .build()
 
     internal class PropertyValues(
-        val options: LocalFirebaseOptions,
+        val options: FbaseOptions,
         val propertyName: String,
         val visibility: TargetVisibility,
     )
@@ -67,14 +67,14 @@ internal class FirebaseOptionsGenerator(
             "FirebaseOptions",
             "Builder",
         )
-        val firebaseBuilderMethods: List<Pair<String, (LocalFirebaseOptions) -> String?>> = listOf(
-            "setProjectId" to LocalFirebaseOptions::projectId,
+        val firebaseBuilderMethods: List<Pair<String, (FbaseOptions) -> String?>> = listOf(
+            "setProjectId" to FbaseOptions::projectId,
             "setApiKey" to { options -> options.apiKey ?: DUMMY_API_KEY },
             "setApplicationId" to { options -> options.applicationId ?: DUMMY_APPLICATION_ID },
-            "setDatabaseUrl" to LocalFirebaseOptions::databaseUrl,
-            "setGaTrackingId" to LocalFirebaseOptions::gaTrackingId,
-            "setGcmSenderId" to LocalFirebaseOptions::gcmSenderId,
-            "setStorageBucket" to LocalFirebaseOptions::storageBucket,
+            "setDatabaseUrl" to FbaseOptions::databaseUrl,
+            "setGaTrackingId" to FbaseOptions::gaTrackingId,
+            "setGcmSenderId" to FbaseOptions::gcmSenderId,
+            "setStorageBucket" to FbaseOptions::storageBucket,
         )
 
         fun TargetVisibility.toModifier(): KModifier = when (this) {

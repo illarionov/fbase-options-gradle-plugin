@@ -14,7 +14,7 @@ public interface GenerateOptionsTaskParams {
      * Firebase configuration parameters used to build [FirebaseOptions].
      */
     @get:Input
-    public val source: Property<LocalFirebaseOptions>
+    public val source: Property<FbaseOptions>
 
     /**
      * Target package of the generated [FirebaseOptions] instance

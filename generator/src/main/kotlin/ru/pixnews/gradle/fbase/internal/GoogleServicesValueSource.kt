@@ -15,13 +15,13 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.provider.ValueSource
 import org.gradle.api.provider.ValueSourceParameters
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.FbaseOptions
 import ru.pixnews.gradle.fbase.internal.GoogleServicesValueSource.Parameters
 import ru.pixnews.gradle.fbase.internal.util.capitalized
 import ru.pixnews.gradle.fbase.source.GoogleServicesJsonFileGeneratorSource
 
-internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOptions, Parameters> {
-    override fun obtain(): LocalFirebaseOptions? {
+internal abstract class GoogleServicesValueSource : ValueSource<FbaseOptions, Parameters> {
+    override fun obtain(): FbaseOptions? {
         val files = parameters.configurationFiles.filter { it.isFile }
         val applicationId = parameters.applicationId.get()
 
@@ -57,7 +57,7 @@ internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOpt
             }
             json.projectInfo to json.clients.first()
         }
-        return LocalFirebaseOptions(
+        return FbaseOptions(
             projectId = projectInfo.projectId,
             apiKey = clientInfo.googleApiKey,
             applicationId = clientInfo.mobileSdkAppId,
@@ -85,7 +85,7 @@ internal abstract class GoogleServicesValueSource : ValueSource<LocalFirebaseOpt
             productFlavorNames: List<String>,
             projectDirectory: Directory,
             defaultApplicationIdProvider: Provider<String>,
-        ): Provider<LocalFirebaseOptions> {
+        ): Provider<FbaseOptions> {
             val defaultFileList = providers.provider {
                 getDefaultGoogleServicesLocations(projectDirectory, buildType, productFlavorNames)
             }

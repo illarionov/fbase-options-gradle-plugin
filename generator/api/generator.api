@@ -30,23 +30,8 @@ public abstract class ru/pixnews/gradle/fbase/FbaseGeneratorExtension : com/andr
 public final class ru/pixnews/gradle/fbase/FbaseGeneratorExtension$Companion {
 }
 
-public abstract class ru/pixnews/gradle/fbase/GenerateFirebaseOptionsTask : org/gradle/api/DefaultTask {
-	public fun <init> ()V
-	public final fun doTaskAction ()V
-	public abstract fun getConfigs ()Lorg/gradle/api/provider/ListProperty;
-	public abstract fun getSourceOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
-}
-
-public abstract interface class ru/pixnews/gradle/fbase/GenerateOptionsTaskParams {
-	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
-	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
-	public abstract fun getTargetFileName ()Lorg/gradle/api/provider/Property;
-	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
-	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
-}
-
-public final class ru/pixnews/gradle/fbase/LocalFirebaseOptions : java/io/Serializable {
-	public static final field Companion Lru/pixnews/gradle/fbase/LocalFirebaseOptions$Companion;
+public final class ru/pixnews/gradle/fbase/FbaseOptions : java/io/Serializable {
+	public static final field Companion Lru/pixnews/gradle/fbase/FbaseOptions$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getApiKey ()Ljava/lang/String;
@@ -60,7 +45,22 @@ public final class ru/pixnews/gradle/fbase/LocalFirebaseOptions : java/io/Serial
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class ru/pixnews/gradle/fbase/LocalFirebaseOptions$Companion {
+public final class ru/pixnews/gradle/fbase/FbaseOptions$Companion {
+}
+
+public abstract class ru/pixnews/gradle/fbase/GenerateFirebaseOptionsTask : org/gradle/api/DefaultTask {
+	public fun <init> ()V
+	public final fun doTaskAction ()V
+	public abstract fun getConfigs ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getSourceOutputDir ()Lorg/gradle/api/file/DirectoryProperty;
+}
+
+public abstract interface class ru/pixnews/gradle/fbase/GenerateOptionsTaskParams {
+	public abstract fun getPropertyName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSource ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetFileName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetPackage ()Lorg/gradle/api/provider/Property;
+	public abstract fun getVisibility ()Lorg/gradle/api/provider/Property;
 }
 
 public final class ru/pixnews/gradle/fbase/TargetVisibility : java/lang/Enum {

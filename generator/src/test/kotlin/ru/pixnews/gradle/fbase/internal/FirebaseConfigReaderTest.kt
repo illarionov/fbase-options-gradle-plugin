@@ -10,7 +10,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.FbaseOptions
 import java.util.Properties
 
 class FirebaseConfigReaderTest {
@@ -31,7 +31,7 @@ class FirebaseConfigReaderTest {
     data class ConfigReaderTest(
         val properties: Map<String, String>,
         val applicationId: String? = null,
-        val expectedResult: LocalFirebaseOptions,
+        val expectedResult: FbaseOptions,
     ) {
         override fun toString(): String {
             return "[applicationId=$applicationId]"
@@ -72,17 +72,17 @@ class FirebaseConfigReaderTest {
             ConfigReaderTest(
                 properties = mapOf(),
                 applicationId = null,
-                expectedResult = LocalFirebaseOptions.empty,
+                expectedResult = FbaseOptions.empty,
             ),
             ConfigReaderTest(
                 properties = mapOf(),
                 applicationId = "test.app",
-                expectedResult = LocalFirebaseOptions.empty,
+                expectedResult = FbaseOptions.empty,
             ),
             ConfigReaderTest(
                 properties = allDefaultKeysMap + benchmarkAppKeysMap + releaseAppKeysMap,
                 applicationId = null,
-                expectedResult = LocalFirebaseOptions(
+                expectedResult = FbaseOptions(
                     projectId = "test-app",
                     apiKey = "AIzaAaA1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                     applicationId = "1:102030456789:android:112233445566778899aabb",
@@ -95,7 +95,7 @@ class FirebaseConfigReaderTest {
             ConfigReaderTest(
                 properties = allDefaultKeysMap + benchmarkAppKeysMap + releaseAppKeysMap,
                 applicationId = "test.app.default",
-                expectedResult = LocalFirebaseOptions(
+                expectedResult = FbaseOptions(
                     projectId = "test-app",
                     apiKey = "AIzaAaA1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                     applicationId = "1:102030456789:android:112233445566778899aabb",
@@ -108,7 +108,7 @@ class FirebaseConfigReaderTest {
             ConfigReaderTest(
                 properties = allDefaultKeysMap + benchmarkAppKeysMap + releaseAppKeysMap,
                 applicationId = "test.app.benchmark",
-                expectedResult = LocalFirebaseOptions(
+                expectedResult = FbaseOptions(
                     projectId = "test-app-benchmark",
                     apiKey = "BIzaAaA1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                     applicationId = "2:102030456789:android:112233445566778899aabb",

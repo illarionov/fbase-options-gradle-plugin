@@ -9,7 +9,7 @@ package ru.pixnews.gradle.fbase
 import java.io.Serializable
 
 @Suppress("LongParameterList")
-public class LocalFirebaseOptions(
+public class FbaseOptions(
     public val projectId: String?,
     public val apiKey: String?,
     public val applicationId: String?,
@@ -23,7 +23,7 @@ public class LocalFirebaseOptions(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as LocalFirebaseOptions
+        other as FbaseOptions
 
         if (projectId != other.projectId) return false
         if (apiKey != other.apiKey) return false
@@ -48,7 +48,7 @@ public class LocalFirebaseOptions(
     }
 
     override fun toString(): String {
-        return "LocalFirebaseOptions(" +
+        return "FbaseOptions(" +
                 "projectId=$projectId, " +
                 "apiKey=$apiKey, " +
                 "applicationId=$applicationId, " +
@@ -60,7 +60,7 @@ public class LocalFirebaseOptions(
     }
     public companion object {
         private const val serialVersionUID: Long = -1
-        internal val empty = LocalFirebaseOptions(
+        internal val empty = FbaseOptions(
             projectId = null,
             apiKey = null,
             applicationId = null,
