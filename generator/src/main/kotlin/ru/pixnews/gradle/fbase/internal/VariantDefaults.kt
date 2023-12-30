@@ -13,7 +13,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import ru.pixnews.gradle.fbase.TargetVisibility
 import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
-import ru.pixnews.gradle.fbase.source.PropertiesFileGeneratorSource
+import ru.pixnews.gradle.fbase.source.GoogleServicesJsonFileGeneratorSource
 
 internal class VariantDefaults(
     val objects: ObjectFactory,
@@ -31,7 +31,7 @@ internal class VariantDefaults(
         get() = variant.namespace
 
     val defaultSource: FbaseGeneratorSource
-        get() = objects.newInstance(PropertiesFileGeneratorSource::class.java)
+        get() = objects.newInstance(GoogleServicesJsonFileGeneratorSource::class.java)
 
     fun targetFileName(propertyName: String): String = propertyName.replaceFirstChar(Char::titlecase)
 
