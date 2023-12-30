@@ -28,7 +28,7 @@ class FirebaseOptionsGeneratorTest {
 
     @Test
     fun `Generated config should compile`() {
-        val localFirebaseOptions1 = LocalFirebaseOptions(
+        val fbaseOptions1 = FbaseOptions(
             projectId = "PROJECT_ID",
             apiKey = "API_KEY",
             applicationId = "APPLICATION_ID",
@@ -37,7 +37,7 @@ class FirebaseOptionsGeneratorTest {
             gcmSenderId = "GCM_SENDER_ID",
             storageBucket = "STORAGE_BUCKET",
         )
-        val localFirebaseOptions2 = LocalFirebaseOptions(
+        val fbaseOptions2 = FbaseOptions(
             projectId = "PROJECT_ID2",
             apiKey = "API_KEY2",
             applicationId = "APPLICATION_ID2",
@@ -48,12 +48,12 @@ class FirebaseOptionsGeneratorTest {
         )
         val properties = listOf(
             PropertyValues(
-                options = localFirebaseOptions1,
+                options = fbaseOptions1,
                 propertyName = "firebaseOptions",
                 visibility = INTERNAL,
             ),
             PropertyValues(
-                options = localFirebaseOptions2,
+                options = fbaseOptions2,
                 propertyName = "firebaseOptions2",
                 visibility = PUBLIC,
             ),

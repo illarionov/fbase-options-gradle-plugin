@@ -19,7 +19,7 @@ import org.gradle.api.provider.ProviderFactory
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.FbaseOptions
 import java.nio.file.Path
 import kotlin.io.path.createFile
 import kotlin.io.path.writeText
@@ -168,7 +168,7 @@ class GoogleServicesValueSourceTest {
     private fun createGoogleServicesValueSource(
         configurationFiles: List<Path> = emptyList(),
         applicationId: String = "",
-    ): Provider<LocalFirebaseOptions> = providers.of(GoogleServicesValueSource::class.java) { valueSource ->
+    ): Provider<FbaseOptions> = providers.of(GoogleServicesValueSource::class.java) { valueSource ->
         valueSource.parameters {
             it.configurationFiles.from(configurationFiles)
             it.applicationId.set(applicationId)

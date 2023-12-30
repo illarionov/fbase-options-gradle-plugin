@@ -22,8 +22,8 @@ import org.gradle.api.Project
 import org.gradle.api.Transformer
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
+import ru.pixnews.gradle.fbase.internal.FbaseOptionsValueSource.Companion.createPropertiesFileGeneratorSource
 import ru.pixnews.gradle.fbase.internal.GoogleServicesValueSource.Companion.createGoogleServicesValueSource
-import ru.pixnews.gradle.fbase.internal.LocalFirebaseOptionsValueSource.Companion.createPropertiesFileGeneratorSource
 import ru.pixnews.gradle.fbase.internal.VariantDefaults
 import ru.pixnews.gradle.fbase.internal.VariantDefaults.PluginDefaults.EXTENSION_NAME
 import ru.pixnews.gradle.fbase.source.FbaseGeneratorSource
@@ -189,7 +189,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
     internal class FbaseGeneratorSourceTransformer(
         project: Project,
         variant: Variant,
-    ) : Transformer<Provider<LocalFirebaseOptions>, FbaseGeneratorSource> {
+    ) : Transformer<Provider<FbaseOptions>, FbaseGeneratorSource> {
         private val providers = project.providers
         private val rootProjectDirectory = project.rootProject.layout.projectDirectory
         private val projectDirectory = project.layout.projectDirectory
@@ -201,7 +201,7 @@ public class FbaseConfigGeneratorGradlePlugin : Plugin<Project> {
         private val buildType = variant.buildType.orEmpty()
         private val productFlavorNames = variant.productFlavors.map(Pair<String, String>::second)
 
-        override fun transform(source: FbaseGeneratorSource): Provider<LocalFirebaseOptions> {
+        override fun transform(source: FbaseGeneratorSource): Provider<FbaseOptions> {
             return when (source) {
                 is ProvidedGeneratorSource -> source.source
 

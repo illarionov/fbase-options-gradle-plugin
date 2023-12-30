@@ -6,13 +6,13 @@
 
 package ru.pixnews.gradle.fbase.internal
 
-import ru.pixnews.gradle.fbase.LocalFirebaseOptions
+import ru.pixnews.gradle.fbase.FbaseOptions
 import java.util.Properties
 
 /**
- * Read [LocalFirebaseOptions] values from [Properties].
+ * Read [FbaseOptions] values from [Properties].
  *
- * @param properties Properties from which [LocalFirebaseOptions] values will be read
+ * @param properties Properties from which [FbaseOptions] values will be read
  * @param applicationId If specified, keys with the Application Id suffix
  * will also be taken into account.
  * For example, when [applicationId] is "com.example",
@@ -26,8 +26,8 @@ internal class FirebaseConfigReader(
     @Suppress("NULLABLE_PROPERTY_TYPE")
     private val applicationIdPrefix: String? = applicationId?.replace('.', '_')
 
-    fun read(): LocalFirebaseOptions {
-        return LocalFirebaseOptions(
+    fun read(): FbaseOptions {
+        return FbaseOptions(
             projectId = readApplicationOrDefaultProperty("project_id"),
             apiKey = readApplicationOrDefaultProperty("google_api_key"),
             applicationId = readApplicationOrDefaultProperty("google_app_id"),
