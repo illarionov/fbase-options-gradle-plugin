@@ -30,15 +30,6 @@ testing {
                 all {
                     testTask.configure {
                         configureTestTaskDefaults()
-                        listOf(
-                            "testGradleVersion" to "GRADLE_VERSION",
-                            "testAgpVersion" to "AGP_VERSION",
-                            "testFirebaseVersion" to "FIREBASE_VERSION",
-                        ).forEach { (inputProperty, envVariable) ->
-                            inputs
-                                .property(inputProperty) { System.getenv(envVariable) }
-                                .optional(true)
-                        }
                     }
                 }
             }
@@ -73,6 +64,15 @@ testing {
                         dependsOn(tasks.named("publishAllPublicationsToFunctionalTestsRepository"))
                         inputs.dir(functionalTestRepository)
                         shouldRunAfter(test)
+                        listOf(
+                            "testGradleVersion" to "GRADLE_VERSION",
+                            "testAgpVersion" to "AGP_VERSION",
+                            "testFirebaseVersion" to "FIREBASE_VERSION",
+                        ).forEach { (inputProperty, envVariable) ->
+                            inputs
+                                .property(inputProperty) { System.getenv(envVariable) }
+                                .optional(true)
+                        }
                     }
                 }
             }
