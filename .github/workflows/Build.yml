@@ -87,14 +87,14 @@ jobs:
           tar -c -I 'zstd -19 -T0' -f local-plugin-repository.tar.zst build/local-plugin-repository
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports
           path: test-reports.tar.zst
 
       - name: Upload local plugin repository
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: local-plugin-repository
           path: local-plugin-repository.tar.zst
@@ -187,7 +187,7 @@ jobs:
           | xargs -0 tar -c -I 'zstd -19 -T0' -f test-reports.tar.zst
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports
@@ -238,7 +238,7 @@ jobs:
 
       - name: Upload lint outputs
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lint-outputs
           path: lint-outputs.tar.zst
