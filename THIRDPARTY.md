@@ -3,6 +3,7 @@
 This document contains a list of third-party libraries that Fbase Config Generator Gradle Plugin uses.
 
 ### Runtime dependencies
+
 - [Android Gradle plugin](https://developer.android.com/build). Apache 2.0 License.
 - [Firebase](https://firebase.google.com/). Apache 2.0 License.
 - [GSON](https://github.com/google/gson). Apache 2.0 License.
@@ -10,11 +11,13 @@ This document contains a list of third-party libraries that Fbase Config Generat
 - [Kotlin](https://kotlinlang.org). Apache 2.0 License.
 
 ### Source code insertions
+
 - [Android Gradle plugin](https://developer.android.com/build). Apache 2.0 License.
-- [Room Gradle Plugin](https://developer.android.com/jetpack/androidx/releases/room). Apache 2.0 License. 
-- [The Google Services Gradle Plugin](https://github.com/google/play-services-plugins/tree/master). Apache 2.0 License. 
+- [Room Gradle Plugin](https://developer.android.com/jetpack/androidx/releases/room). Apache 2.0 License.
+- [The Google Services Gradle Plugin](https://github.com/google/play-services-plugins/tree/master). Apache 2.0 License.
 
 ### Build and test environment
+
 - [Android Gradle plugin](https://developer.android.com/build). Apache 2.0 License.
 - [Assertk](https://github.com/willowtreeapps/assertk). MIT License
 - [Detekt](https://detekt.dev/). Apache 2.0 License.
