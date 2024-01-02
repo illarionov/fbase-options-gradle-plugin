@@ -122,7 +122,7 @@ gradlePlugin {
     plugins.create("fbaseConfig") {
         id = "ru.pixnews.gradle.fbase"
         implementationClass = "ru.pixnews.gradle.fbase.FbaseConfigGeneratorGradlePlugin"
-        displayName = "Firebase Config Generator Gradle Plugin"
+        displayName = "Fbase Config Generator Gradle Plugin"
         description = "Gradle plugin that generates FirebaseOptions using values from configuration file."
         tags = listOf("android", "firebase")
     }
