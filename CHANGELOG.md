@@ -1,7 +1,7 @@
 # Change Log
 
-## Version 0.1-SNAPSHOT (not yet released)
+## Version 0.1
 
-*2024-01-01*
+*2024-01-02*
 
 - Initial release. API is subject to change.

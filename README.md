@@ -44,7 +44,7 @@ Add the plugin in the Application module of your project, where Firebase is init
 
 ```
 plugins { 
-    id("ru.pixnews.gradle.fbase") version "0.1-SNAPSHOT"
+    id("ru.pixnews.gradle.fbase") version "0.1"
 }
 ```
 
