@@ -17,7 +17,7 @@ repositories {
 }
 
 group = "ru.pixnews.gradle.fbase"
-version = "0.1-SNAPSHOT"
+version = "0.1"
 
 val functionalTestRepository = rootProject.layout.buildDirectory.dir("functional-tests-plugin-repository")
 
