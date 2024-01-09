@@ -1,5 +1,7 @@
 # Fbase Config Generator Gradle Plugin
 
+![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/ru.pixnews.gradle.fbase)
+
 Simple plugin that generates Firebase initialization code using values from a given configuration file.
 Can be used as an addition or replacement for [Google Services Gradle Plugin]
 
@@ -20,25 +22,6 @@ The latest version of this plugin requires:
 - Gradle `7.5.1` or above
 
 ## Installation
-
-Release and snapshot versions of the plugin are published to a temporary repository, since they are currently
-used only in one pet project. File a bug report if you think this plugin could be useful on Gradle Plugin Portal.
-
-Add the following to your project's settings.gradle:
-
-```kotlin
-pluginManagement {
-    repositories {
-        mavenCentral()
-        maven {
-            url = uri("https://maven.pixnews.ru")
-            mavenContent {
-                includeGroup("ru.pixnews.gradle.fbase")
-            }
-        }
-    }
-}
-```
 
 Add the plugin in the Application module of your project, where Firebase is initialized:
 

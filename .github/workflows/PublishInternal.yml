@@ -1,4 +1,4 @@
-name: publish
+name: publish-internal
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   publish:
-    name: Assemble, publish to Gradle Plugin Portal
+    name: Assemble, publish to local repository
     runs-on: ubuntu-latest
 
     steps:
@@ -42,18 +42,15 @@ jobs:
             -Dorg.gradle.dependency.verification.console=verbose
           KOTLIN_DAEMON_JVMARGS: >-
             -Xmx512M -XX:MaxMetaspaceSize=320M -XX:SoftRefLRUPolicyMSPerMB=10 -XX:+UseParallelGC -XX:NewRatio=1
-          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
-          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+          YANDEX_S3_ACCESS_KEY_ID: ${{ secrets.YANDEX_S3_ACCESS_KEY_ID }}
+          YANDEX_S3_SECRET_ACCESS_KEY: ${{ secrets.YANDEX_S3_SECRET_ACCESS_KEY }}
           ORG_GRADLE_PROJECT_enableSigning: true
           ORG_GRADLE_PROJECT_signingKeyId: FCF62075
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
 
         run: >
-          ./gradlew
-          -Pgradle.publish.key="${{ secrets.GRADLE_PUBLISH_KEY }}"
-          -Pgradle.publish.secret="${{ secrets.GRADLE_PUBLISH_SECRET }}"
-          build publishPlugins --stacktrace
+          ./gradlew build publishAllPublicationsToPixnewsS3Repository --stacktrace
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
