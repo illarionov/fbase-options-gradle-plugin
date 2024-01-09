@@ -7,7 +7,7 @@ android-tools = "31.3.0-beta01"
 android-tools-dexlib2 = "3.0.3"
 assertk = "0.28.0"
 detekt = "1.23.4"
-diktat = "1.2.5"
+diktat = "2.0.0"
 firebase = "32.7.0"
 fbase-config-generator-gradle-plugin = "0.1-SNAPSHOT"
 gradle-plugin-publish = "1.2.1"
@@ -47,7 +47,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 # Dependencies of the included build-logic
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-plugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
-diktat-plugin = { group = "org.cqfn.diktat", name = "diktat-gradle-plugin", version.ref = "diktat" }
+diktat-plugin = { group = "com.saveourtool.diktat", name = "diktat-gradle-plugin", version.ref = "diktat" }
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 spotless-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 

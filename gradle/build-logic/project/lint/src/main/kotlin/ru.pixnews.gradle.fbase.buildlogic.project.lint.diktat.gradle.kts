@@ -1,8 +1,10 @@
 /*
- * Copyright (c) 2023, the Igdbclient project authors and contributors. Please see the AUTHORS file for details.
+ * Copyright (c) 2024, the fbase-config-generator-gradle-plugin project authors and contributors.
+ * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
+import com.saveourtool.diktat.plugin.gradle.tasks.DiktatTaskBase
 import ru.pixnews.gradle.fbase.buildlogic.project.lint.configRootDir
 import ru.pixnews.gradle.fbase.buildlogic.project.lint.excludeNonLintedDirectories
 
@@ -10,7 +12,7 @@ import ru.pixnews.gradle.fbase.buildlogic.project.lint.excludeNonLintedDirectori
  * Convention plugin that configures Diktat
  */
 plugins {
-    id("org.cqfn.diktat.diktat-gradle-plugin")
+    id("com.saveourtool.diktat")
 }
 
 diktat {
@@ -20,10 +22,13 @@ diktat {
         include("**/*.gradle.kts")
         excludeNonLintedDirectories()
     }
-    githubActions = false
+    reporters {
+        plain()
+        sarif()
+    }
     debug = false
 }
 
-tasks.withType<org.cqfn.diktat.plugin.gradle.DiktatJavaExecTaskBase>().configureEach {
+tasks.withType<DiktatTaskBase>().configureEach {
     notCompatibleWithConfigurationCache("invocation of 'Task.project' at execution time is unsupported")
 }
