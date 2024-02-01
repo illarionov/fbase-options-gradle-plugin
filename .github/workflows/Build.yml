@@ -51,7 +51,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           dependency-graph: generate
 
@@ -158,7 +158,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
 
       - name: Assemble debug build, run matrix tests
         env:
@@ -216,7 +216,7 @@ jobs:
           java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           dependency-graph: generate
 
