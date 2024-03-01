@@ -60,6 +60,7 @@
             <trusting group="com.google.guava"/>
             <trusting group="com.google.jimfs"/>
          </trusted-key>
+         <trusted-key id="696B6199A2A9D8C29CE78CC0D041CAD2E452550F" group="com.google.protobuf"/>
          <trusted-key id="6F538074CCEBF35F28AF9B066A0975F8B1127B83" group="org.jetbrains.kotlin"/>
          <trusted-key id="719F7C29985A8E95F58F47194D8159D6A1159B69" group="dev.zacsweers.kctfork" name="core" version="0.4.0"/>
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs" name="jsr305" version="3.0.2"/>
@@ -123,6 +124,11 @@
       </component>
       <component group="com.google.api.grpc" name="proto-google-common-protos" version="2.0.1">
          <artifact name="proto-google-common-protos-2.0.1.jar">
+            <pgp value="47504B76CF89C15C0512D9AFE16AB52D79FD224F"/>
+         </artifact>
+      </component>
+      <component group="com.google.api.grpc" name="proto-google-common-protos" version="2.17.0">
+         <artifact name="proto-google-common-protos-2.17.0.jar">
             <pgp value="47504B76CF89C15C0512D9AFE16AB52D79FD224F"/>
          </artifact>
       </component>
@@ -191,6 +197,11 @@
             <pgp value="2DB4F1EF0FA761ECC4EA935C86FDC7E2A11262CB"/>
          </artifact>
       </component>
+      <component group="commons-io" name="commons-io" version="2.13.0">
+         <artifact name="commons-io-2.13.0.jar">
+            <pgp value="2DB4F1EF0FA761ECC4EA935C86FDC7E2A11262CB"/>
+         </artifact>
+      </component>
       <component group="commons-io" name="commons-io" version="2.4">
          <artifact name="commons-io-2.4.jar">
             <pgp value="2DB4F1EF0FA761ECC4EA935C86FDC7E2A11262CB"/>
@@ -198,6 +209,11 @@
       </component>
       <component group="dev.equo.ide" name="solstice" version="1.7.4">
          <artifact name="solstice-1.7.4.jar">
+            <pgp value="1D2C7EF8ADA0F794B58C7C63436902AF59EDF60E"/>
+         </artifact>
+      </component>
+      <component group="dev.equo.ide" name="solstice" version="1.7.5">
+         <artifact name="solstice-1.7.5.jar">
             <pgp value="1D2C7EF8ADA0F794B58C7C63436902AF59EDF60E"/>
          </artifact>
       </component>
@@ -209,6 +225,11 @@
       <component group="io.github.java-diff-utils" name="java-diff-utils" version="4.12">
          <artifact name="java-diff-utils-4.12.jar">
             <pgp value="D477D51812E692011DB11E66A6EA2E2BF22E0543"/>
+         </artifact>
+      </component>
+      <component group="io.perfmark" name="perfmark-api" version="0.26.0">
+         <artifact name="perfmark-api-0.26.0.jar">
+            <pgp value="C6F7D1C804C821F49AF3BFC13AD93C3C677A106E"/>
          </artifact>
       </component>
       <component group="jakarta.activation" name="jakarta.activation-api" version="1.2.1">
@@ -254,6 +275,11 @@
       <component group="org.checkerframework" name="checker-qual" version="3.12.0">
          <artifact name="checker-qual-3.12.0.jar">
             <pgp value="19BEAB2D799C020F17C69126B16698A4ADF4D638"/>
+         </artifact>
+      </component>
+      <component group="org.codehaus.mojo" name="animal-sniffer-annotations" version="1.23">
+         <artifact name="animal-sniffer-annotations-1.23.jar">
+            <pgp value="84789D24DF77A32433CE1F079EB80E92EB2135B1"/>
          </artifact>
       </component>
       <component group="org.ec4j.core" name="ec4j-core" version="0.3.0">
