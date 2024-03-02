@@ -109,19 +109,22 @@ jobs:
       matrix:
         include:
 
-          # AGP 8.3.0-beta01
-          - gradle: 8.6-rc-1
-            agp: 8.3.0-beta01
+          # AGP 8.3.0
+          - gradle: 8.7-rc2
+            agp: 8.3.0
+            jdk: 21
+          - gradle: 8.6
+            agp: 8.3.0
             jdk: 21
           - gradle: 8.5
-            agp: 8.3.0-beta01
+            agp: 8.3.0
             jdk: 21
           - gradle: 8.4
-            agp: 8.3.0-beta01
+            agp: 8.3.0
             jdk: 17
 
           # AGP 8.2.0
-          - gradle: 8.6-rc-1
+          - gradle: 8.6
             agp: 8.2.0
           - gradle: 8.5
             agp: 8.2.0

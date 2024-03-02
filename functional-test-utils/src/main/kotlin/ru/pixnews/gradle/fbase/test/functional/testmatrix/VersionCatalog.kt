@@ -6,10 +6,10 @@
 
 package ru.pixnews.gradle.fbase.test.functional.testmatrix
 
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_3_0_BETA01
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_3_0
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_7_0
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_5
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_7_3
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_1_9_22
 
 public data class VersionCatalog(
@@ -26,14 +26,14 @@ public data class VersionCatalog(
     public companion object {
         public val ANDROIDX_CORE_VERSION: Version = Version(1, 12, 0)
         public fun getDefault(fbasePluginVersion: String): VersionCatalog {
-            val agpVersion = AGP_8_3_0_BETA01
+            val agpVersion = AGP_8_3_0
             val compileTargetSdk = getCompatibleAndroidApiLevel(agpVersion)
             return VersionCatalog(
-                gradleVersion = GRADLE_8_5,
+                gradleVersion = GRADLE_8_6,
                 kotlinVersion = KOTLIN_1_9_22,
-                agpVersion = AGP_8_3_0_BETA01,
+                agpVersion = AGP_8_3_0,
                 androidxCore = ANDROIDX_CORE_VERSION,
-                firebaseVersion = FIREBASE_BOM_32_7_0,
+                firebaseVersion = FIREBASE_BOM_32_7_3,
                 compileSdk = compileTargetSdk,
                 targetSdk = compileTargetSdk,
                 fbasePluginVersion = fbasePluginVersion,
