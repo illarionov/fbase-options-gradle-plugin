@@ -31,7 +31,7 @@ public data class VersionCatalog(
             return VersionCatalog(
                 gradleVersion = GRADLE_8_6,
                 kotlinVersion = KOTLIN_1_9_22,
-                agpVersion = AGP_8_3_0,
+                agpVersion = agpVersion,
                 androidxCore = ANDROIDX_CORE_VERSION,
                 firebaseVersion = FIREBASE_BOM_32_7_3,
                 compileSdk = compileTargetSdk,
