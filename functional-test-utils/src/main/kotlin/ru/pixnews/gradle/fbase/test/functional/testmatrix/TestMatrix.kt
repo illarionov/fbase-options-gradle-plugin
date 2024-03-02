@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_1_4
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_2_0
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_3_0
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_4_0_ALPHA_12
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.agpIsCompatibleWithGradle
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.isAgpCompatibleWithRuntime
@@ -51,6 +52,7 @@ public class TestMatrix(
 
     // See https://developer.android.com/studio/releases/gradle-plugin
     private val agpVersions = listOf(
+        AGP_8_4_0_ALPHA_12,
         AGP_8_3_0,
         AGP_8_2_0,
         AGP_8_1_4,

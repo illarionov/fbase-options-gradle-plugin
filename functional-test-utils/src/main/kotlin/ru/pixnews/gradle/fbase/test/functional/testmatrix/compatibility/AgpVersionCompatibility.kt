@@ -12,6 +12,7 @@ import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVe
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_0
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_2
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_4
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6
 
 internal object AgpVersionCompatibility {
     val AGP_7_0_0 = Version(7, 0, 0)
@@ -23,6 +24,7 @@ internal object AgpVersionCompatibility {
     val AGP_8_1_4 = Version(8, 1, 4)
     val AGP_8_2_0 = Version(8, 2, 0)
     val AGP_8_3_0 = Version(8, 3, 0)
+    val AGP_8_4_0_ALPHA_12 = Version(8, 4, 0, "alpha12")
 
     // Checks if a AGP version [agpVersion] can run on the current JVM
     fun isAgpCompatibleWithRuntime(agpVersion: Version): Boolean {
@@ -41,6 +43,7 @@ internal object AgpVersionCompatibility {
         agpVersion: Version,
         gradleVersion: Version,
     ) = when {
+        agpVersion >= AGP_8_4_0_ALPHA_12 -> gradleVersion >= GRADLE_8_6
         agpVersion >= AGP_8_3_0 -> gradleVersion >= GRADLE_8_4
         agpVersion >= AGP_8_2_0 -> gradleVersion >= GRADLE_8_2
         agpVersion >= AGP_8_0_0 -> gradleVersion >= GRADLE_8_0

@@ -109,8 +109,16 @@ jobs:
       matrix:
         include:
 
+          # AGP 8.4.0-alpha12
+          - gradle: 8.7-rc-2
+            agp: 8.4.0-alpha12
+            jdk: 21
+          - gradle: 8.6
+            agp: 8.4.0-alpha12
+            jdk: 21
+
           # AGP 8.3.0
-          - gradle: 8.7-rc2
+          - gradle: 8.7-rc-2
             agp: 8.3.0
             jdk: 21
           - gradle: 8.6
