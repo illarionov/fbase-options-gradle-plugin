@@ -9,7 +9,8 @@ package ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.Version
 
 public object FirebaseCompatibility {
-    public val FIREBASE_BOM_32_7_3: Version = Version(32, 7, 3)
+    public val FIREBASE_BOM_32_8_1: Version = Version(32, 8, 1)
+    public val FIREBASE_BOM_32_7_4: Version = Version(32, 7, 4)
     public val FIREBASE_BOM_32_6_0: Version = Version(32, 6, 0)
     public val FIREBASE_BOM_32_5_0: Version = Version(32, 5, 0)
     public val FIREBASE_BOM_32_4_1: Version = Version(32, 4, 1)
