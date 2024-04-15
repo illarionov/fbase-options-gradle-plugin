@@ -25,4 +25,6 @@ internal object KotlinVersionCompatibility {
     val KOTLIN_1_9_20 = Version(1, 9, 20)
     val KOTLIN_1_9_21 = Version(1, 9, 21)
     val KOTLIN_1_9_22 = Version(1, 9, 22)
+    val KOTLIN_1_9_23 = Version(1, 9, 23)
+    val KOTLIN_2_0_0_RC1 = Version(2, 0, 0, "RC1")
 }

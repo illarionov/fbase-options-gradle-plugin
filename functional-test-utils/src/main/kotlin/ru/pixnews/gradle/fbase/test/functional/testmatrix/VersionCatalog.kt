@@ -6,11 +6,11 @@
 
 package ru.pixnews.gradle.fbase.test.functional.testmatrix
 
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_3_0
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_3_2
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_7_3
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_1_9_22
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_8_1
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_7
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.KotlinVersionCompatibility.KOTLIN_2_0_0_RC1
 
 public data class VersionCatalog(
     val gradleVersion: Version,
@@ -26,14 +26,14 @@ public data class VersionCatalog(
     public companion object {
         public val ANDROIDX_CORE_VERSION: Version = Version(1, 12, 0)
         public fun getDefault(fbasePluginVersion: String): VersionCatalog {
-            val agpVersion = AGP_8_3_0
+            val agpVersion = AGP_8_3_2
             val compileTargetSdk = getCompatibleAndroidApiLevel(agpVersion)
             return VersionCatalog(
-                gradleVersion = GRADLE_8_6,
-                kotlinVersion = KOTLIN_1_9_22,
+                gradleVersion = GRADLE_8_7,
+                kotlinVersion = KOTLIN_2_0_0_RC1,
                 agpVersion = agpVersion,
                 androidxCore = ANDROIDX_CORE_VERSION,
-                firebaseVersion = FIREBASE_BOM_32_7_3,
+                firebaseVersion = FIREBASE_BOM_32_8_1,
                 compileSdk = compileTargetSdk,
                 targetSdk = compileTargetSdk,
                 fbasePluginVersion = fbasePluginVersion,
