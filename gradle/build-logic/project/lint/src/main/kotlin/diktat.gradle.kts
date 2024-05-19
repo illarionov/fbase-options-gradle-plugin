@@ -4,9 +4,9 @@
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
 
+package ru.pixnews.gradle.fbase.buildlogic.project.lint
+
 import com.saveourtool.diktat.plugin.gradle.tasks.DiktatTaskBase
-import ru.pixnews.gradle.fbase.buildlogic.project.lint.configRootDir
-import ru.pixnews.gradle.fbase.buildlogic.project.lint.excludeNonLintedDirectories
 
 /*
  * Convention plugin that configures Diktat
