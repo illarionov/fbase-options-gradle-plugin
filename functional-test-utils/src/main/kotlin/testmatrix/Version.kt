@@ -43,6 +43,7 @@ public class Version(
     }
 
     public companion object {
+        @Suppress("MagicNumber")
         public fun parse(version: String): Version = try {
             val versionSplits = version.split('.')
             check(versionSplits.size == 2 || versionSplits.size == 3)
@@ -66,7 +67,7 @@ public class Version(
                 patch = patch,
                 qualifier = lastPartSplits.getOrNull(1),
             )
-        } catch (exception: Exception) {
+        } catch (@Suppress("TooGenericExceptionCaught") exception: Exception) {
             throw IllegalArgumentException("Could not parse version $version", exception)
         }
     }
