@@ -8,7 +8,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "ru.pixnews.gradle.fbase.build-logic.settings"
+group = "ru.pixnews.gradle.fbase.buildlogic.settings"
 
 dependencies {
     implementation("com.gradle:gradle-enterprise-gradle-plugin:3.15.1")

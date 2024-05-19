@@ -8,7 +8,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "ru.pixnews.gradle.fbase.build-logic.project.lint"
+group = "ru.pixnews.gradle.fbase.buildlogic.project.lint"
 
 dependencies {
     implementation(libs.agp.plugin.api)

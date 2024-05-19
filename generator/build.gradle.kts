@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024, the fbase-config-generator-gradle-plugin project authors and contributors.
+ * Please see the AUTHORS file for details.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+ */
+
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -8,7 +14,7 @@ plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
-    id("ru.pixnews.gradle.fbase.buildlogic.project.kotlin.version")
+    id("ru.pixnews.gradle.fbase.buildlogic.project.kotlin.version.version-plugin")
 }
 
 repositories {
