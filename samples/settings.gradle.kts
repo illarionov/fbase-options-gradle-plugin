@@ -9,7 +9,7 @@ pluginManagement {
 }
 
 plugins {
-    id("ru.pixnews.gradle.fbase.build-logic.settings.root")
+    id("ru.pixnews.gradle.fbase.buildlogic.settings.root")
 }
 
 rootProject.name = "fbase-config-generator-gradle-plugin-samples"
