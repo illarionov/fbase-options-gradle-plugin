@@ -3,7 +3,7 @@
 [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/ru.pixnews.gradle.fbase)](https://plugins.gradle.org/plugin/ru.pixnews.gradle.fbase)
 
 Simple plugin that generates Firebase initialization code using values from a given configuration file.
-Can be used as an addition or replacement for [Google Services Gradle Plugin]
+Can be used as an addition or replacement for [Google Services Gradle Plugin] ([play-services-plugins])
 
 #### Features
 
@@ -383,4 +383,5 @@ Fbase Config Generator Gradle Plugin is distributed under the terms of the Apach
 
 [Use multiple projects in your application]: https://firebase.google.com/docs/projects/multiprojects#use_multiple_projects_in_your_application
 [Google Services Gradle Plugin]: https://developers.google.com/android/guides/google-services-plugin
+[play-services-plugins]: https://github.com/google/play-services-plugins
 [ValueSource]: https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:requirements:external_processes
