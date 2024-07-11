@@ -38,6 +38,7 @@
          <trusted-key id="696B6199A2A9D8C29CE78CC0D041CAD2E452550F" group="com.google.protobuf"/>
          <trusted-key id="6DD3B8C64EF75253BEB2C53AD908A43FB7EC07AC" group="jakarta.activation" name="jakarta.activation-api" version="1.2.1"/>
          <trusted-key id="6F538074CCEBF35F28AF9B066A0975F8B1127B83" group="org.jetbrains.kotlin"/>
+         <trusted-key id="719F7C29985A8E95F58F47194D8159D6A1159B69" group="dev.zacsweers.kctfork" name="core" version="0.5.1"/>
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs" name="jsr305" version="3.0.2"/>
          <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
          <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671">
@@ -49,6 +50,10 @@
          <trusted-key id="837B2CBB1D966C80643A2D6527F164F945828C4C" group="^com[.]willowtreeapps($|([.].*))" regex="true"/>
          <trusted-key id="8756C4F765C9AC3CB6B85D62379CE192D401AB61" group="com.diffplug.durian"/>
          <trusted-key id="A5BD02B93E7A40482EB1D66A5F69AD087600B22C" group="org.ow2.asm"/>
+         <trusted-key id="A5F483CD733A4EBAEA378B2AE88979FB9B30ACF2">
+            <trusting group="androidx.databinding"/>
+            <trusting group="^com[.]android($|([.].*))" regex="true"/>
+         </trusted-key>
          <trusted-key id="A7892505CF1A58076453E52D7999BEFBA1039E8B" group="net.bytebuddy"/>
          <trusted-key id="ADBC987D1A7B91DB6B0AAA81995EFBF4A3D20BEB" group="com.pinterest.ktlint"/>
          <trusted-key id="B02335AA54CCF21E52BBF9ABD9C565AA72BA2FDD" group="io.grpc"/>
@@ -153,6 +158,11 @@
             <pgp value="1D2C7EF8ADA0F794B58C7C63436902AF59EDF60E"/>
          </artifact>
       </component>
+      <component group="dev.equo.ide" name="solstice" version="1.7.6">
+         <artifact name="solstice-1.7.6.jar">
+            <pgp value="1D2C7EF8ADA0F794B58C7C63436902AF59EDF60E"/>
+         </artifact>
+      </component>
       <component group="dev.zacsweers.kctfork" name="core" version="0.4.1">
          <artifact name="core-0.4.1.jar">
             <pgp value="719F7C29985A8E95F58F47194D8159D6A1159B69"/>
@@ -160,6 +170,11 @@
       </component>
       <component group="io.github.classgraph" name="classgraph" version="4.8.168">
          <artifact name="classgraph-4.8.168.jar">
+            <pgp value="1F47744C9B6E14F2049C2857F1F111AF65925306"/>
+         </artifact>
+      </component>
+      <component group="io.github.classgraph" name="classgraph" version="4.8.174">
+         <artifact name="classgraph-4.8.174.jar">
             <pgp value="1F47744C9B6E14F2049C2857F1F111AF65925306"/>
          </artifact>
       </component>
