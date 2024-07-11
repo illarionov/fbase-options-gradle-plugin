@@ -11,5 +11,4 @@ package ru.pixnews.gradle.fbase.buildlogic.settings
  */
 plugins {
     id("ru.pixnews.gradle.fbase.buildlogic.settings.repositories")
-    id("ru.pixnews.gradle.fbase.buildlogic.settings.gradle-enterprise")
 }
