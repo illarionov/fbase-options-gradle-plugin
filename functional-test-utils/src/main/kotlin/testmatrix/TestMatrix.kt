@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, the fbase-config-generator-gradle-plugin project authors and contributors.
+ * Copyright (c) 2023-2024, the fbase-config-generator-gradle-plugin project authors and contributors.
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
@@ -8,21 +8,19 @@ package ru.pixnews.gradle.fbase.test.functional.testmatrix
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_1_4
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_2_2
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_3_2
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_4_0
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_5_0_BETA02
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_4_2
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_5_0
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.AGP_8_6_0_BETA01
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.agpIsCompatibleWithGradle
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.getCompatibleAndroidApiLevel
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.AgpVersionCompatibility.isAgpCompatibleWithRuntime
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_5_0
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_6_0
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_7_4
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_32_8_1
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_33_0_0
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_7_5_1
-import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_7_6_3
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.FirebaseCompatibility.FIREBASE_BOM_33_1_2
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_0_2
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_1_1
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_2_1
@@ -31,6 +29,8 @@ import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVe
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_5
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_7
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_8
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_9
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.isGradleCompatibleWithRuntime
 
 public class TestMatrix(
@@ -39,6 +39,8 @@ public class TestMatrix(
     private val logger: Logger = LoggerFactory.getLogger(TestMatrix::class.java)
     private val defaultVersionCatalog: VersionCatalog = VersionCatalog.getDefault(fbasePluginVersion)
     private val gradleVersions = listOf(
+        GRADLE_8_9,
+        GRADLE_8_8,
         GRADLE_8_7,
         GRADLE_8_6,
         GRADLE_8_5,
@@ -47,24 +49,22 @@ public class TestMatrix(
         GRADLE_8_2_1,
         GRADLE_8_1_1,
         GRADLE_8_0_2,
-        GRADLE_7_6_3,
-        GRADLE_7_5_1,
     )
 
     // See https://developer.android.com/studio/releases/gradle-plugin
     private val agpVersions = listOf(
-        AGP_8_5_0_BETA02,
-        AGP_8_4_0,
+        AGP_8_6_0_BETA01,
+        AGP_8_5_0,
+        AGP_8_4_2,
         AGP_8_3_2,
         AGP_8_2_2,
-        AGP_8_1_4,
     )
     private val firebaseVersions = listOf(
+        FIREBASE_BOM_33_1_2,
         FIREBASE_BOM_33_0_0,
         FIREBASE_BOM_32_8_1,
         FIREBASE_BOM_32_7_4,
         FIREBASE_BOM_32_6_0,
-        FIREBASE_BOM_32_5_0,
     )
 
     public fun getMainTestVariants(): List<VersionCatalog> = getCompatibleGradleAgpVariants()

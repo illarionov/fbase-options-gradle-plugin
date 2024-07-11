@@ -108,20 +108,46 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # AGP 8.5.0-beta02
-          - gradle: 8.7
-            agp: 8.5.0-beta02
+          # AGP 8.6.0-beta01
+          - gradle: 8.9
+            agp: 8.6.0-beta01
+            jdk: 22
+          - gradle: 8.8
+            agp: 8.6.0-beta01
             jdk: 21
 
-          # AGP 8.4.0
+          # AGP 8.5.0
+          - gradle: 8.9
+            agp: 8.5.0
+            jdk: 22
+          - gradle: 8.8
+            agp: 8.5.0
+            jdk: 21
           - gradle: 8.7
-            agp: 8.4.0
+            agp: 8.5.0
+            jdk: 21
+
+          # AGP 8.4.2
+          - gradle: 8.9
+            agp: 8.4.2
+            jdk: 21
+          - gradle: 8.8
+            agp: 8.4.2
+            jdk: 21
+          - gradle: 8.7
+            agp: 8.4.2
             jdk: 21
           - gradle: 8.6
-            agp: 8.4.0
+            agp: 8.4.2
             jdk: 21
 
           # AGP 8.3.2
+          - gradle: 8.9
+            agp: 8.3.2
+            jdk: 21
+          - gradle: 8.8
+            agp: 8.3.2
+            jdk: 21
           - gradle: 8.7
             agp: 8.3.2
             jdk: 21
@@ -136,6 +162,12 @@ jobs:
             jdk: 17
 
           # AGP 8.2.2
+          - gradle: 8.9
+            agp: 8.2.2
+          - gradle: 8.8
+            agp: 8.2.2
+          - gradle: 8.7
+            agp: 8.2.2
           - gradle: 8.6
             agp: 8.2.2
           - gradle: 8.5
@@ -146,18 +178,6 @@ jobs:
             agp: 8.2.2
           - gradle: 8.2.1
             agp: 8.2.2
-
-          # AGP 8.1.4
-          - gradle: 8.5
-            agp: 8.1.4
-          - gradle: 8.4
-            agp: 8.1.4
-          - gradle: 8.3
-            agp: 8.1.4
-          - gradle: 8.2.1
-            agp: 8.1.4
-          - gradle: 8.1.1
-            agp: 8.1.4
 
     steps:
       - name: Checkout sources

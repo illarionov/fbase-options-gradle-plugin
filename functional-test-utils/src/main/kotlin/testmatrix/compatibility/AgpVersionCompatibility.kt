@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, the fbase-config-generator-gradle-plugin project authors and contributors.
+ * Copyright (c) 2023-2024, the fbase-config-generator-gradle-plugin project authors and contributors.
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
@@ -15,6 +15,7 @@ import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVe
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_2
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_4
 import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_6
+import ru.pixnews.gradle.fbase.test.functional.testmatrix.compatibility.GradleVersionCompatibility.GRADLE_8_7
 
 internal object AgpVersionCompatibility {
     val AGP_7_0_0 = Version(7, 0, 0)
@@ -29,7 +30,9 @@ internal object AgpVersionCompatibility {
     val AGP_8_3_0 = Version(8, 3, 0)
     val AGP_8_3_2 = Version(8, 3, 2)
     val AGP_8_4_0 = Version(8, 4, 0)
-    val AGP_8_5_0_BETA02 = Version(8, 5, 0, "beta02")
+    val AGP_8_4_2 = Version(8, 4, 2)
+    val AGP_8_5_0 = Version(8, 5, 0)
+    val AGP_8_6_0_BETA01 = Version(8, 6, 0, "beta01")
 
     // Checks if a AGP version [agpVersion] can run on the current JVM
     fun isAgpCompatibleWithRuntime(agpVersion: Version): Boolean {
@@ -48,6 +51,7 @@ internal object AgpVersionCompatibility {
         agpVersion: Version,
         gradleVersion: Version,
     ) = when {
+        agpVersion >= AGP_8_5_0 -> gradleVersion >= GRADLE_8_7
         agpVersion >= AGP_8_4_0 -> gradleVersion >= GRADLE_8_6
         agpVersion >= AGP_8_3_0 -> gradleVersion >= GRADLE_8_4
         agpVersion >= AGP_8_2_0 -> gradleVersion >= GRADLE_8_2

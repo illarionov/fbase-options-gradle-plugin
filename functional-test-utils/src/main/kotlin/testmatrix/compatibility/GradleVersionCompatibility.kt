@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, the fbase-config-generator-gradle-plugin project authors and contributors.
+ * Copyright (c) 2023-2024, the fbase-config-generator-gradle-plugin project authors and contributors.
  * Please see the AUTHORS file for details.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
  */
@@ -43,6 +43,8 @@ internal object GradleVersionCompatibility {
     val GRADLE_8_5 = Version(8, 5)
     val GRADLE_8_6 = Version(8, 6)
     val GRADLE_8_7 = Version(8, 7)
+    val GRADLE_8_8 = Version(8, 8)
+    val GRADLE_8_9 = Version(8, 9)
 
     // Checks if a Gradle version can run on the current JVM
     fun isGradleCompatibleWithRuntime(gradleVersion: Version): Boolean {
@@ -68,7 +70,8 @@ internal object GradleVersionCompatibility {
             19 -> GRADLE_7_6
             20 -> GRADLE_8_3
             21 -> GRADLE_8_5
-            else -> GRADLE_8_5
+            22 -> GRADLE_8_8
+            else -> GRADLE_8_9
         }
     } else {
         GRADLE_1_0
