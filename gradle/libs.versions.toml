@@ -17,7 +17,7 @@ kotest = "5.9.1"
 kotlin-compile-testing-fork = "0.5.1"
 kotlinpoet = "1.18.0"
 kotlinx-binary-compatibility-validator = "0.15.1"
-mockk = "1.13.11"
+mockk = "1.13.12"
 spotless = "7.0.0.BETA1"
 
 [libraries]
