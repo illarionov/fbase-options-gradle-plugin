@@ -18,7 +18,7 @@ kotlin-compile-testing-fork = "0.5.1"
 kotlinpoet = "1.18.1"
 kotlinx-binary-compatibility-validator = "0.16.3"
 mockk = "1.13.12"
-spotless = "7.0.0.BETA1"
+spotless = "7.0.0.BETA4"
 
 [libraries]
 agp-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
